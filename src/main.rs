@@ -21,10 +21,13 @@ fn main() {
 fn App() -> impl IntoView {
     let (army_id, set_army_id) = create_signal(ARMY_IDS[0].to_string());
     view! {
-        <ltn::AppBar>
-            <h1>{APP_NAME}</h1>
-        </ltn::AppBar>
-        <ArmyList army_id player_name=PLAYER_NAMES[0].to_string() />
+        <ltn::Root default_theme=ltn::LeptonicTheme::default()>
+            <ltn::AppBar style="z-index: 1; background: var(--brand-color); color: white;">
+                <h1>{APP_NAME}</h1>
+                <ltn::ThemeToggle off=ltn::LeptonicTheme::Light on=ltn::LeptonicTheme::Dark/>
+            </ltn::AppBar>
+            <ArmyList army_id player_name=PLAYER_NAMES[0].to_string() />
+        </ltn::Root>
     }
 }
 
