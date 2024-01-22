@@ -47,6 +47,17 @@ pub fn ArmyList(player_name: String, army_id: ReadSignal<String>) -> impl IntoVi
             }
         )}
         </h2>
+        {move || army_data.with(
+            |army_data| match army_data {
+                None => ().into_view(),
+                Some(army) => {
+                    let opr::Army{ref units, ..} = **army;
+                    view! {
+                        <UnitsList units={units.clone()} /*on_click={on_click.clone()}*/ />
+                    }
+                }.into_view()
+            }
+        )}
     }
 }
 
@@ -59,4 +70,22 @@ async fn load_data(army_id: &str) -> Rc<opr::Army> {
         .json()
         .await
         .expect("should deserialize Army from JSON content")
+}
+
+#[component]
+fn UnitsList(units: Vec<Rc<opr::Unit>>/*, on_click: &Callback<Rc<Unit>> */) -> impl IntoView {
+    view! {
+        <ul>
+        {move || {
+            units
+                .clone()
+                .into_iter()
+                .map(|unit| {
+                    let opr::Unit{ref name, ..} = *unit;
+                    view! { <li> {name} </li> }
+                })
+                .collect_view()
+        }}
+        </ul>
+    }
 }
