@@ -1,0 +1,12 @@
+[package]
+name = "generals-familiar"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+gloo-net = "0.2" # leptos still uses that old one
+leptonic = { version = "0.3.0", features = ["csr"] }
+# leptonic does not like leptos' "nightly"
+leptos = { version = "0.5.5", default-features = false, features = ["csr"] }
+serde = { version = "1.0.195", features = ["derive", "rc"] }
+serde-aux = { version = "4.4.0", default-features = false }
