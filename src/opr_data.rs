@@ -70,8 +70,14 @@ pub fn ArmyList(player_name: String, army_id: ReadSignal<String>) -> impl IntoVi
         {move || army_data.with(
             |army_data| match army_data.clone() {
                 None => view! { "Loading..." }.into_view(),
-                Some(army) => view! {
-                    {move || army.name.clone()}
+                Some(army) => {
+                    let name = army.name.clone();
+                    let game_system = army.game_system.clone();
+                    view! {
+                        {move || game_system.to_uppercase()}
+                        " - "
+                        {move || name.clone()}
+                    }
                 }.into_view()
             }
         )}
