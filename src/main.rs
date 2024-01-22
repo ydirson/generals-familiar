@@ -78,22 +78,26 @@ async fn load_data(army_id: &str) -> Rc<opr::Army> {
 #[component]
 fn UnitsList(units: Vec<Rc<opr::Unit>>/*, on_click: &Callback<Rc<Unit>> */) -> impl IntoView {
     view! {
-        <ul>
-        {move || {
-            units
-                .clone()
-                .into_iter()
-                .map(|unit| {
-                    let opr::Unit{ref name, size, ..} = *unit;
-                    let name_and_size = if size > 1 {
-                        format!("{name} [{size}]")
-                    } else {
-                        name.to_string()
-                    };
-                    view! { <li> {name_and_size} </li> }
-                })
-                .collect_view()
-        }}
-        </ul>
+        <ltn::TableContainer>
+            <ltn::Table bordered=true hoverable=true>
+                <ltn::Tbody>
+                    {move || {
+                        units
+                            .clone()
+                            .into_iter()
+                            .map(|unit| {
+                                let opr::Unit{ref name, size, ..} = *unit;
+                                let name_and_size = if size > 1 {
+                                    format!("{name} [{size}]")
+                                } else {
+                                    name.to_string()
+                                };
+                                view! { <ltn::Tr><ltn::Td> {name_and_size} </ltn::Td></ltn::Tr> }
+                            })
+                            .collect_view()
+                    }}
+                </ltn::Tbody>
+            </ltn::Table>
+        </ltn::TableContainer>
     }
 }
