@@ -19,14 +19,20 @@ fn main() {
 
 #[component]
 fn App() -> impl IntoView {
-    let (army_id, set_army_id) = create_signal(ARMY_IDS[0].to_string());
+    let (army_id0, set_army_id0) = create_signal(ARMY_IDS[0].to_string());
+    let (army_id1, set_army_id1) = create_signal(ARMY_IDS[1].to_string());
     view! {
         <ltn::Root default_theme=ltn::LeptonicTheme::default()>
             <ltn::AppBar style="z-index: 1; background: var(--brand-color); color: white;">
                 <h1>{APP_NAME}</h1>
                 <ltn::ThemeToggle off=ltn::LeptonicTheme::Light on=ltn::LeptonicTheme::Dark/>
             </ltn::AppBar>
-            <ArmyList army_id player_name=PLAYER_NAMES[0].to_string() />
+            <ltn::Stack orientation=ltn::StackOrientation::Horizontal
+                   spacing=ltn::Size::Em(1.0)
+                   style="margin-right: 1em; align-items: flex-start;">
+                <ArmyList army_id=army_id0 player_name=PLAYER_NAMES[0].to_string() />
+                <ArmyList army_id=army_id1 player_name=PLAYER_NAMES[1].to_string() />
+            </ltn::Stack>
         </ltn::Root>
     }
 }
@@ -38,32 +44,34 @@ pub fn ArmyList(player_name: String, army_id: ReadSignal<String>) -> impl IntoVi
         |army_id_value| async move { load_data(&army_id_value).await });
 
     view! {
-        <h2>{player_name} " - "
-        {move || army_data.with(
-            |army_data| match army_data {
-                None => view! { "Loading..." }.into_view(),
-                Some(army) => {
-                    let opr::Army{ref game_system, ref name, ..} = **army;
-                    view! {
-                        {game_system.to_uppercase()}
-                        " - "
-                        {name}
-                    }
-                }.into_view()
-            }
-        )}
-        </h2>
-        {move || army_data.with(
-            |army_data| match army_data {
-                None => ().into_view(),
-                Some(army) => {
-                    let opr::Army{ref units, ..} = **army;
-                    view! {
-                        <UnitsList units={units.clone()} /*on_click={on_click.clone()}*/ />
-                    }
-                }.into_view()
-            }
-        )}
+        <ltn::Stack spacing=ltn::Size::Em(0.5)>
+            <h2>{player_name} " - "
+            {move || army_data.with(
+                |army_data| match army_data {
+                    None => view! { "Loading..." }.into_view(),
+                    Some(army) => {
+                        let opr::Army{ref game_system, ref name, ..} = **army;
+                        view! {
+                            {game_system.to_uppercase()}
+                            " - "
+                            {name}
+                        }
+                    }.into_view()
+                }
+            )}
+            </h2>
+            {move || army_data.with(
+                |army_data| match army_data {
+                    None => ().into_view(),
+                    Some(army) => {
+                        let opr::Army{ref units, ..} = **army;
+                        view! {
+                            <UnitsList units={units.clone()} /*on_click={on_click.clone()}*/ />
+                        }
+                    }.into_view()
+                }
+            )}
+        </ltn::Stack>
     }
 }
 
