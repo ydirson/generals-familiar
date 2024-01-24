@@ -22,6 +22,8 @@ pub struct Army {
 pub struct Unit {
     pub id: String,
     pub name: String,
+    #[serde(default)]
+    pub custom_name: String,
     pub size: usize,
     pub quality: usize,
     pub defense: usize,
