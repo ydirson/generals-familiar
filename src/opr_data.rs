@@ -42,6 +42,7 @@ pub struct SpecialRule {
 pub struct Equipment {
     pub id: String,
     pub name: String,
+    #[serde(default)]
     pub range: usize,
     #[serde(deserialize_with = "deserialize_number_from_string")]
     pub attacks: usize,
