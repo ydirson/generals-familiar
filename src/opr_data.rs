@@ -14,6 +14,7 @@ pub struct Army {
     pub game_system: String,
     pub points: usize,
     pub points_limit: usize,
+    //pub special_rules: Vec<Rc<SpecialRuleDef>>,
     pub units: Vec<Rc<Unit>>,
 }
 
@@ -22,13 +23,16 @@ pub struct Army {
 pub struct Unit {
     pub id: String,
     pub name: String,
+    pub cost: usize,
     #[serde(default)]
     pub custom_name: String,
     pub size: usize,
     pub quality: usize,
     pub defense: usize,
     pub special_rules: Vec<Rc<SpecialRule>>,
+    // FIXME loadout instead?
     pub equipment: Vec<Rc<Equipment>>,
+    // FIXME army_id for regrouping
 }
 
 #[derive(PartialEq, Debug, Deserialize, Serialize)]
