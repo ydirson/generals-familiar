@@ -8,7 +8,10 @@ use std::rc::Rc;
 
 const APP_NAME: &str = "General's Familiar";
 const PLAYER_NAMES: [&str; 2] = ["Player 1", "Player 2"];
-const ARMY_IDS: [&str; 2] = ["ybjR2-7kHUNY", "VV8Zy0GIfOUX"];
+const ARMY_IDS: [&str; 2] = [
+    "nLBrzTpB1TTJ",
+    "ybjR2-7kHUNY",
+];
 
 fn main() {
     mount_to_body(|| view! { <App/> })
@@ -81,8 +84,13 @@ fn UnitsList(units: Vec<Rc<opr::Unit>>/*, on_click: &Callback<Rc<Unit>> */) -> i
                 .clone()
                 .into_iter()
                 .map(|unit| {
-                    let opr::Unit{ref name, ..} = *unit;
-                    view! { <li> {name} </li> }
+                    let opr::Unit{ref name, size, ..} = *unit;
+                    let name_and_size = if size > 1 {
+                        format!("{name} [{size}]")
+                    } else {
+                        name.to_string()
+                    };
+                    view! { <li> {name_and_size} </li> }
                 })
                 .collect_view()
         }}
