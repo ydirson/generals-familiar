@@ -1,5 +1,7 @@
 use serde::{Deserialize, Serialize};
-use serde_aux::field_attributes::deserialize_number_from_string;
+use serde_aux::field_attributes::{deserialize_number_from_string,
+                                  deserialize_string_from_number,
+};
 use std::rc::Rc;
 
 pub const GET_ARMY_BASE_URL: &str = "https://army-forge.onepagerules.com/api/tts";
@@ -31,6 +33,7 @@ pub struct Unit {
 pub struct SpecialRule {
     pub name: String,
     #[serde(default)]
+    #[serde(deserialize_with = "deserialize_string_from_number")]
     pub rating: String,
 }
 
