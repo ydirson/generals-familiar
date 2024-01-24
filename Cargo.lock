@@ -454,6 +454,7 @@ dependencies = [
  "leptos",
  "serde",
  "serde-aux",
+ "serde_json",
 ]
 
 [[package]]
