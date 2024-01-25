@@ -23,28 +23,39 @@ fn main() {
 fn App() -> impl IntoView {
     let (army_id0, set_army_id0) = create_signal(ARMY_IDS[0].to_string());
     let (army_id1, set_army_id1) = create_signal(ARMY_IDS[1].to_string());
+    let (unitsel0, set_unitsel0) = create_signal(None::<Rc<opr::Unit>>);
+    let (unitsel1, set_unitsel1) = create_signal(None::<Rc<opr::Unit>>);
     view! {
         <ltn::Root default_theme=ltn::LeptonicTheme::default()>
             <ltn::AppBar style="z-index: 1; background: var(--brand-color); color: white;">
                 <h1>{APP_NAME}</h1>
                 <ltn::ThemeToggle off=ltn::LeptonicTheme::Light on=ltn::LeptonicTheme::Dark/>
             </ltn::AppBar>
-            <DetailsDrawer side=ltn::DrawerSide::Left/>
+            <DetailsDrawer side=ltn::DrawerSide::Left unit_selection=unitsel0 />
             <ltn::Stack spacing=ltn::Size::Em(0.5)>
                 <ltn::Stack orientation=ltn::StackOrientation::Horizontal
                        spacing=ltn::Size::Em(1.0)
                        style="margin-right: 1em">
-                    <ArmyList army_id=army_id0 player_name=PLAYER_NAMES[0].to_string() />
-                    <ArmyList army_id=army_id1 player_name=PLAYER_NAMES[1].to_string() />
+                    <ArmyList army_id=army_id0
+                              player_name=PLAYER_NAMES[0].to_string()
+                              select_unit=set_unitsel0
+                    />
+                    <ArmyList army_id=army_id1
+                              player_name=PLAYER_NAMES[1].to_string()
+                              select_unit=set_unitsel1
+                     />
                 </ltn::Stack>
-            <DetailsDrawer side=ltn::DrawerSide::Right/>
+            <DetailsDrawer side=ltn::DrawerSide::Right unit_selection=unitsel1 />
             </ltn::Stack>
         </ltn::Root>
     }
 }
 
 #[component]
-pub fn ArmyList(player_name: String, army_id: ReadSignal<String>) -> impl IntoView {
+pub fn ArmyList(player_name: String,
+                army_id: ReadSignal<String>,
+                select_unit: WriteSignal<Option<Rc<opr::Unit>>>,
+) -> impl IntoView {
     let army_data = create_resource(
         move || army_id.get(),
         |army_id_value| async move { load_data(&army_id_value).await });
@@ -72,7 +83,7 @@ pub fn ArmyList(player_name: String, army_id: ReadSignal<String>) -> impl IntoVi
                     Some(army) => {
                         let opr::Army{ref units, ..} = **army;
                         view! {
-                            <UnitsList units={units.clone()} /*on_click={on_click.clone()}*/ />
+                            <UnitsList units={units.clone()} select_unit />
                         }
                     }.into_view()
                 }
@@ -93,7 +104,9 @@ async fn load_data(army_id: &str) -> Rc<opr::Army> {
 }
 
 #[component]
-fn UnitsList(units: Vec<Rc<opr::Unit>>/*, on_click: &Callback<Rc<Unit>> */) -> impl IntoView {
+fn UnitsList(units: Vec<Rc<opr::Unit>>,
+             select_unit: WriteSignal<Option<Rc<opr::Unit>>>,
+) -> impl IntoView {
     view! {
         <ltn::TableContainer>
             <ltn::Table bordered=true hoverable=true>
@@ -119,7 +132,13 @@ fn UnitsList(units: Vec<Rc<opr::Unit>>/*, on_click: &Callback<Rc<Unit>> */) -> i
                                 } else {
                                     name
                                 };
-                                view! { <ltn::Tr><ltn::Td> {name_and_size} </ltn::Td></ltn::Tr> }
+                                view! {
+                                    <ltn::Tr on:click=move |_| {
+                                        select_unit.set(Some(unit.clone()));
+                                    }>
+                                        <ltn::Td> {name_and_size} </ltn::Td>
+                                    </ltn::Tr>
+                                }
                             })
                             .collect_view()
                     }}
@@ -130,18 +149,26 @@ fn UnitsList(units: Vec<Rc<opr::Unit>>/*, on_click: &Callback<Rc<Unit>> */) -> i
 }
 
 #[component]
-fn DetailsDrawer(side: ltn::DrawerSide) -> impl IntoView {
+fn DetailsDrawer(side: ltn::DrawerSide,
+                 unit_selection: ReadSignal<Option<Rc<opr::Unit>>>) -> impl IntoView {
     let pos_style = match side {
         ltn::DrawerSide::Left => "left: 0",
         ltn::DrawerSide::Right => "right: 0",
     };
     let style = format!("overflow: scroll; padding: 0.5em; position: absolute; top: var(--app-bar-height); {pos_style}; background-color: var(--brand-color); border: 1px solid gray;");
 
+    //let shown = move || ! unit_selection.with(|sel| sel.is_none());
+    // FIXME: this is a workaround of derived signal not being accepted
+    let (shown, set_shown) = create_signal(false);
+    create_effect(move |_| {
+        set_shown.set(! unit_selection.with(|sel| sel.is_none()));
+    });
+
     view! {
-        <ltn::Drawer side style shown=true>
-            <ltn::Stack spacing=ltn::Size::Em(0.5)>
-                {(0..8).map(|_| view! { <ltn::Skeleton animated=false height=ltn::Size::Em(3.0)/> }).collect_view()}
-            </ltn::Stack>
+        <ltn::Drawer side style shown>
+            <Show when={move || shown.get()}>
+                <p>details</p>
+            </Show>
         </ltn::Drawer>
     }
 }
