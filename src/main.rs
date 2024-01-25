@@ -29,11 +29,15 @@ fn App() -> impl IntoView {
                 <h1>{APP_NAME}</h1>
                 <ltn::ThemeToggle off=ltn::LeptonicTheme::Light on=ltn::LeptonicTheme::Dark/>
             </ltn::AppBar>
-            <ltn::Stack orientation=ltn::StackOrientation::Horizontal
-                   spacing=ltn::Size::Em(1.0)
-                   style="margin-right: 1em">
-                <ArmyList army_id=army_id0 player_name=PLAYER_NAMES[0].to_string() />
-                <ArmyList army_id=army_id1 player_name=PLAYER_NAMES[1].to_string() />
+            <DetailsDrawer side=ltn::DrawerSide::Left/>
+            <ltn::Stack spacing=ltn::Size::Em(0.5)>
+                <ltn::Stack orientation=ltn::StackOrientation::Horizontal
+                       spacing=ltn::Size::Em(1.0)
+                       style="margin-right: 1em">
+                    <ArmyList army_id=army_id0 player_name=PLAYER_NAMES[0].to_string() />
+                    <ArmyList army_id=army_id1 player_name=PLAYER_NAMES[1].to_string() />
+                </ltn::Stack>
+            <DetailsDrawer side=ltn::DrawerSide::Right/>
             </ltn::Stack>
         </ltn::Root>
     }
@@ -122,5 +126,22 @@ fn UnitsList(units: Vec<Rc<opr::Unit>>/*, on_click: &Callback<Rc<Unit>> */) -> i
                 </ltn::Tbody>
             </ltn::Table>
         </ltn::TableContainer>
+    }
+}
+
+#[component]
+fn DetailsDrawer(side: ltn::DrawerSide) -> impl IntoView {
+    let pos_style = match side {
+        ltn::DrawerSide::Left => "left: 0",
+        ltn::DrawerSide::Right => "right: 0",
+    };
+    let style = format!("overflow: scroll; padding: 0.5em; position: absolute; top: var(--app-bar-height); {pos_style}; background-color: var(--brand-color); border: 1px solid gray;");
+
+    view! {
+        <ltn::Drawer side style shown=true>
+            <ltn::Stack spacing=ltn::Size::Em(0.5)>
+                {(0..8).map(|_| view! { <ltn::Skeleton animated=false height=ltn::Size::Em(3.0)/> }).collect_view()}
+            </ltn::Stack>
+        </ltn::Drawer>
     }
 }
