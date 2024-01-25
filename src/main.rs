@@ -2,6 +2,7 @@ mod opr_data;
 
 use leptonic::prelude as ltn;
 use leptos::*;
+use opr_data as opr;
 
 const APP_NAME: &str = "General's Familiar";
 const PLAYER_NAMES: [&str; 2] = ["Player 1", "Player 2"];
@@ -18,6 +19,6 @@ fn App() -> impl IntoView {
         <ltn::AppBar>
             <h1>{APP_NAME}</h1>
         </ltn::AppBar>
-        <opr_data::ArmyList army_id player_name=PLAYER_NAMES[0].to_string() />
+        <opr::ArmyList army_id player_name=PLAYER_NAMES[0].to_string() />
     }
 }
