@@ -1,6 +1,6 @@
 mod opr_data;
 
-use leptonic::prelude::*;
+use leptonic::prelude as ltn;
 use leptos::*;
 
 const APP_NAME: &str = "General's Familiar";
@@ -15,9 +15,9 @@ fn main() {
 fn App() -> impl IntoView {
     let (army_id, set_army_id) = create_signal(ARMY_IDS[0].to_string());
     view! {
-        <AppBar>
+        <ltn::AppBar>
             <h1>{APP_NAME}</h1>
-        </AppBar>
+        </ltn::AppBar>
         <opr_data::ArmyList army_id player_name=PLAYER_NAMES[0].to_string() />
     }
 }
