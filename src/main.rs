@@ -146,7 +146,7 @@ fn DetailsDrawer(side: ltn::DrawerSide,
         ltn::DrawerSide::Left => "left: 0",
         ltn::DrawerSide::Right => "right: 0",
     };
-    let style = format!("overflow: scroll; padding: 0.5em; position: absolute; top: var(--app-bar-height); {pos_style}; background-color: var(--brand-color); border: 1px solid gray;");
+    let style = format!("overflow: scroll; padding: 0.5em; position: absolute; top: var(--app-bar-height); {pos_style}; background-color: var(--brand-color); border: 1px solid gray; width: 40%");
 
     //let shown = move || ! unit_selection.with(|sel| sel.is_none());
     // FIXME: this is a workaround of derived signal not being accepted
@@ -158,8 +158,86 @@ fn DetailsDrawer(side: ltn::DrawerSide,
     view! {
         <ltn::Drawer side style shown>
             <Show when={move || shown.get()}>
-                <p>details</p>
+                <UnitDetails unit=unit_selection.get().unwrap() />
             </Show>
         </ltn::Drawer>
     }
+}
+
+#[component]
+fn UnitDetails(unit: Rc<opr::Unit>) -> impl IntoView {
+    let unit_name = unit.formatted_name();
+    let opr::Unit{quality, defense, ref equipment, ref special_rules, ..} = *unit;
+    view! {
+        <h3>{format!("{unit_name}: Q{quality} D{defense}")}</h3>
+        <SpecialRulesList special_rules={special_rules.clone()} />
+        <EquipmentList equipment={equipment.clone()} />
+    }
+}
+
+#[component]
+fn EquipmentList(equipment: Vec<Rc<opr::Equipment>>) -> impl IntoView {
+    view! {
+        <ltn::TableContainer>
+            <ltn::Table bordered=true hoverable=true>
+                <ltn::Tbody>
+                    {move || {
+                        equipment
+                            .clone()
+                            .into_iter()
+                            .map(|equipment| {
+                                view! {
+                                    <EquipmentItem equipment />
+                                }
+                            })
+                            .collect_view()
+                    }}
+                </ltn::Tbody>
+            </ltn::Table>
+        </ltn::TableContainer>
+    }
+}
+
+#[component]
+fn EquipmentItem(equipment: Rc<opr::Equipment>) -> impl IntoView {
+    let name = equipment.name.clone();
+    let special_rules = equipment.special_rules.clone();
+    let opr::Equipment{count, range, attacks, ..} = *equipment;
+    view! {
+        <ltn::Tr>
+            <ltn::Td>
+                {if count != 1
+                    {format!("{}x ", count)} else {"".to_string()}}
+                {name}
+            </ltn::Td>
+            <ltn::Td>
+                {if range != 0
+                    {format!(r#"{}""#, range )}
+                    else {"-".to_string()}}
+            </ltn::Td>
+            <ltn::Td>
+                {format!("A{}", attacks)}
+            </ltn::Td>
+            <ltn::Td>
+                <SpecialRulesList special_rules />
+            </ltn::Td>
+        </ltn::Tr>
+    }
+}
+
+#[component]
+fn SpecialRulesList(special_rules: Vec<Rc<opr::SpecialRule>>) -> impl IntoView {
+    special_rules.iter()
+        // render each rule
+        .map(|special_rule| {
+            let rating = match special_rule.rating.as_str() {
+                "" => { "".to_string() },
+                rating => { format!("({})", rating) },
+            };
+            view! {
+                {format!("{name}{rating}", name=special_rule.name, rating=rating)}
+            }
+        })
+        .collect::<Vec<String>>()
+        .join(", ")
 }
