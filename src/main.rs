@@ -121,22 +121,13 @@ fn UnitsList(units: Vec<Rc<opr::Unit>>,
                             .clone()
                             .into_iter()
                             .map(|unit| {
-                                let opr::Unit{ref name, ref custom_name, size, ..} = *unit;
-                                let name = if custom_name.len() > 0 {
-                                    format!("{custom_name} ({name})")
-                                } else {
-                                    name.to_string()
-                                };
-                                let name_and_size = if size > 1 {
-                                    format!("{name} [{size}]")
-                                } else {
-                                    name
-                                };
+                                let unit_name = (*unit).formatted_name();
+                                //let opr::Unit{..} = *unit;
                                 view! {
                                     <ltn::Tr on:click=move |_| {
                                         select_unit.set(Some(unit.clone()));
                                     }>
-                                        <ltn::Td> {name_and_size} </ltn::Td>
+                                        <ltn::Td> {unit_name} </ltn::Td>
                                     </ltn::Tr>
                                 }
                             })
