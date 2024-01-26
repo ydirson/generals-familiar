@@ -56,6 +56,22 @@ pub struct Equipment {
     pub special_rules: Vec<Rc<SpecialRule>>,
 }
 
+impl Unit {
+    pub fn formatted_name(&self) -> String {
+        let Unit{ref name, ref custom_name, size, ..} = *self;
+        let name = if custom_name.len() > 0 {
+            format!("{custom_name} ({name})")
+        } else {
+            name.to_string()
+        };
+        if size > 1 {
+            format!("{name} [{size}]")
+        } else {
+            name
+        }
+    }
+}
+
 mod static_data;
 #[test]
 fn test_load_parse() {
