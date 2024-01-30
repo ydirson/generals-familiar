@@ -8,10 +8,10 @@ gloo-net = "0.2" # leptos still uses that old one
 leptonic = { version = "0.3.0", features = ["csr"] }
 # leptonic does not like leptos' "nightly"
 leptos = { version = "0.5.5", features = ["csr"] }
-opr = { git = "https://github.com/ydirson/opr-rs" }
+
+[dependencies.opr]
+git = "https://github.com/ydirson/opr-rs"
+#path = "../opr-rs"
 
 [build-dependencies]
 leptonic-theme = "0.3.0"
-
-#[patch.crates-io]
-#opr = { path = "../opr-rs" }

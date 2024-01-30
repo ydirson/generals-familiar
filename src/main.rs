@@ -164,27 +164,30 @@ fn DetailsDrawer(side: ltn::DrawerSide,
 #[component]
 fn UnitDetails(unit: Rc<opr::Unit>) -> impl IntoView {
     let unit_name = unit.formatted_name();
-    let opr::Unit{quality, defense, ref equipment, ref special_rules, ..} = *unit;
+    let opr::Unit{quality, defense, ref loadout, ref special_rules, ..} = *unit;
     view! {
         <h3>{format!("{unit_name}: Q{quality} D{defense}")}</h3>
         <SpecialRulesList special_rules={special_rules.clone()} />
-        <EquipmentList equipment={equipment.clone()} />
+        <EquipmentList loadout_list={loadout.clone()} />
     }
 }
 
 #[component]
-fn EquipmentList(equipment: Vec<Rc<opr::Equipment>>) -> impl IntoView {
+fn EquipmentList(loadout_list: Vec<Rc<opr::UnitLoadout>>) -> impl IntoView {
     view! {
         <ltn::TableContainer>
             <ltn::Table bordered=true hoverable=true>
                 <ltn::Tbody>
                     {move || {
-                        equipment
+                        loadout_list
                             .clone()
                             .into_iter()
-                            .map(|equipment| {
+                            .filter(|loadout|
+                                    if let opr::UnitLoadout::Equipment{..} = **loadout
+                                    { true } else { false })
+                            .map(|loadout| {
                                 view! {
-                                    <EquipmentItem equipment />
+                                    <EquipmentItem loadout />
                                 }
                             })
                             .collect_view()
@@ -196,29 +199,33 @@ fn EquipmentList(equipment: Vec<Rc<opr::Equipment>>) -> impl IntoView {
 }
 
 #[component]
-fn EquipmentItem(equipment: Rc<opr::Equipment>) -> impl IntoView {
-    let name = equipment.name.clone();
-    let special_rules = equipment.special_rules.clone();
-    let opr::Equipment{count, range, attacks, ..} = *equipment;
-    view! {
-        <ltn::Tr>
-            <ltn::Td>
-                {if count != 1
-                    {format!("{}x ", count)} else {"".to_string()}}
-                {name}
-            </ltn::Td>
-            <ltn::Td>
-                {if range != 0
-                    {format!(r#"{}""#, range )}
-                    else {"-".to_string()}}
-            </ltn::Td>
-            <ltn::Td>
-                {format!("A{}", attacks)}
-            </ltn::Td>
-            <ltn::Td>
-                <SpecialRulesList special_rules />
-            </ltn::Td>
-        </ltn::Tr>
+fn EquipmentItem(loadout: Rc<opr::UnitLoadout>) -> impl IntoView {
+    if let opr::UnitLoadout::Equipment(ref equipment) = *loadout {
+        let name = equipment.name.clone();
+        let special_rules = equipment.special_rules.clone();
+        let opr::Equipment{count, range, attacks, ..} = *equipment;
+        view! {
+            <ltn::Tr>
+                <ltn::Td>
+                    {if count != 1
+                        {format!("{}x ", count)} else {"".to_string()}}
+                    {name}
+                </ltn::Td>
+                <ltn::Td>
+                    {if range != 0
+                        {format!(r#"{}""#, range )}
+                        else {"-".to_string()}}
+                </ltn::Td>
+                <ltn::Td>
+                    {format!("A{}", attacks)}
+                </ltn::Td>
+                <ltn::Td>
+                    <SpecialRulesList special_rules={special_rules.clone()} />
+                </ltn::Td>
+            </ltn::Tr>
+        }
+    } else {
+        panic!("EquipmentItem must be used on Equipment only");
     }
 }
 
