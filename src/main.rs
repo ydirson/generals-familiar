@@ -160,8 +160,36 @@ fn UnitDetails(unit: Rc<opr::Unit>) -> impl IntoView {
     let opr::Unit{quality, defense, ref loadout, ref special_rules, ..} = *unit;
     view! {
         <h3>{format!("{unit_name}: Q{quality} D{defense}")}</h3>
-        <SpecialRulesList special_rules={special_rules.clone()} />
+        <p><SpecialRulesList special_rules={special_rules.clone()} /></p>
+        <p><UnitUpgradesList loadout_list={loadout.clone()} /></p>
         <EquipmentList loadout_list={loadout.clone()} />
+    }
+}
+
+#[component]
+fn UnitUpgradesList(loadout_list: Vec<Rc<opr::UnitLoadout>>) -> impl IntoView {
+    view! {
+        {move || {
+            loadout_list
+                .clone()
+                .into_iter()
+                .filter(|loadout|
+                        if let opr::UnitLoadout::Upgrade{..} = **loadout
+                        { true } else { false })
+                .enumerate()
+                .map(|(i, loadout)| {
+                    if let opr::UnitLoadout::Upgrade(ref upgrade) = *loadout {
+                        let opr::UnitUpgrade{name, ref content, ..} = upgrade;
+                        view! {
+                            {move || if i > 0 { ", " } else { "" }}
+                            {name} " (" <SpecialRulesList special_rules={content.clone()} /> ")"
+                        }
+                    } else {
+                        panic!();
+                    }
+                })
+                .collect_view()
+        }}
     }
 }
 
