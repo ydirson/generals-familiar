@@ -11,6 +11,7 @@ leptos = { version = "0.5.5", features = ["csr"] }
 
 [dependencies.opr]
 git = "https://github.com/ydirson/opr-rs"
+rev = "5ad81d96d8e28fa9e4840041f2a810b9b78a2fe2"
 #path = "../opr-rs"
 
 [build-dependencies]
