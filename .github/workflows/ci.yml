@@ -21,10 +21,10 @@ jobs:
     # workaround unidentified issue with missing dir
     - run: mkdir -p generated
     - name: First build to create stylesheet
-      run: test -r ./generated/leptonic/leptonic-themes.scss || trunk build --verbose --release || true
+      run: test -r ./generated/leptonic/leptonic-themes.scss || trunk build --verbose --release --public-url "./" || true
 
     - name: Build
-      run: trunk build --verbose --release
+      run: trunk build --verbose --release --public-url "./"
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
