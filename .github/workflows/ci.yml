@@ -1,0 +1,32 @@
+name: ci
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - uses: dtolnay/rust-toolchain@1.75
+      with:
+        targets: wasm32-unknown-unknown
+
+    # get prebuilt trunk instead of spending 5min+ of CI time
+    - uses: jetli/trunk-action@v0.4.0
+      #with:
+      #  version: 'v0.18.4'
+
+    # workaround unidentified issue with missing dir
+    - run: mkdir -p generated
+    - name: First build to create stylesheet
+      run: test -r ./generated/leptonic/leptonic-themes.scss || trunk build --verbose --release || true
+
+    - name: Build
+      run: trunk build --verbose --release
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: static-webapp
+        path: ./dist
