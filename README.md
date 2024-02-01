@@ -34,7 +34,7 @@ browser to access it - if you choose to build it yourself, just run
   * [ ] set app title from Rust
   * [ ] window space outside app not covered by stylesheet, looks bad
         in Dark Mode
-  * [ ] too much vertical space used in Drawers
+  * [x] too much vertical space used in Drawers
   * [ ] allow changing font size?
   * [ ] allow closing Drawers
   * [ ] selected unit should be highlighted in list
