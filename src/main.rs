@@ -42,8 +42,8 @@ fn App() -> impl IntoView {
                               select_unit=set_unitsel1
                      />
                 </ltn::Stack>
-            <DetailsDrawer side=ltn::DrawerSide::Right unit_selection=unitsel1 />
             </ltn::Stack>
+            <DetailsDrawer side=ltn::DrawerSide::Right unit_selection=unitsel1 />
         </ltn::Root>
     }
 }
