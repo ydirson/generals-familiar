@@ -452,6 +452,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "generals-familiar"
+version = "0.1.0"
+dependencies = [
+ "gloo-net",
+ "leptonic",
+ "leptonic-theme",
+ "leptos",
+ "opr",
+]
+
+[[package]]
 name = "getrandom"
 version = "0.2.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1749,17 +1760,6 @@ checksum = "a75fb188eb626b924683e3b95e3a48e63551fcfb51949de2f06a9d91dbee93c9"
 dependencies = [
  "core-foundation-sys",
  "libc",
-]
-
-[[package]]
-name = "test-opr-leptos"
-version = "0.1.0"
-dependencies = [
- "gloo-net",
- "leptonic",
- "leptonic-theme",
- "leptos",
- "opr",
 ]
 
 [[package]]
