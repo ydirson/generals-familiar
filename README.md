@@ -31,7 +31,7 @@ browser to access it - if you choose to build it yourself, just run
 * fix basic UI issues
   * [ ] unit-details Drawers should be positionned relative to
         screen/viewport not page
-  * [ ] too much vertical space used in Drawers
+  * [x] too much vertical space used in Drawers
   * [ ] allow changing font size?
   * [ ] allow closing Drawers
   * [ ] selected unit should be highlighted in list
