@@ -15,4 +15,4 @@ rev = "5ad81d96d8e28fa9e4840041f2a810b9b78a2fe2"
 #path = "../opr-rs"
 
 [build-dependencies]
-leptonic-theme = "0.3.0"
+leptonic-theme = "0.5.0"

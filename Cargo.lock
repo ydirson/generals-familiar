@@ -773,10 +773,11 @@ dependencies = [
 
 [[package]]
 name = "leptonic-theme"
-version = "0.3.0"
+version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "98da76a9e983158251918c9268d8cebec4cfc2ae55633d71e4e6084f2465fe76"
+checksum = "b3840ddb6c2bb22bf63cd8949fa9eb86fe6bef228283181a6dc020d918477d4f"
 dependencies = [
+ "anyhow",
  "include_dir",
  "indoc",
 ]
