@@ -18,10 +18,9 @@ jobs:
       #with:
       #  version: 'v0.18.4'
 
-    # workaround unidentified issue with missing dir
-    - run: mkdir -p generated
-    - name: First build to create stylesheet
-      run: test -r ./generated/leptonic/leptonic-themes.scss || trunk build --verbose --release || true
+    # workaround chicken-egg issue with generated theme missing
+    - name: Create dummy stylesheet as build workaround
+      run: mkdir -p generated/leptonic && touch generated/leptonic/leptonic-themes.scss
 
     - name: Build
       run: trunk build --verbose --release
