@@ -39,6 +39,17 @@ jobs:
       - name: fix location for master artifacts
         run: mv pages/master/static-webapp/* pages/master/ && rmdir pages/master/static-webapp/
 
+      - name: Download dev artifacts
+        id: download-artifact-dev
+        uses: dawidd6/action-download-artifact@v3
+        with:
+          workflow: ci.yml
+          workflow_conclusion: success
+          branch: dev
+          path: ./pages/dev
+      - name: fix location for dev artifacts
+        run: mv pages/dev/static-webapp/* pages/dev/ && rmdir pages/dev/static-webapp/
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
