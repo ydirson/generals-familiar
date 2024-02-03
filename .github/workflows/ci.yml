@@ -25,7 +25,7 @@ jobs:
     - name: Build
       run: trunk build --verbose --release
     - name: Upload artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: static-webapp
         path: ./dist
