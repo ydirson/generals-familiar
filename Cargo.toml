@@ -15,5 +15,5 @@ rev = "5ad81d96d8e28fa9e4840041f2a810b9b78a2fe2"
 #path = "../opr-rs"
 
 [package.metadata.leptonic]
-style-dir = "generated"
+style-dir = "style"
 js-dir = "public/js"

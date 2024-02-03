@@ -20,7 +20,7 @@ jobs:
 
     # workaround chicken-egg issue with generated theme missing
     - name: Create dummy stylesheet as build workaround
-      run: mkdir -p generated/leptonic && touch generated/leptonic/leptonic-themes.scss
+      run: mkdir -p style/leptonic && touch style/leptonic/leptonic-themes.scss
 
     - name: Build
       run: trunk build --verbose --release
