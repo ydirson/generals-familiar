@@ -76,3 +76,19 @@ approach, and the [Leptonic component library](https://leptonic.dev/).
 I'm not really happy yet with the generated WASM size, so maybe
 technical choices will change at some point - at least this setup
 makes it really easy to prototype things.
+
+## Building locally / developping
+
+The easiest for development is to launch `trunk serve` in a terminal,
+it will rebuild the project as you save files and trigger a browser
+reload.
+
+`trunk serve` and flexible deployment of the build result however
+conflict on one point: flexible deployment pushes for using relative
+hrefs for `index.html` to load the WASM and CSS files, and `trunk
+serve` [does not like
+that](https://github.com/trunk-rs/trunk/issues/697).
+
+If you need this flexible deployment (as is done in the project's
+GitHub CI), you will need to build the project using `trunk build
+--public-url ./`.
