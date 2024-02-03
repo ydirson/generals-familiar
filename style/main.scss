@@ -2,7 +2,7 @@
     font-family: Roboto, sans-serif;
 }
 
-@import "../generated/leptonic/leptonic-themes";
+@import "./leptonic/leptonic-themes";
 
 [data-theme="light"] {
     --brand-color: #3267ad;
