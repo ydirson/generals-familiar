@@ -1,4 +1,9 @@
-@import "../generated/leptonic/leptonic-themes";
+@import "./leptonic/leptonic-themes";
+
+body {
+    margin: 0;
+    padding: 0;
+}
 
 [data-theme="light"] {
     --brand-color: #e66956;
