@@ -1,4 +1,8 @@
-@import "../generated/leptonic/leptonic-themes";
+* {
+    font-family: Roboto, sans-serif;
+}
+
+@import "./leptonic/leptonic-themes";
 
 [data-theme="light"] {
     --brand-color: #3267ad;

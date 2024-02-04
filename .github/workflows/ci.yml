@@ -19,9 +19,8 @@ jobs:
       #  version: 'v0.18.4'
 
     # workaround unidentified issue with missing dir
-    - run: mkdir -p generated
-    - name: First build to create stylesheet
-      run: test -r ./generated/leptonic/leptonic-themes.scss || trunk build --verbose --release --public-url "./" || true
+    - name: Stylesheet creation workaround
+      run: mkdir -p style/leptonic && test -r ./style/leptonic/leptonic-themes.scss || trunk build --verbose --release --public-url "./" || true
 
     - name: Build
       run: trunk build --verbose --release --public-url "./"
