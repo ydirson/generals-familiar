@@ -21,3 +21,9 @@ body {
     padding: 0;
     background-color: #efebe8 /* var(--box-background-color) */;
 }
+
+leptonic-app-bar {
+    background: var(--brand-color);
+    color: white;
+    padding: 0 1em;
+}

@@ -25,7 +25,7 @@ fn App() -> impl IntoView {
     view! {
         <ltn::Root default_theme=ltn::LeptonicTheme::default()>
             <ltn::Box style="height: 100%;">
-                <ltn::AppBar style="z-index: 1; background: var(--brand-color); color: white;">
+                <ltn::AppBar>
                     <h1>{APP_NAME}</h1>
                     <ltn::ThemeToggle off=ltn::LeptonicTheme::Light on=ltn::LeptonicTheme::Dark/>
                 </ltn::AppBar>
