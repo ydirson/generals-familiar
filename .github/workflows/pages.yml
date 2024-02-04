@@ -39,17 +39,6 @@ jobs:
       - name: fix location for master artifacts
         run: mv pages/master/static-webapp/* pages/master/ && rmdir pages/master/static-webapp/
 
-      - name: Download leptonic-0.4 artifacts
-        id: download-artifact-leptonic-0-4
-        uses: dawidd6/action-download-artifact@v3
-        with:
-          workflow: ci.yml
-          workflow_conclusion: success
-          branch: leptonic-0.4
-          path: ./pages/leptonic-0.4
-      - name: fix location for leptonic-0.4 artifacts
-        run: mv pages/leptonic-0.4/static-webapp/* pages/leptonic-0.4/ && rmdir pages/leptonic-0.4/static-webapp/
-
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
