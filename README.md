@@ -29,7 +29,7 @@ browser to access it - if you choose to build it yourself, just run
 ### Ideas for the future
 
 * fix basic UI issues
-  * [ ] unit-details Drawers should be positionned relative to
+  * [x] unit-details Drawers should be positionned relative to
         screen/viewport not page
   * [ ] set app title from Rust
   * [ ] window space outside app not covered by stylesheet, looks bad

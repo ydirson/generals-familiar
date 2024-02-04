@@ -136,7 +136,7 @@ fn DetailsDrawer(side: ltn::DrawerSide,
         ltn::DrawerSide::Left => "left: 0",
         ltn::DrawerSide::Right => "right: 0",
     };
-    let style = format!("overflow: scroll; padding: 0.5em; position: absolute; top: var(--app-bar-height); {pos_style}; background-color: var(--brand-color); border: 1px solid gray; width: 40%");
+    let style = format!("overflow: scroll; padding: 0.5em; position: fixed; top: var(--app-bar-height); {pos_style}; background-color: var(--brand-color); border: 1px solid gray; width: 40%");
 
     //let shown = move || ! unit_selection.with(|sel| sel.is_none());
     // FIXME: this is a workaround of derived signal not being accepted
