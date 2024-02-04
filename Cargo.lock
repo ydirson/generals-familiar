@@ -453,9 +453,7 @@ dependencies = [
  "leptonic",
  "leptonic-theme",
  "leptos",
- "serde",
- "serde-aux",
- "serde_json",
+ "opr",
 ]
 
 [[package]]
@@ -1178,6 +1176,15 @@ name = "once_cell"
 version = "1.19.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3fdb12b2476b595f9358c5161aa467c2438859caa136dec86c26fdd2efe17b92"
+
+[[package]]
+name = "opr"
+version = "0.1.0"
+source = "git+https://github.com/ydirson/opr-rs?rev=5a17beeb217b4d0ddd5fe967887b671ac3d1a065#5a17beeb217b4d0ddd5fe967887b671ac3d1a065"
+dependencies = [
+ "serde",
+ "serde-aux",
+]
 
 [[package]]
 name = "pad-adapter"

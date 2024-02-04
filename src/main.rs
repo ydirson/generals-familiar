@@ -1,9 +1,6 @@
-mod opr_data;
-
 use gloo_net::http::Request;
 use leptonic::prelude as ltn;
 use leptos::*;
-use opr_data as opr;
 use std::rc::Rc;
 
 const APP_NAME: &str = "General's Familiar";
