@@ -24,7 +24,7 @@ fn App() -> impl IntoView {
     let (unitsel1, set_unitsel1) = create_signal(None::<Rc<opr::Unit>>);
     view! {
         <ltn::Root default_theme=ltn::LeptonicTheme::default()>
-            <ltn::Box style="height: 100%;">
+            <ltn::Box style="min-height: 100vh;">
                 <ltn::AppBar>
                     <h1>{APP_NAME}</h1>
                     <ltn::ThemeToggle off=ltn::LeptonicTheme::Light on=ltn::LeptonicTheme::Dark/>
