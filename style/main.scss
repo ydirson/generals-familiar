@@ -8,12 +8,14 @@
     --brand-color: #3267ad;
     --typography-p-margin: 0.1em 0 0.1em 0 ;
     --typography-h3-margin: 0.5em 0 0.5em 0 ;
+    --table-background-color-selected: color-mix(in srgb, white 70%, var(--brand-color));
 }
 
 [data-theme="dark"] {
     --brand-color: #3267ad;
     --typography-p-margin: 0.1em 0 0.1em 0 ;
     --typography-h3-margin: 0.5em 0 0.5em 0 ;
+    --table-background-color-selected: color-mix(in srgb, black 70%, var(--brand-color));
 }
 
 html {
@@ -62,6 +64,10 @@ leptonic-drawer.army_details leptonic-table {
     leptonic-table-cell:nth-child(3) {
         width: 2em;
     }
+}
+
+leptonic-table-row.selected {
+    background-color: var(--table-background-color-selected);
 }
 
 special-rule {

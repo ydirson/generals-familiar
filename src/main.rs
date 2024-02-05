@@ -212,6 +212,7 @@ async fn load_data(army_id: &str) -> Rc<opr::Army> {
 fn UnitsList(units: Vec<Rc<opr::Unit>>,
              select_unit: WriteSignal<Option<Rc<opr::Unit>>>,
 ) -> impl IntoView {
+    let (selected_row_num, set_selected_row_num) = create_signal(None::<usize>);
     view! {
         <ltn::TableContainer>
             <ltn::Table bordered=true hoverable=true>
@@ -220,15 +221,26 @@ fn UnitsList(units: Vec<Rc<opr::Unit>>,
                         units
                             .clone()
                             .into_iter()
-                            .map(|unit| {
+                            .enumerate()
+                            .map(|(i, unit)| {
                                 let unit_name = (*unit).formatted_name();
                                 //let opr::Unit{..} = *unit;
                                 view! {
-                                    <ltn::TableRow on:click=move |_| {
-                                        select_unit.set(Some(unit.clone()));
+                                    // FIXME this ought to be a ltn::TableRow, which does
+                                    // not allow for dynamic classes or even for class
+                                    <leptonic-table-row
+                                         class:selected=move || {
+                                             match selected_row_num.get() {
+                                                 Some(index) if index == i => true,
+                                                 _ => false,
+                                             }
+                                         }
+                                         on:click=move |_| {
+                                             select_unit.set(Some(unit.clone()));
+                                             set_selected_row_num.set(Some(i));
                                     }>
                                         <ltn::TableCell> {unit_name} </ltn::TableCell>
-                                    </ltn::TableRow>
+                                    </leptonic-table-row>
                                 }
                             })
                             .collect_view()

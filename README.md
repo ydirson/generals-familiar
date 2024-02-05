@@ -40,7 +40,7 @@ browser to access it - if you choose to build it yourself, just run
   * [x] too much vertical space used in Drawers
   * [ ] allow changing font size?
   * [x] allow closing Drawers
-  * [ ] selected unit should be highlighted in list
+  * [x] selected unit should be highlighted in list
   * [x] better column-width usage in weapons list
   * [x] add some transparency to drawers
 * essential
