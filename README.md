@@ -31,7 +31,7 @@ browser to access it - if you choose to build it yourself, just run
 * fix basic UI issues
   * [x] unit-details Drawers should be positionned relative to
         screen/viewport not page
-  * [ ] set app title from Rust
+  * [x] set app title from Rust
   * [x] window space outside app not covered by stylesheet, looks bad
         in Dark Mode
   * [x] too much vertical space used in Drawers

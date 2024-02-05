@@ -13,7 +13,22 @@ const ARMY_IDS: [&str; 2] = [
 ];
 
 fn main() {
+    set_app_name(APP_NAME);
     mount_to_body(|| view! { <App/> })
+}
+
+fn set_app_name(app_name: &str) {
+    let doc = web_sys::window()
+        .expect("should have a window")
+        .document()
+        .expect("window should have a document");
+    let title = doc.create_element("title").expect("should create title");
+    title.set_text_content(Some(app_name));
+    doc
+        .head()
+        .expect("document should have a head")
+        .append_child(&title)
+        .expect("should set document title");
 }
 
 #[component]
