@@ -43,32 +43,34 @@ browser to access it - if you choose to build it yourself, just run
 * plumbing
   * [ ] flags for WASM size reduction
   * [ ] hunt for any unused features in deps
-* let users select their own armies
-* ensure important list-level info is displayed, and not hidden by
-  the drawer
-* move game name to AppBar, consistency check accross armies
-* provide help on keywords
-* order units, grouping identical ones
-* extract meaningful army-level info for permanent display (aura
-  available from units, (optionally) spells, ...)
-* see how we can determine which characteristic of displayed unit is
-  particularly useful to highlight to avoid forgetting, taking the
-  selected opponent unit into account (similarly, which ones we can
-  dim because they're not useful, like "Hero" in GFF when no other
-  friendly unit has a lower quality)
-* add some stats to unit state (damage, mana, activated, exhausted...)
-  and a way to change them
-* keep history of stat changes (to help check about forgotten stuff,
-  and help battle reports)
-* proximity communication to share stats update
-* WarFleets support
-* support more than 2 armies
-* quick switch of selection (for small lists) by e.g. swiping the
-  drawer up/down
-* quick switch of selection for larger lists, by using e.g. an iconbar
-  to jump to given unit type (use eg. unit acronyms for a first step)
-* assign an icon / get a pic to customize iconbar
-* allow using community translations
+* essential
+  * let users select their own armies
+  * provide help on keywords
+  * WarFleets support
+  * support more than 2 armies
+  * allow using community translations
+* QoL
+  * move game name to AppBar, consistency check accross armies
+  * order units, grouping identical ones
+  * ensure important list-level info is displayed, and not hidden by
+    the drawer
+  * extract meaningful army-level info for permanent display (aura
+    available from units, (optionally) spells, ...)
+  * see how we can determine which characteristic of displayed unit is
+    particularly useful to highlight to avoid forgetting, taking the
+    selected opponent unit into account (similarly, which ones we can
+    dim because they're not useful, like "Hero" in GFF when no other
+    friendly unit has a lower quality)
+  * add some stats to unit state (damage, mana, activated, exhausted...)
+    and a way to change them
+  * keep history of stat changes (to help check about forgotten stuff,
+    and help battle reports)
+  * proximity communication to share stats update
+  * quick switch of selection (for small lists) by e.g. swiping the
+    drawer up/down
+  * quick switch of selection for larger lists, by using e.g. an iconbar
+    to jump to given unit type (use eg. unit acronyms for a first step)
+  * assign an icon / get a pic to customize iconbar
 
 
 ## About this application
