@@ -158,7 +158,7 @@ fn DetailsDrawer(side: ltn::DrawerSide,
     // FIXME: this is a workaround of derived signal not being accepted
     let (shown, set_shown) = create_signal(false);
     create_effect(move |_| {
-        set_shown.set(! unit_selection.with(|sel| sel.is_none()));
+        set_shown.set(unit_selection.with(Option::is_some));
     });
 
     view! {
