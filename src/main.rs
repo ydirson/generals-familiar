@@ -154,8 +154,8 @@ fn DetailsDrawer(side: ltn::DrawerSide,
         ltn::DrawerSide::Right => "right",
     };
 
-    //let shown = move || ! unit_selection.with(|sel| sel.is_none());
-    // FIXME: this is a workaround of derived signal not being accepted
+    // the `shown` status can be changed by eg. selecting in the army
+    // list, or using close button in the drawer itself
     let (shown, set_shown) = create_signal(false);
     create_effect(move |_| {
         set_shown.set(unit_selection.with(Option::is_some));
