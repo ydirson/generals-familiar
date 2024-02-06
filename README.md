@@ -39,7 +39,7 @@ browser to access it - if you choose to build it yourself, just run
   * [x] allow closing Drawers
   * [ ] selected unit should be highlighted in list
   * [ ] better column-width usage in weapons list
-  * [ ] add some transparency to drawers
+  * [x] add some transparency to drawers
 * plumbing
   * [ ] flags for WASM size reduction
   * [ ] hunt for any unused features in deps
