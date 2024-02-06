@@ -53,4 +53,13 @@ leptonic-drawer.army_details leptonic-table {
     background-color: color-mix(in srgb,
                                 var(--table-background-color),
                                 rgb(100% 100%  100% / 20%));
+    leptonic-table-cell {
+        text-align: center;
+        padding: 0.75em 0.3em;
+    }
+    // FIXME use more explicit qualifier than child number
+    leptonic-table-cell:nth-child(2),
+    leptonic-table-cell:nth-child(3) {
+        width: 2em;
+    }
 }

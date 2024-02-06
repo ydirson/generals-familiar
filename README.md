@@ -41,7 +41,7 @@ browser to access it - if you choose to build it yourself, just run
   * [ ] allow changing font size?
   * [x] allow closing Drawers
   * [ ] selected unit should be highlighted in list
-  * [ ] better column-width usage in weapons list
+  * [x] better column-width usage in weapons list
   * [x] add some transparency to drawers
 * essential
   * let users select their own armies from a UI
