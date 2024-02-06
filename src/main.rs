@@ -165,18 +165,40 @@ fn DetailsDrawer(side: ltn::DrawerSide,
     view! {
         <ltn::Drawer side style shown>
             <Show when={move || shown.get()}>
-                <UnitDetails unit=unit_selection.get().unwrap() />
+                <UnitDetails side set_shown unit=unit_selection.get().unwrap() />
             </Show>
         </ltn::Drawer>
     }
 }
 
 #[component]
-fn UnitDetails(unit: Rc<opr::Unit>) -> impl IntoView {
+fn UnitDetails(unit: Rc<opr::Unit>,
+               side: ltn::DrawerSide,
+               set_shown: WriteSignal<bool>) -> impl IntoView
+{
     let unit_name = unit.formatted_name();
     let opr::Unit{quality, defense, ref loadout, ref special_rules, ..} = *unit;
+    let (left_button, right_button) = match side {
+        ltn::DrawerSide::Left => (
+            Some(view!{ <ltn::Button on_click=move |_| set_shown.set(false)> "<" </ltn::Button> }),
+            None),
+        ltn::DrawerSide::Right => (
+            None,
+            Some( view!{ <ltn::Button on_click=move |_| set_shown.set(false)> ">" </ltn::Button> })),
+    };
     view! {
-        <h3>{format!("{unit_name}: Q{quality} D{defense}")}</h3>
+        <h3>
+            <ltn::Stack orientation=ltn::StackOrientation::Horizontal
+                        style="width: 100%; justify-content: space-between;"
+                        spacing=ltn::Size::Em(0.0)>
+                <ltn::Stack orientation=ltn::StackOrientation::Horizontal
+                            spacing=ltn::Size::Em(1.0)>
+                    {left_button}
+                    {format!("{unit_name}: Q{quality} D{defense}")}
+                </ltn::Stack>
+                {right_button}
+            </ltn::Stack>
+        </h3>
         <p><SpecialRulesList special_rules={special_rules.clone()} /></p>
         <p><UnitUpgradesList loadout_list={loadout.clone()} /></p>
         <EquipmentList loadout_list={loadout.clone()} />

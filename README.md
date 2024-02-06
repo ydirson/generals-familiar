@@ -36,7 +36,7 @@ browser to access it - if you choose to build it yourself, just run
         in Dark Mode
   * [x] too much vertical space used in Drawers
   * [ ] allow changing font size?
-  * [ ] allow closing Drawers
+  * [x] allow closing Drawers
   * [ ] selected unit should be highlighted in list
   * [ ] better column-width usage in weapons list
   * [ ] add some transparency to drawers
