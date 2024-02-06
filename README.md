@@ -39,6 +39,7 @@ browser to access it - if you choose to build it yourself, just run
   * [ ] allow closing Drawers
   * [ ] selected unit should be highlighted in list
   * [ ] better column-width usage in weapons list
+  * [ ] add some transparency to drawers
 * plumbing
   * [ ] flags for WASM size reduction
   * [ ] hunt for any unused features in deps
@@ -67,6 +68,7 @@ browser to access it - if you choose to build it yourself, just run
 * quick switch of selection for larger lists, by using e.g. an iconbar
   to jump to given unit type (use eg. unit acronyms for a first step)
 * assign an icon / get a pic to customize iconbar
+* allow using community translations
 
 
 ## About this application
