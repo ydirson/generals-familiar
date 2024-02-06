@@ -149,11 +149,10 @@ fn UnitsList(units: Vec<Rc<opr::Unit>>,
 #[component]
 fn DetailsDrawer(side: ltn::DrawerSide,
                  unit_selection: ReadSignal<Option<Rc<opr::Unit>>>) -> impl IntoView {
-    let pos_style = match side {
-        ltn::DrawerSide::Left => "left: 0",
-        ltn::DrawerSide::Right => "right: 0",
+    let pos_class = match side {
+        ltn::DrawerSide::Left => "left",
+        ltn::DrawerSide::Right => "right",
     };
-    let style = format!("overflow: scroll; padding: 0.5em; position: fixed; top: var(--app-bar-height); {pos_style}; background-color: var(--brand-color); border: 1px solid gray; width: 40%");
 
     //let shown = move || ! unit_selection.with(|sel| sel.is_none());
     // FIXME: this is a workaround of derived signal not being accepted
@@ -163,7 +162,7 @@ fn DetailsDrawer(side: ltn::DrawerSide,
     });
 
     view! {
-        <ltn::Drawer side style shown>
+        <ltn::Drawer side shown class={format!("army_details {pos_class}")}>
             <Show when={move || shown.get()}>
                 <UnitDetails side set_shown unit=unit_selection.get().unwrap() />
             </Show>

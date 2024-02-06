@@ -30,3 +30,19 @@ leptonic-app-bar {
     color: white;
     padding: 0 1em;
 }
+
+leptonic-drawer.army_details {
+    overflow: scroll;
+    padding: 0.5em;
+    position: fixed;
+    top: var(--app-bar-height);
+    background-color: var(--brand-color);
+    border: 1px solid gray;
+    width: 40%;
+}
+leptonic-drawer.right {
+    right: 0;
+}
+leptonic-drawer.left {
+    left: 0;
+}
