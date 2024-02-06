@@ -179,11 +179,15 @@ fn UnitDetails(unit: Rc<opr::Unit>,
     let opr::Unit{quality, defense, ref loadout, ref special_rules, ..} = *unit;
     let (left_button, right_button) = match side {
         ltn::DrawerSide::Left => (
-            Some(view!{ <ltn::Button on_click=move |_| set_shown.set(false)> "<" </ltn::Button> }),
+            Some(view!{ <ltn::Button
+                             color=ltn::ButtonColor::Secondary
+                             on_click=move |_| set_shown.set(false)> "<" </ltn::Button> }),
             None),
         ltn::DrawerSide::Right => (
             None,
-            Some( view!{ <ltn::Button on_click=move |_| set_shown.set(false)> ">" </ltn::Button> })),
+            Some( view!{ <ltn::Button
+                              color=ltn::ButtonColor::Secondary
+                              on_click=move |_| set_shown.set(false)> ">" </ltn::Button> })),
     };
     view! {
         <h3>
