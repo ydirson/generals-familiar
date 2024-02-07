@@ -64,9 +64,9 @@ fn App() -> impl IntoView {
 }
 
 #[component]
-pub fn ArmyList(player_name: String,
-                army_id: ReadSignal<String>,
-                select_unit: WriteSignal<Option<Rc<opr::Unit>>>,
+fn ArmyList(player_name: String,
+            army_id: ReadSignal<String>,
+            select_unit: WriteSignal<Option<Rc<opr::Unit>>>,
 ) -> impl IntoView {
     let army_data = create_resource(
         move || army_id.get(),
