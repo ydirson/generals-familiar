@@ -1,6 +1,8 @@
 use gloo_net::http::Request;
 use leptonic::prelude as ltn;
+use leptonic::prelude::AlertContent;
 use leptos::*;
+use leptos_router as ltr;
 use std::rc::Rc;
 
 const APP_NAME: &str = "General's Familiar";
@@ -48,7 +50,13 @@ fn AppBoilerplate() -> impl IntoView {
     view! {
         <ltn::Root default_theme=ltn::LeptonicTheme::default()>
             <ltn::Box style="min-height: 100vh;">
-                <App/>
+                <ltr::Router fallback=|| view! {
+                    <ltn::Alert variant=ltn::AlertVariant::Danger>
+                        <AlertContent slot>"Bad URL (route not matched)"</AlertContent>
+                    </ltn::Alert>
+                }.into_view() >
+                    <App/>
+                </ltr::Router>
             </ltn::Box>
         </ltn::Root>
     }
@@ -59,13 +67,24 @@ fn AppBoilerplate() -> impl IntoView {
 fn App() -> impl IntoView {
     let (army_id0, set_army_id0) = create_signal(ARMY_IDS[0].to_string());
     let (army_id1, set_army_id1) = create_signal(ARMY_IDS[1].to_string());
-    let (unitsel0, set_unitsel0) = create_signal(None::<Rc<opr::Unit>>);
-    let (unitsel1, set_unitsel1) = create_signal(None::<Rc<opr::Unit>>);
     view! {
         <ltn::AppBar>
             <h1>{APP_NAME}</h1>
             <ltn::ThemeToggle off=ltn::LeptonicTheme::Light on=ltn::LeptonicTheme::Dark/>
         </ltn::AppBar>
+        <ArmiesView army_id0 army_id1 />
+    }
+}
+
+/// the main view, showing multiple armies and providing detail
+/// drawers for selections
+#[component]
+fn ArmiesView(army_id0: ReadSignal<String>,
+              army_id1: ReadSignal<String>,
+) -> impl IntoView {
+    let (unitsel0, set_unitsel0) = create_signal(None::<Rc<opr::Unit>>);
+    let (unitsel1, set_unitsel1) = create_signal(None::<Rc<opr::Unit>>);
+    view! {
         <DetailsDrawer side=ltn::DrawerSide::Left unit_selection=unitsel0 />
         <ltn::Stack orientation=ltn::StackOrientation::Horizontal
                spacing=ltn::Size::Em(1.0)

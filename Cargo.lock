@@ -433,6 +433,7 @@ dependencies = [
  "gloo-net 0.5.0",
  "leptonic",
  "leptos",
+ "leptos_router",
  "opr",
  "web-sys",
 ]
