@@ -16,7 +16,7 @@ rev = "5ad81d96d8e28fa9e4840041f2a810b9b78a2fe2"
 #path = "../opr-rs"
 
 [features]
-panic_hook = ["dep:console_error_panic_hook"]
+dev = ["dep:console_error_panic_hook"]
 
 [package.metadata.leptonic]
 style-dir = "style"

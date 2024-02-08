@@ -90,9 +90,14 @@ makes it really easy to prototype things.
 
 ## Building locally / developping
 
-The easiest for development is to launch `trunk serve` in a terminal,
-it will rebuild the project as you save files and trigger a browser
-reload.
+The easiest for development is to launch in a terminal:
+```
+trunk serve --features dev
+```
+
+It will rebuild the project as you save files and trigger a browser
+reload.  The `dev` feature will provide usable strack traces when the
+app goes `panic!()`.
 
 `trunk serve` and flexible deployment of the build result however
 conflict on one point: flexible deployment pushes for using relative
