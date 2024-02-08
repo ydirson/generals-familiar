@@ -12,6 +12,13 @@ const ARMY_IDS: [&str; 2] = [
     "p2KIbSBOYpSB",
 ];
 
+// `println!(..)`-style syntax for debugging in browser console
+macro_rules! log {
+    ( $( $t:tt )* ) => {
+        web_sys::console::log_1(&format!( $( $t )* ).into());
+    }
+}
+
 fn main() {
     #[cfg(feature = "panic_hook")]
     console_error_panic_hook::set_once();

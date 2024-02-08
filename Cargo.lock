@@ -434,6 +434,7 @@ dependencies = [
  "leptonic",
  "leptos",
  "opr",
+ "web-sys",
 ]
 
 [[package]]
