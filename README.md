@@ -25,6 +25,14 @@ browser to access it - if you choose to build it yourself, just run
 * download two army lists from [the One Page Rules Army
   Forge](https://army-forge.onepagerules.com/)
 * display face to face the details of the selected unit from each army
+* specify armies to load using their ID (extracted from "share as
+  link" in Army Forge).  Some examples:
+  * [*Grimdark Future* Robots Legion vs. Prime
+  Brothers](https://ydirson.github.io/generals-familiar/master/?armies=Mlwpoh1AGLC2,p2KIbSBOYpSB)
+  * [*Age of Fantasy - Skirmish* War Disciples vs. Eternal
+    Wardens](https://ydirson.github.io/generals-familiar/master/?armies=zhz5uajqHdt5,ZTgIvcYABynP)
+* navigating to the app without army lists will load two hardcoded
+  ones for demo purposes
 
 ### Plans and ideas for the future
 
@@ -40,19 +48,18 @@ browser to access it - if you choose to build it yourself, just run
   * [ ] selected unit should be highlighted in list
   * [ ] better column-width usage in weapons list
   * [x] add some transparency to drawers
-* plumbing
-  * [ ] flags for WASM size reduction
-  * [ ] hunt for any unused features in deps
 * essential
-  * let users select their own armies
+  * let users select their own armies from a UI
   * provide help on keywords
   * support more than 2 armies
   * allow using community translations
 * robustness
   * show proper errors when:
     * downloading an army list fails
+    * less than one army specified
 * QoL
   * provide a menu with a few links (project's github, AF)
+  * let users directly paste the full URL provided by "share as link"
   * move game name to AppBar, consistency check accross armies
   * order units, grouping identical ones
   * ensure important list-level info is displayed, and not hidden by
@@ -76,7 +83,10 @@ browser to access it - if you choose to build it yourself, just run
   * assign an icon / get a pic to customize iconbar
 * later
   * WarFleets support (needs an API endpoint)
-
+* plumbing
+  * flags for WASM size reduction
+  * hunt for any unused features in deps
+  * maybe use something lighter than `leptos_router` to get the query string
 
 ## About this application
 

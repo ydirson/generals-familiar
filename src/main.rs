@@ -3,16 +3,16 @@ use leptonic::prelude as ltn;
 use leptonic::prelude::AlertContent;
 use leptos::*;
 use leptos_router as ltr;
+use leptos_router::Params; // derive(ltr::Params) won't work ?!
 use std::rc::Rc;
 
 const APP_NAME: &str = "General's Familiar";
 const PLAYER_NAMES: [&str; 2] = ["Player 1", "Player 2"];
-const ARMY_IDS: [&str; 2] = [
-//    "nLBrzTpB1TTJ",
-//    "ybjR2-7kHUNY",
-    "Mlwpoh1AGLC2",
-    "p2KIbSBOYpSB",
-];
+// meh
+const ARMY_IDS: &str =
+//    "nLBrzTpB1TTJ,ybjR2-7kHUNY"
+    "Mlwpoh1AGLC2,p2KIbSBOYpSB"
+    ;
 
 // `println!(..)`-style syntax for debugging in browser console
 macro_rules! log {
@@ -62,11 +62,28 @@ fn AppBoilerplate() -> impl IntoView {
     }
 }
 
+#[derive(Params,PartialEq)]
+struct UrlQuery {
+    armies: Option<String>,
+}
+
 /// the main application component
 #[component]
 fn App() -> impl IntoView {
-    let (army_id0, set_army_id0) = create_signal(ARMY_IDS[0].to_string());
-    let (army_id1, set_army_id1) = create_signal(ARMY_IDS[1].to_string());
+    let query = ltr::use_query::<UrlQuery>();
+    let army_ids = move || {
+        query.with(|params| { params.as_ref()
+                              .map(|params| params.armies.clone())
+                              .unwrap_or(Some(ARMY_IDS.to_string())) // handles Err
+                              .unwrap_or(ARMY_IDS.to_string()) // handles None
+                              .split(",")
+                              .map(|s| s.to_string())
+                              .collect::<Vec<String>>()
+        })
+    };
+    // FIXME try keep this as Signal<&str>
+    let army_id0 = Signal::derive(move || army_ids()[0].clone());
+    let army_id1 = Signal::derive(move || army_ids()[1].clone());
     view! {
         <ltn::AppBar>
             <h1>{APP_NAME}</h1>
@@ -79,8 +96,8 @@ fn App() -> impl IntoView {
 /// the main view, showing multiple armies and providing detail
 /// drawers for selections
 #[component]
-fn ArmiesView(army_id0: ReadSignal<String>,
-              army_id1: ReadSignal<String>,
+fn ArmiesView(army_id0: Signal<String>,
+              army_id1: Signal<String>,
 ) -> impl IntoView {
     let (unitsel0, set_unitsel0) = create_signal(None::<Rc<opr::Unit>>);
     let (unitsel1, set_unitsel1) = create_signal(None::<Rc<opr::Unit>>);
@@ -104,7 +121,7 @@ fn ArmiesView(army_id0: ReadSignal<String>,
 
 #[component]
 fn ArmyList(player_name: String,
-            army_id: ReadSignal<String>,
+            army_id: Signal<String>,
             select_unit: WriteSignal<Option<Rc<opr::Unit>>>,
 ) -> impl IntoView {
     let army_data = create_resource(
