@@ -13,6 +13,9 @@ const ARMY_IDS: [&str; 2] = [
 ];
 
 fn main() {
+    #[cfg(feature = "panic_hook")]
+    console_error_panic_hook::set_once();
+
     set_app_name(APP_NAME);
     mount_to_body(|| view! { <App/> })
 }
