@@ -26,7 +26,7 @@ browser to access it - if you choose to build it yourself, just run
   Forge](https://army-forge.onepagerules.com/)
 * display face to face the details of the selected unit from each army
 
-### Ideas for the future
+### Plans and ideas for the future
 
 * fix basic UI issues
   * [x] unit-details Drawers should be positionned relative to
@@ -46,10 +46,13 @@ browser to access it - if you choose to build it yourself, just run
 * essential
   * let users select their own armies
   * provide help on keywords
-  * WarFleets support
   * support more than 2 armies
   * allow using community translations
+* robustness
+  * show proper errors when:
+    * downloading an army list fails
 * QoL
+  * provide a menu with a few links (project's github, AF)
   * move game name to AppBar, consistency check accross armies
   * order units, grouping identical ones
   * ensure important list-level info is displayed, and not hidden by
@@ -71,6 +74,8 @@ browser to access it - if you choose to build it yourself, just run
   * quick switch of selection for larger lists, by using e.g. an iconbar
     to jump to given unit type (use eg. unit acronyms for a first step)
   * assign an icon / get a pic to customize iconbar
+* later
+  * WarFleets support (needs an API endpoint)
 
 
 ## About this application
