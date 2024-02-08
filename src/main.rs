@@ -8,11 +8,6 @@ use std::rc::Rc;
 
 const APP_NAME: &str = "General's Familiar";
 const PLAYER_NAMES: [&str; 2] = ["Player 1", "Player 2"];
-// meh
-const ARMY_IDS: &str =
-//    "nLBrzTpB1TTJ,ybjR2-7kHUNY"
-    "Mlwpoh1AGLC2,p2KIbSBOYpSB"
-    ;
 
 // `println!(..)`-style syntax for debugging in browser console
 macro_rules! log {
@@ -72,26 +67,66 @@ struct UrlQuery {
 fn App() -> impl IntoView {
     let query = ltr::use_query::<UrlQuery>();
     let army_ids = move || {
-        query.with(|params| { params.as_ref()
-                              .map(|params| params.armies.clone())
-                              .unwrap_or(Some(ARMY_IDS.to_string())) // handles Err
-                              .unwrap_or(ARMY_IDS.to_string()) // handles None
-                              .split(",")
-                              .map(|s| s.to_string())
-                              .collect::<Vec<String>>()
+        query.with(|params| {
+            match params.as_ref().map(|params| params.armies.clone()) {
+                Ok(None) => Ok(None),
+                Err(err) => Err(err.to_string()),
+                Ok(Some(armies_string)) => {
+                    let v = armies_string
+                        .split(",")
+                        .map(|s| s.to_string())
+                        .collect::<Vec<String>>();
+                    if v.len() >= 2 {Ok(Some(v))} else {Err("not enough armies".to_string())}
+                },
+            }
         })
     };
-    // FIXME try keep this as Signal<&str>
-    let army_id0 = Signal::derive(move || army_ids()[0].clone());
-    let army_id1 = Signal::derive(move || army_ids()[1].clone());
+    // army_id's are only read if OK(Some(Vec of length 2)), unwrap() is safe.
+    let army_id0 = Signal::derive(move || army_ids().unwrap().unwrap()[0].clone());
+    let army_id1 = Signal::derive(move || army_ids().unwrap().unwrap()[1].clone());
     view! {
         <ltn::AppBar>
             <h1>{APP_NAME}</h1>
             <ltn::ThemeToggle off=ltn::LeptonicTheme::Light on=ltn::LeptonicTheme::Dark/>
         </ltn::AppBar>
         <ltn::Box style="padding: 0 1em 1em 1em;">
-            <ArmiesView army_id0 army_id1 />
+            <Show when=move || { army_ids().is_ok() }
+                  fallback=move || view! { <SelectView message=army_ids().err().unwrap() /> } >
+                <Show when=move || { army_ids().unwrap().is_some() }
+                      fallback=|| view! { <SelectView message="no army selected".to_string() /> } >
+                     <ArmiesView army_id0 army_id1 />
+                </Show>
+            </Show>
         </ltn::Box>
+    }
+}
+
+#[component]
+fn SelectView(message: String) -> impl IntoView {
+    view! {
+        <ltn::Alert variant=ltn::AlertVariant::Info>
+            <AlertContent slot>{message}</AlertContent>
+        </ltn::Alert>
+
+        <h3> "Sample matchups" </h3>
+        <ltn::TableContainer>
+            <ltn::Table bordered=true hoverable=true>
+                <ltn::TableBody>
+                    <ltn::TableRow>
+                        <ltn::TableCell><a href="./?armies=Mlwpoh1AGLC2,p2KIbSBOYpSB">
+                            <em>"Grimdark Future"</em>
+                            " — Robots Legion vs. Prime Brothers"
+                        </a></ltn::TableCell>
+                    </ltn::TableRow>
+                    <ltn::TableRow>
+                        <ltn::TableCell><a href="./?armies=zhz5uajqHdt5,ZTgIvcYABynP">
+                            <em>"Age of Fantasy – Skirmish"</em>
+                            " — War Disciples vs. Eternal Wardens"
+                        </a></ltn::TableCell>
+                    </ltn::TableRow>
+                </ltn::TableBody>
+            </ltn::Table>
+        </ltn::TableContainer>
     }
 }
 
