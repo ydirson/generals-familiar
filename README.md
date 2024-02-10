@@ -113,3 +113,11 @@ that](https://github.com/trunk-rs/trunk/issues/697).
 If you need this flexible deployment (as is done in the project's
 GitHub CI), you will need to build the project using `trunk build
 --public-url ./`.
+
+Also note that `trunk serve` adds some additional javascript to the
+generated `dist/index.html`, useful while developping (to trigger
+immediate reload on build success and a "build error" overlay when
+that kind of things happen).  You definitely don't want to deploy this
+code, which will periodically retry to open a websocket to trunk for
+this usage, so don't forget to use a final `trunk build` for this
+purpose.
