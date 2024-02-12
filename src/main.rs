@@ -269,7 +269,7 @@ fn UnitDetails(unit: Rc<opr::Unit>,
                set_shown: WriteSignal<bool>) -> impl IntoView
 {
     let unit_name = unit.formatted_name();
-    let opr::Unit{quality, defense, ref loadout, ref special_rules, ..} = *unit;
+    let opr::Unit{quality, defense, cost, ref loadout, ref special_rules, ..} = *unit;
     let close_button = |glyph|
         view!{ <ltn::Button color=ltn::ButtonColor::Secondary
                             on_click=move |_| set_shown.set(false)> {glyph} </ltn::Button> };
@@ -288,7 +288,11 @@ fn UnitDetails(unit: Rc<opr::Unit>,
                     {left_button}
                     {format!("{unit_name}: Q{quality} D{defense}")}
                 </ltn::Stack>
-                {right_button}
+                <ltn::Stack orientation=ltn::StackOrientation::Horizontal
+                            spacing=ltn::Size::Em(1.0)>
+                    {format!("{cost} pts")}
+                    {right_button}
+                </ltn::Stack>
             </ltn::Stack>
         </h3>
         <p><SpecialRulesList special_rules={special_rules.clone()} /></p>
