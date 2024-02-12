@@ -89,7 +89,9 @@ fn App() -> impl IntoView {
             <h1>{APP_NAME}</h1>
             <ltn::ThemeToggle off=ltn::LeptonicTheme::Light on=ltn::LeptonicTheme::Dark/>
         </ltn::AppBar>
-        <ArmiesView army_id0 army_id1 />
+        <ltn::Box style="padding: 0 1em 1em 1em;">
+            <ArmiesView army_id0 army_id1 />
+        </ltn::Box>
     }
 }
 
@@ -105,7 +107,7 @@ fn ArmiesView(army_id0: Signal<String>,
         <DetailsDrawer side=ltn::DrawerSide::Left unit_selection=unitsel0 />
         <ltn::Stack orientation=ltn::StackOrientation::Horizontal
                spacing=ltn::Size::Em(1.0)
-               style="margin-right: 1em; align-items: flex-start;">
+               style="align-items: flex-start;">
             <ArmyList army_id=army_id0
                       player_name=PLAYER_NAMES[0].to_string()
                       select_unit=set_unitsel0
