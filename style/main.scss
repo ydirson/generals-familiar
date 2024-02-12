@@ -38,7 +38,7 @@ leptonic-drawer.army_details {
     top: var(--app-bar-height);
     background-color: color-mix(in srgb,
                                 var(--drawer-background-color),
-                                rgb(100% 100%  100% / 50%));
+                                rgb(100% 100%  100% / 80%));
     border: 1px solid gray;
     width: 40%;
 }
@@ -52,5 +52,5 @@ leptonic-drawer.left {
 leptonic-drawer.army_details leptonic-table {
     background-color: color-mix(in srgb,
                                 var(--table-background-color),
-                                rgb(100% 100%  100% / 50%));
+                                rgb(100% 100%  100% / 20%));
 }
