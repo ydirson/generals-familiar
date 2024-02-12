@@ -270,18 +270,14 @@ fn UnitDetails(unit: Rc<opr::Unit>,
 {
     let unit_name = unit.formatted_name();
     let opr::Unit{quality, defense, ref loadout, ref special_rules, ..} = *unit;
+    let close_button = |glyph|
+        view!{ <ltn::Button color=ltn::ButtonColor::Secondary
+                            on_click=move |_| set_shown.set(false)> {glyph} </ltn::Button> };
     let (left_button, right_button) = match side {
-        ltn::DrawerSide::Left => (
-            Some(view!{ <ltn::Button
-                             color=ltn::ButtonColor::Secondary
-                             on_click=move |_| set_shown.set(false)> "<" </ltn::Button> }),
-            None),
-        ltn::DrawerSide::Right => (
-            None,
-            Some( view!{ <ltn::Button
-                              color=ltn::ButtonColor::Secondary
-                              on_click=move |_| set_shown.set(false)> ">" </ltn::Button> })),
+        ltn::DrawerSide::Left  => ( Some(close_button("<")), None ),
+        ltn::DrawerSide::Right => ( None, Some(close_button(">")) ),
     };
+
     view! {
         <h3>
             <ltn::Stack orientation=ltn::StackOrientation::Horizontal
