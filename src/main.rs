@@ -24,6 +24,19 @@ fn main() {
     mount_to_body(|| view! { <AppBoilerplate/> })
 }
 
+struct Army {
+    unit_selection: ReadSignal<Option<Rc<opr::Unit>>>,
+    set_unit_selection: WriteSignal<Option<Rc<opr::Unit>>>,
+}
+
+impl Army {
+    fn new() -> Army
+    {
+        let (unit_selection, set_unit_selection) = create_signal(None::<Rc<opr::Unit>>);
+        Army{unit_selection, set_unit_selection}
+    }
+}
+
 fn set_app_name(app_name: &str) {
     let doc = web_sys::window()
         .expect("should have a window")
@@ -136,23 +149,25 @@ fn SelectView(message: String) -> impl IntoView {
 fn ArmiesView(army_id0: Signal<String>,
               army_id1: Signal<String>,
 ) -> impl IntoView {
-    let (unitsel0, set_unitsel0) = create_signal(None::<Rc<opr::Unit>>);
-    let (unitsel1, set_unitsel1) = create_signal(None::<Rc<opr::Unit>>);
+    let army0 = Army::new();
+    let army1 = Army::new();
     view! {
-        <DetailsDrawer side=ltn::DrawerSide::Left unit_selection=unitsel0 />
+        <DetailsDrawer side=ltn::DrawerSide::Left
+                       unit_selection=army0.unit_selection />
         <ltn::Stack orientation=ltn::StackOrientation::Horizontal
                spacing=ltn::Size::Em(1.0)
                style="align-items: flex-start;">
             <ArmyList army_id=army_id0
                       player_name=PLAYER_NAMES[0].to_string()
-                      select_unit=set_unitsel0
+                      select_unit=army0.set_unit_selection
             />
             <ArmyList army_id=army_id1
                       player_name=PLAYER_NAMES[1].to_string()
-                      select_unit=set_unitsel1
+                      select_unit=army1.set_unit_selection
             />
         </ltn::Stack>
-        <DetailsDrawer side=ltn::DrawerSide::Right unit_selection=unitsel1 />
+        <DetailsDrawer side=ltn::DrawerSide::Right
+                       unit_selection=army1.unit_selection />
     }
 }
 
