@@ -186,8 +186,8 @@ fn ArmyList(player_name: String,
             {move || army_data.with(
                 |army_data| match army_data {
                     None => view! { "Loading..." }.into_view(),
-                    Some(army) => {
-                        let opr::Army{ref game_system, ref name, ..} = **army;
+                    Some(army_data) => {
+                        let opr::Army{ref game_system, ref name, ..} = **army_data;
                         view! {
                             {game_system.to_uppercase()}
                             " - "
@@ -200,8 +200,8 @@ fn ArmyList(player_name: String,
             {move || army_data.with(
                 |army_data| match army_data {
                     None => ().into_view(),
-                    Some(army) => {
-                        let opr::Army{ref units, ..} = **army;
+                    Some(army_data) => {
+                        let opr::Army{ref units, ..} = **army_data;
                         view! {
                             <UnitsList units={units.clone()} select_unit />
                         }
