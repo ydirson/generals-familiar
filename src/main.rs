@@ -17,7 +17,7 @@ macro_rules! log {
 }
 
 fn main() {
-    #[cfg(feature = "panic_hook")]
+    #[cfg(feature = "dev")]
     console_error_panic_hook::set_once();
 
     set_app_name(APP_NAME);
