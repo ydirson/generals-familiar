@@ -31,21 +31,10 @@ browser to access it - if you choose to build it yourself, just run
 
 ### Plans and ideas for the future
 
-* fix basic UI issues
-  * [x] unit-details Drawers should be positionned relative to
-        screen/viewport not page
-  * [x] set app title from Rust
-  * [x] window space outside app not covered by stylesheet, looks bad
-        in Dark Mode
-  * [x] too much vertical space used in Drawers
-  * [ ] allow changing font size?
-  * [x] allow closing Drawers
-  * [x] selected unit should be highlighted in list
-  * [x] better column-width usage in weapons list
-  * [x] add some transparency to drawers
 * essential
   * let users select their own armies from a UI
   * provide help on keywords
+  * support combined/joined units
   * support more than 2 armies
   * allow using community translations
 * robustness
@@ -53,7 +42,7 @@ browser to access it - if you choose to build it yourself, just run
     * downloading an army list fails
     * less than one army specified
 * QoL
-  * provide a menu with a few links (project's github, AF)
+  * provide a menu with a few links (project's github, AF, rules)
   * let users directly paste the full URL provided by "share as link"
   * move game name to AppBar, consistency check accross armies
   * order units, grouping identical ones
@@ -66,16 +55,20 @@ browser to access it - if you choose to build it yourself, just run
     selected opponent unit into account (similarly, which ones we can
     dim because they're not useful, like "Hero" in GFF when no other
     friendly unit has a lower quality)
+  * allow adding visual for each unit type and/or unit, to ease their
+    fig identification (essential for opponent army)
   * add some stats to unit state (damage, mana, activated, exhausted...)
     and a way to change them
   * keep history of stat changes (to help check about forgotten stuff,
     and help battle reports)
-  * proximity communication to share stats update
+  * proximity communication to share stats update, armies
   * quick switch of selection (for small lists) by e.g. swiping the
     drawer up/down
   * quick switch of selection for larger lists, by using e.g. an iconbar
     to jump to given unit type (use eg. unit acronyms for a first step)
   * assign an icon / get a pic to customize iconbar
+  * some access to the rules for reference
+  * allow some UI customization (font size...)
 * later
   * WarFleets support (needs an API endpoint)
 * plumbing
