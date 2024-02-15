@@ -27,13 +27,17 @@ fn main() {
 struct Army {
     unit_selection: ReadSignal<Option<Rc<opr::Unit>>>,
     set_unit_selection: WriteSignal<Option<Rc<opr::Unit>>>,
+    army_data: Resource<String, Rc<opr::Army>>,
 }
 
 impl Army {
-    fn new() -> Army
+    fn new(army_id: Signal<String>) -> Army
     {
         let (unit_selection, set_unit_selection) = create_signal(None::<Rc<opr::Unit>>);
-        Army{unit_selection, set_unit_selection}
+        let army_data = create_resource(
+            move || army_id.get(),
+            |army_id_value| async move { load_data(&army_id_value).await });
+        Army{unit_selection, set_unit_selection, army_data}
     }
 }
 
@@ -149,41 +153,34 @@ fn SelectView(message: String) -> impl IntoView {
 fn ArmiesView(army_id0: Signal<String>,
               army_id1: Signal<String>,
 ) -> impl IntoView {
-    let army0 = Army::new();
-    let army1 = Army::new();
+    let army0 = Army::new(army_id0);
+    let army1 = Army::new(army_id1);
     view! {
         <DetailsDrawer side=ltn::DrawerSide::Left
                        unit_selection=army0.unit_selection />
+        <DetailsDrawer side=ltn::DrawerSide::Right
+                       unit_selection=army1.unit_selection />
         <ltn::Stack orientation=ltn::StackOrientation::Horizontal
                spacing=ltn::Size::Em(1.0)
                style="align-items: flex-start;">
-            <ArmyList army_id=army_id0
+            <ArmyList army=army0
                       player_name=PLAYER_NAMES[0].to_string()
-                      select_unit=army0.set_unit_selection
             />
-            <ArmyList army_id=army_id1
+            <ArmyList army=army1
                       player_name=PLAYER_NAMES[1].to_string()
-                      select_unit=army1.set_unit_selection
             />
         </ltn::Stack>
-        <DetailsDrawer side=ltn::DrawerSide::Right
-                       unit_selection=army1.unit_selection />
     }
 }
 
 #[component]
 fn ArmyList(player_name: String,
-            army_id: Signal<String>,
-            select_unit: WriteSignal<Option<Rc<opr::Unit>>>,
+            army: Army,
 ) -> impl IntoView {
-    let army_data = create_resource(
-        move || army_id.get(),
-        |army_id_value| async move { load_data(&army_id_value).await });
-
     view! {
         <ltn::Stack spacing=ltn::Size::Em(0.5)>
             <h2>{player_name} " - "
-            {move || army_data.with(
+            {move || army.army_data.with(
                 |army_data| match army_data {
                     None => view! { "Loading..." }.into_view(),
                     Some(army_data) => {
@@ -197,13 +194,14 @@ fn ArmyList(player_name: String,
                 }
             )}
             </h2>
-            {move || army_data.with(
+            {move || army.army_data.with(
                 |army_data| match army_data {
                     None => ().into_view(),
                     Some(army_data) => {
                         let opr::Army{ref units, ..} = **army_data;
                         view! {
-                            <UnitsList units={units.clone()} select_unit />
+                            <UnitsList units={units.clone()}
+                                       select_unit=army.set_unit_selection />
                         }
                     }.into_view()
                 }
