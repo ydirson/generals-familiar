@@ -388,16 +388,21 @@ fn EquipmentItem(loadout: Rc<opr::UnitLoadout>) -> impl IntoView {
 #[component]
 fn SpecialRulesList(special_rules: Vec<Rc<opr::SpecialRule>>) -> impl IntoView {
     special_rules.iter()
-        // render each rule
-        .map(|special_rule| {
+    // render each rule
+        .enumerate()
+        .map(|(i, special_rule)| {
+            let separator = if i == 0 { "" } else { ", " };
             let rating = match special_rule.rating.as_str() {
                 "" => { "".to_string() },
                 rating => { format!("({})", rating) },
             };
             view! {
-                {format!("{name}{rating}", name=special_rule.name, rating=rating)}
+                {separator}
+                <special-rule>
+                    {special_rule.name.clone()}
+                </special-rule>
+                {rating}
             }
         })
-        .collect::<Vec<String>>()
-        .join(", ")
+        .collect_view()
 }
