@@ -442,6 +442,7 @@ dependencies = [
  "leptos_macro",
  "leptos_router",
  "opr",
+ "serde",
  "web-sys",
 ]
 

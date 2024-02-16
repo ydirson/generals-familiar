@@ -36,7 +36,10 @@ impl Army {
         let (unit_selection, set_unit_selection) = create_signal(None::<Rc<opr::Unit>>);
         let army_data = create_resource(
             move || army_id.get(),
-            |army_id_value| async move { load_data(&army_id_value).await });
+            |army_id_value| {
+                let url = format!("{}?id={army_id_value}", opr::GET_ARMY_BASE_URL);
+                async move { load_json_from_url::<Rc<opr::Army>>(&url).await }
+            });
         Army{unit_selection, set_unit_selection, army_data}
     }
 }
@@ -53,6 +56,16 @@ fn set_app_name(app_name: &str) {
         .expect("document should have a head")
         .append_child(&title)
         .expect("should set document title");
+}
+
+async fn load_json_from_url<T>(url: &str) -> T
+where
+    T: serde::de::DeserializeOwned,
+{
+    Request::get(url).send().await
+        .expect("should get an HTTP answer")
+        .json().await
+        .expect("should deserialize Army from JSON content")
 }
 
 /// component dedicated to boilerplate not really part of the app per
@@ -208,17 +221,6 @@ fn ArmyList(player_name: String,
             )}
         </ltn::Stack>
     }
-}
-
-async fn load_data(army_id: &str) -> Rc<opr::Army> {
-    let army_url = format!("{}?id={army_id}", opr::GET_ARMY_BASE_URL);
-    Request::get(army_url.as_str())
-        .send()
-        .await
-        .expect("should get an HTTP answer")
-        .json()
-        .await
-        .expect("should deserialize Army from JSON content")
 }
 
 #[component]
