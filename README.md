@@ -39,7 +39,6 @@ browser to access it - if you choose to build it yourself, just run
   * allow using community translations
 * robustness
   * show proper errors when:
-    * downloading an army list fails
     * less than one army specified
 * QoL
   * provide a menu with a few links (project's github, AF, rules)

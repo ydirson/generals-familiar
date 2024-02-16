@@ -27,7 +27,7 @@ fn main() {
 struct Army {
     unit_selection: ReadSignal<Option<Rc<opr::Unit>>>,
     set_unit_selection: WriteSignal<Option<Rc<opr::Unit>>>,
-    army_data: Resource<String, Rc<opr::Army>>,
+    army_data: Resource<String, Result<Rc<opr::Army>, String>>,
 }
 
 impl Army {
@@ -58,14 +58,14 @@ fn set_app_name(app_name: &str) {
         .expect("should set document title");
 }
 
-async fn load_json_from_url<T>(url: &str) -> T
+async fn load_json_from_url<T>(url: &str) -> Result<T, String>
 where
     T: serde::de::DeserializeOwned,
 {
     Request::get(url).send().await
-        .expect("should get an HTTP answer")
+        .map_err(|e| format!("communication error: {}", e.to_string()))?
         .json().await
-        .expect("should deserialize Army from JSON content")
+        .map_err(|e| format!("parse error: {}", e.to_string()))
 }
 
 /// component dedicated to boilerplate not really part of the app per
@@ -197,7 +197,15 @@ fn ArmyList(player_name: String,
             army.army_data.with(
                 |army_data| match army_data {
                     None => view! { <h2>{player_name} " - Loading..."</h2> }.into_view(),
-                    Some(army_data) => {
+                    Some(Err(message)) => {
+                        let message = message.clone();
+                        view! {
+                            <ltn::Alert variant=ltn::AlertVariant::Danger>
+                                <AlertContent slot>{message}</AlertContent>
+                            </ltn::Alert>
+                        }.into_view()
+                    },
+                    Some(Ok(army_data)) => {
                         let army_title = {
                             let opr::Army{ref game_system, ref name, ..} = **army_data;
                             view! {
