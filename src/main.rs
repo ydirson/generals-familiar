@@ -192,33 +192,35 @@ fn ArmyList(player_name: String,
 ) -> impl IntoView {
     view! {
         <ltn::Stack spacing=ltn::Size::Em(0.5)>
-            <h2>{player_name} " - "
-            {move || army.army_data.with(
+        { move || {
+            let player_name = player_name.clone();
+            army.army_data.with(
                 |army_data| match army_data {
-                    None => view! { "Loading..." }.into_view(),
+                    None => view! { <h2>{player_name} " - Loading..."</h2> }.into_view(),
                     Some(army_data) => {
-                        let opr::Army{ref game_system, ref name, ..} = **army_data;
+                        let army_title = {
+                            let opr::Army{ref game_system, ref name, ..} = **army_data;
+                            view! {
+                                {game_system.to_uppercase()}
+                                " - "
+                                {name}
+                            }
+                        };
+                        let army_contents = {
+                            let opr::Army{ref units, ..} = **army_data;
+                            view! {
+                                <UnitsList units={units.clone()}
+                                 select_unit=army.set_unit_selection />
+                            }
+                        };
                         view! {
-                            {game_system.to_uppercase()}
-                            " - "
-                            {name}
-                        }
-                    }.into_view()
+                            <h2>{player_name} " - " {army_title}</h2>
+                            {army_contents}
+                        }.into_view()
+                    },
                 }
-            )}
-            </h2>
-            {move || army.army_data.with(
-                |army_data| match army_data {
-                    None => ().into_view(),
-                    Some(army_data) => {
-                        let opr::Army{ref units, ..} = **army_data;
-                        view! {
-                            <UnitsList units={units.clone()}
-                                       select_unit=army.set_unit_selection />
-                        }
-                    }.into_view()
-                }
-            )}
+            )
+        }}
         </ltn::Stack>
     }
 }
