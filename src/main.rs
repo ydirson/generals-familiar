@@ -351,9 +351,7 @@ fn UnitUpgradesList(loadout_list: Vec<Rc<opr::UnitLoadout>>) -> impl IntoView {
             loadout_list
                 .clone()
                 .into_iter()
-                .filter(|loadout|
-                        if let opr::UnitLoadout::Upgrade{..} = **loadout
-                        { true } else { false })
+                .filter(|loadout| matches!(**loadout, opr::UnitLoadout::Upgrade{..}))
                 .enumerate()
                 .map(|(i, loadout)| {
                     if let opr::UnitLoadout::Upgrade(ref upgrade) = *loadout {
@@ -381,9 +379,7 @@ fn EquipmentList(loadout_list: Vec<Rc<opr::UnitLoadout>>) -> impl IntoView {
                         loadout_list
                             .clone()
                             .into_iter()
-                            .filter(|loadout|
-                                    if let opr::UnitLoadout::Equipment{..} = **loadout
-                                    { true } else { false })
+                            .filter(|loadout| matches!(**loadout, opr::UnitLoadout::Equipment{..}))
                             .map(|loadout| {
                                 view! {
                                     <EquipmentItem loadout />
