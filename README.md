@@ -32,40 +32,42 @@ browser to access it - if you choose to build it yourself, just run
 ### Plans and ideas for the future
 
 * essential
-  * let users select their own armies from a UI
+  * let users select their own armies from a UI, let them paste the
+    full URL provided by "share as link"
   * provide help on keywords
   * support combined/joined units
   * support more than 2 armies
   * allow using community translations
 * QoL
-  * provide a menu with a few links (project's github, AF, rules)
-  * let users directly paste the full URL provided by "share as link"
-  * move game name to AppBar, consistency check accross armies
-  * order units, grouping identical ones
-  * ensure important list-level info is displayed, and not hidden by
-    the drawer
-  * extract meaningful army-level info for permanent display (aura
-    available from units, (optionally) spells, ...)
-  * see how we can determine which characteristic of displayed unit is
-    particularly useful to highlight to avoid forgetting, taking the
-    selected opponent unit into account (similarly, which ones we can
-    dim because they're not useful, like "Hero" in GFF when no other
-    friendly unit has a lower quality)
-  * allow adding visual for each unit type and/or unit, to ease their
-    fig identification (essential for opponent army)
-  * add some stats to unit state (damage, mana, activated, exhausted...)
-    and a way to change them
-  * keep history of stat changes (to help check about forgotten stuff,
-    and help battle reports)
-  * proximity communication to share stats update, armies
-  * quick switch of selection (for small lists) by e.g. swiping the
-    drawer up/down
-  * quick switch of selection for larger lists, by using e.g. an iconbar
-    to jump to given unit type (use eg. unit acronyms for a first step)
-  * assign an icon / get a pic to customize iconbar
+  * additional info
+    * provide a menu with a few links (project's github, AF, rules)
+    * extract meaningful army-level info for permanent display (aura
+      available from units, (optionally) spells, ...)
+    * see how we can determine which characteristic of displayed unit is
+      particularly useful to highlight to avoid forgetting, taking the
+      selected opponent unit into account (similarly, which ones we can
+      dim because they're not useful, like "Hero" in GFF when no other
+      friendly unit has a lower quality)
+    * allow adding visual/icon for each unit type and/or unit, to ease their
+      fig identification (essential for opponent army)
+    * add some stats to unit state (damage, mana, activated, exhausted...)
+      and a way to change them
+    * keep history of stat changes (to help check about forgotten stuff,
+      and help battle reports)
+  * UI structuring
+    * move game name to AppBar, consistency check accross armies
+    * order units, grouping identical ones
+    * ensure important list-level info is displayed, and not hidden by
+      the drawer
+  * UX
+    * quick switch of selection (for small lists) by e.g. swiping the
+      drawer up/down
+    * quick switch of selection for larger lists, by using e.g. an iconbar
+      to jump to given unit type (use eg. unit acronyms for a first step)
+    * allow some UI customization (font size...)
+* extra features
   * some access to the rules for reference
-  * allow some UI customization (font size...)
-* later
+  * proximity communication to share stats update, armies
   * WarFleets support (needs an API endpoint)
 * plumbing
   * flags for WASM size reduction
