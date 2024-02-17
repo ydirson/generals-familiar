@@ -36,11 +36,12 @@ browser to access it - if you choose to build it yourself, just run
     full URL provided by "share as link"
   * provide help on keywords
   * support combined/joined units
-  * support more than 2 armies
-  * allow using community translations
+  * show spells when needed
 * QoL
   * additional info
     * provide a menu with a few links (project's github, AF, rules)
+    * provide army links to army book, AF shared page, AF edit page
+      (will require edit link)
     * extract meaningful army-level info for permanent display (aura
       available from units, (optionally) spells, ...)
     * see how we can determine which characteristic of displayed unit is
@@ -56,7 +57,9 @@ browser to access it - if you choose to build it yourself, just run
       and help battle reports)
   * UI structuring
     * move game name to AppBar, consistency check accross armies
-    * order units, grouping identical ones
+    * order units (replicating AF order currently requires accessing
+      the books)
+    * regroup identical units
     * ensure important list-level info is displayed, and not hidden by
       the drawer
   * UX
@@ -67,6 +70,9 @@ browser to access it - if you choose to build it yourself, just run
     * allow some UI customization (font size...)
 * extra features
   * some access to the rules for reference
+  * support more than 2 armies
+  * allow using community translations
+  * explore possible use of opr-af-to-tts ourput to improve presentation
   * proximity communication to share stats update, armies
   * WarFleets support (needs an API endpoint)
 * plumbing
