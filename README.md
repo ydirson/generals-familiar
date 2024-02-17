@@ -37,9 +37,6 @@ browser to access it - if you choose to build it yourself, just run
   * support combined/joined units
   * support more than 2 armies
   * allow using community translations
-* robustness
-  * show proper errors when:
-    * less than one army specified
 * QoL
   * provide a menu with a few links (project's github, AF, rules)
   * let users directly paste the full URL provided by "share as link"

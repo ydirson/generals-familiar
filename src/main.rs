@@ -121,10 +121,16 @@ fn App() -> impl IntoView {
         </ltn::AppBar>
         <ltn::Box style="padding: 0 1em 1em 1em;">
             <Show when=move || { army_ids().is_ok() }
-                  fallback=move || view! { <SelectView message=army_ids().err().unwrap() /> } >
+                  fallback=move || view! {
+                      <SelectView alert_type={ltn::AlertVariant::Warn}
+                                  message=army_ids().err().unwrap() />
+                  } >
                 <Show when=move || { army_ids().unwrap().is_some() }
-                      fallback=|| view! { <SelectView message="no army selected".to_string() /> } >
-                     <ArmiesView army_id0 army_id1 />
+                      fallback=|| view! {
+                          <SelectView alert_type={ltn::AlertVariant::Info}
+                                      message="no army selected".to_string() />
+                      } >
+                    <ArmiesView army_id0 army_id1 />
                 </Show>
             </Show>
         </ltn::Box>
@@ -132,9 +138,9 @@ fn App() -> impl IntoView {
 }
 
 #[component]
-fn SelectView(message: String) -> impl IntoView {
+fn SelectView(message: String, alert_type: ltn::AlertVariant) -> impl IntoView {
     view! {
-        <ltn::Alert variant=ltn::AlertVariant::Info>
+        <ltn::Alert variant=alert_type>
             <AlertContent slot>{message}</AlertContent>
         </ltn::Alert>
 
