@@ -440,6 +440,7 @@ dependencies = [
  "leptonic",
  "leptos",
  "leptos_macro",
+ "leptos_meta",
  "leptos_router",
  "opr",
  "serde",

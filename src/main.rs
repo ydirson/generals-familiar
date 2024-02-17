@@ -2,6 +2,7 @@ use gloo_net::http::Request;
 use leptonic::prelude as ltn;
 use leptonic::prelude::AlertContent;
 use leptos::*;
+use leptos_meta::{provide_meta_context, Title};
 use leptos_router as ltr;
 use leptos_router::Params; // derive(ltr::Params) won't work ?!
 use std::rc::Rc;
@@ -20,7 +21,7 @@ fn main() {
     #[cfg(feature = "dev")]
     console_error_panic_hook::set_once();
 
-    set_app_name(APP_NAME);
+    provide_meta_context();
     mount_to_body(|| view! { <AppBoilerplate/> })
 }
 
@@ -44,20 +45,6 @@ impl Army {
     }
 }
 
-fn set_app_name(app_name: &str) {
-    let doc = web_sys::window()
-        .expect("should have a window")
-        .document()
-        .expect("window should have a document");
-    let title = doc.create_element("title").expect("should create title");
-    title.set_text_content(Some(app_name));
-    doc
-        .head()
-        .expect("document should have a head")
-        .append_child(&title)
-        .expect("should set document title");
-}
-
 async fn load_json_from_url<T>(url: &str) -> Result<T, String>
 where
     T: serde::de::DeserializeOwned,
@@ -74,6 +61,7 @@ where
 fn AppBoilerplate() -> impl IntoView {
     view! {
         <ltn::Root default_theme=ltn::LeptonicTheme::default()>
+            <Title formatter=|text| format!("{APP_NAME} — {text}")/>
             <ltn::Box style="min-height: 100vh;">
                 <ltr::Router fallback=|| view! {
                     <ltn::Alert variant=ltn::AlertVariant::Danger>
@@ -140,6 +128,7 @@ fn App() -> impl IntoView {
 #[component]
 fn SelectView(message: String, alert_type: ltn::AlertVariant) -> impl IntoView {
     view! {
+        <Title text="select armies"/>
         <ltn::Alert variant=alert_type>
             <AlertContent slot>{message}</AlertContent>
         </ltn::Alert>
@@ -175,6 +164,7 @@ fn ArmiesView(army_id0: Signal<String>,
     let army0 = Army::new(army_id0);
     let army1 = Army::new(army_id1);
     view! {
+        <Title text="view armies" />
         <DetailsDrawer side=ltn::DrawerSide::Left
                        unit_selection=army0.unit_selection />
         <DetailsDrawer side=ltn::DrawerSide::Right
