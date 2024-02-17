@@ -168,6 +168,13 @@ fn SelectView(message: String, alert_type: ltn::AlertVariant) -> impl IntoView {
             <AlertContent slot>{message}</AlertContent>
         </ltn::Alert>
 
+        <SampleMatchups/>
+    }
+}
+
+#[component]
+fn SampleMatchups() -> impl IntoView {
+    view! {
         <h3> "Sample matchups" </h3>
         <ltn::TableContainer>
             <ltn::Table bordered=true hoverable=true>
