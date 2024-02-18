@@ -8,7 +8,6 @@ use leptos_router::Params; // derive(ltr::Params) won't work ?!
 use std::rc::Rc;
 
 const APP_NAME: &str = "General's Familiar";
-const PLAYER_NAMES: [&str; 2] = ["Player 1", "Player 2"];
 
 // `println!(..)`-style syntax for debugging in browser console
 macro_rules! log {
@@ -172,27 +171,21 @@ fn ArmiesView(army_id0: Signal<String>,
         <ltn::Stack orientation=ltn::StackOrientation::Horizontal
                spacing=ltn::Size::Em(1.0)
                style="align-items: flex-start;">
-            <ArmyList army=army0
-                      player_name=PLAYER_NAMES[0].to_string()
-            />
-            <ArmyList army=army1
-                      player_name=PLAYER_NAMES[1].to_string()
-            />
+            <ArmyList army=army0 />
+            <ArmyList army=army1 />
         </ltn::Stack>
     }
 }
 
 #[component]
-fn ArmyList(player_name: String,
-            army: Army,
+fn ArmyList(army: Army,
 ) -> impl IntoView {
     view! {
         <ltn::Stack spacing=ltn::Size::Em(0.5)>
         { move || {
-            let player_name = player_name.clone();
             army.army_data.with(
                 |army_data| match army_data {
-                    None => view! { <h2>{player_name} " - Loading..."</h2> }.into_view(),
+                    None => view! { <h2>"Loading..."</h2> }.into_view(),
                     Some(Err(message)) => {
                         let message = message.clone();
                         view! {
@@ -218,7 +211,7 @@ fn ArmyList(player_name: String,
                             }
                         };
                         view! {
-                            <h2>{player_name} " - " {army_title}</h2>
+                            <h2>{army_title}</h2>
                             {army_contents}
                         }.into_view()
                     },
