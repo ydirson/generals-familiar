@@ -1293,7 +1293,7 @@ checksum = "3fdb12b2476b595f9358c5161aa467c2438859caa136dec86c26fdd2efe17b92"
 [[package]]
 name = "opr"
 version = "0.1.0"
-source = "git+https://github.com/ydirson/opr-rs?rev=5ad81d96d8e28fa9e4840041f2a810b9b78a2fe2#5ad81d96d8e28fa9e4840041f2a810b9b78a2fe2"
+source = "git+https://github.com/ydirson/opr-rs?rev=f07d78f50e83adbab1eb7ebeda1097c4f713fda3#f07d78f50e83adbab1eb7ebeda1097c4f713fda3"
 dependencies = [
  "serde",
  "serde-aux",

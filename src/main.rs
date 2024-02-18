@@ -25,6 +25,7 @@ fn main() {
     mount_to_body(|| view! { <AppBoilerplate/> })
 }
 
+#[derive(Clone, Debug)]
 struct Army {
     unit_selection: ReadSignal<Option<Rc<opr::Unit>>>,
     set_unit_selection: WriteSignal<Option<Rc<opr::Unit>>>,
@@ -166,9 +167,9 @@ fn ArmiesView(army_id0: Signal<String>,
     view! {
         <Title text="view armies" />
         <DetailsDrawer side=ltn::DrawerSide::Left
-                       unit_selection=army0.unit_selection />
+                       army=army0.clone() />
         <DetailsDrawer side=ltn::DrawerSide::Right
-                       unit_selection=army1.unit_selection />
+                       army=army1.clone() />
         <ltn::Stack orientation=ltn::StackOrientation::Horizontal
                spacing=ltn::Size::Em(1.0)
                style="align-items: flex-start;">
@@ -267,8 +268,8 @@ fn UnitsList(units: Vec<Rc<opr::Unit>>,
 }
 
 #[component]
-fn DetailsDrawer(side: ltn::DrawerSide,
-                 unit_selection: ReadSignal<Option<Rc<opr::Unit>>>) -> impl IntoView {
+fn DetailsDrawer(army: Army,
+                 side: ltn::DrawerSide) -> impl IntoView {
     let pos_class = match side {
         ltn::DrawerSide::Left => "left",
         ltn::DrawerSide::Right => "right",
@@ -278,13 +279,13 @@ fn DetailsDrawer(side: ltn::DrawerSide,
     // list, or using close button in the drawer itself
     let (shown, set_shown) = create_signal(false);
     create_effect(move |_| {
-        set_shown.set(unit_selection.with(Option::is_some));
+        set_shown.set(army.unit_selection.with(Option::is_some));
     });
 
     view! {
         <ltn::Drawer side shown class={format!("army_details {pos_class}")}>
             <Show when=move || shown.get() >
-                <UnitDetails side set_shown unit=unit_selection.get().unwrap() />
+                <UnitDetails army=army.clone() side set_shown unit=army.unit_selection.get().unwrap() />
             </Show>
         </ltn::Drawer>
     }
@@ -292,6 +293,7 @@ fn DetailsDrawer(side: ltn::DrawerSide,
 
 #[component]
 fn UnitDetails(unit: Rc<opr::Unit>,
+               army: Army,
                side: ltn::DrawerSide,
                set_shown: WriteSignal<bool>) -> impl IntoView
 {
@@ -325,6 +327,7 @@ fn UnitDetails(unit: Rc<opr::Unit>,
         <p><SpecialRulesList special_rules={special_rules.clone()} /></p>
         <p><UnitUpgradesList loadout_list={loadout.clone()} /></p>
         <EquipmentList loadout_list={loadout.clone()} />
+        <SpecialRulesDefList unit=Rc::clone(&unit) army />
     }
 }
 
@@ -427,5 +430,57 @@ fn SpecialRulesList(special_rules: Vec<Rc<opr::SpecialRule>>) -> impl IntoView {
                 {rating}
             }
         })
+        .collect_view()
+}
+
+#[component]
+fn SpecialRulesDefList(unit: Rc<opr::Unit>,
+                       army: Army,) -> impl IntoView {
+    view! {
+        <specialrules-def-list>
+            {move || army.army_data.with(
+                |army_data|
+                if let Some(Ok(army_data)) = army_data {
+                    // the rules def
+                    let opr::Army{ref special_rules, ..} = **army_data;
+                    let special_rules_def = special_rules;
+                    rules_descriptions_from_list_for_unit(Rc::clone(&unit), &special_rules_def)
+                        .into_view()
+                } else {
+                    // cannot happen - FIXME should pass opr::Army directly instead?
+                    view!{}.into_view()
+                }
+            )}
+        </specialrules-def-list>
+    }
+}
+
+fn rules_descriptions_from_list_for_unit(unit: Rc<opr::Unit>,
+                                         rules_def: &Vec<Rc<opr::SpecialRuleDef>>
+) -> impl IntoView {
+    let opr::Unit{ref special_rules, ref loadout, ..} = *unit;
+    rules_def
+        .iter()
+        .map(|rule_def| {
+            if special_rules
+                .iter()
+                .any(|rule| rule.name == rule_def.name) ||
+                loadout
+                .iter()
+                .any(|item| match &**item {
+                    opr::UnitLoadout::Equipment(equipment) =>
+                        equipment.special_rules.iter().any(|rule| rule.name == rule_def.name),
+                    opr::UnitLoadout::Upgrade(upgrade) =>
+                        upgrade.content.iter().any(|rule| rule.name == rule_def.name),
+                })
+            {
+                let opr::SpecialRuleDef{ref name, ref description} = **rule_def;
+                view!{
+                    <p>
+                        <rule-name>{name}</rule-name> ": "
+                        {description}
+                    </p>
+                }.into_view()
+            } else {view!{}.into_view()}})
         .collect_view()
 }

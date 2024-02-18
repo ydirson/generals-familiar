@@ -28,16 +28,25 @@ browser to access it - if you choose to build it yourself, just run
 * specify armies to load using their ID (extracted from "share as
   link" in Army Forge).  Some examples are provided in the landing
   page.
+* display unit-relevant special rules in unit details
 
 ### Plans and ideas for the future
 
 * essential
   * let users select their own armies from a UI, let them paste the
     full URL provided by "share as link"
-  * provide help on keywords
+  * get text for standard special-rules
   * support combined/joined units
   * show spells when needed
 * QoL
+  * special rules
+    * in DetailsDrawer, highlight occurrences of a rule when clicking
+      its description
+    * identify special-rules mentionned in special-rules descriptions
+      (eg. Shadow-Protocol, Rending in Melee, Tunneller, Frenzy)
+    * color-coding for common- vs army-rules
+    * easy way to highlight units with a given rule (eg. for Robot)
+    * scroll to rule def on click on keyword
   * additional info
     * provide a menu with a few links (project's github, AF, rules)
     * provide army links to army book, AF shared page, AF edit page
