@@ -138,7 +138,7 @@ fn SelectView(message: String, alert_type: ltn::AlertVariant) -> impl IntoView {
             <ltn::Table bordered=true hoverable=true>
                 <ltn::TableBody>
                     <ltn::TableRow>
-                        <ltn::TableCell><a href="./?armies=Mlwpoh1AGLC2,p2KIbSBOYpSB">
+                        <ltn::TableCell><a href="./?armies=Rrlct39EGuct,p2KIbSBOYpSB">
                             <em>"Grimdark Future"</em>
                             " — Robots Legion vs. Prime Brothers"
                         </a></ltn::TableCell>
