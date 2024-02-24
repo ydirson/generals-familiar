@@ -3,6 +3,9 @@ on:
   workflow_run:
     workflows: [ci]
     types: [completed]
+    branches:
+      - master
+      - dev
 
   # Allows to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -24,6 +27,7 @@ concurrency:
 jobs:
   create_pages:
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     steps:
       - uses: actions/checkout@v4
