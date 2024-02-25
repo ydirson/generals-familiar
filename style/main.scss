@@ -44,6 +44,11 @@ leptonic-drawer.army_details {
     width: 40%;
     max-height: calc(100vh - var(--app-bar-height) - 1px);
 
+    leptonic-table-container {
+        // FIXME: not ideal but how to do better?  Should be sufficient anyway
+        flex-shrink: 0;
+    }
+
     leptonic-table {
         background-color: color-mix(in srgb,
                                     var(--table-background-color),
