@@ -34,7 +34,7 @@ leptonic-app-bar {
 }
 
 leptonic-drawer.army_details {
-    padding: 0.5em;
+    padding: 0.2em;
     position: fixed;
     top: var(--app-bar-height);
     background-color: color-mix(in srgb,
@@ -43,6 +43,14 @@ leptonic-drawer.army_details {
     border: 1px solid gray;
     width: 40%;
     max-height: calc(100vh - var(--app-bar-height) - 1px);
+
+    h3 {
+        margin: 0;
+        margin-bottom: 0.2em;
+        button div.name {
+            padding: 0.2em 0.5em;
+        }
+    }
 
     leptonic-table-container {
         // FIXME: not ideal but how to do better?  Should be sufficient anyway
@@ -55,7 +63,7 @@ leptonic-drawer.army_details {
                                     rgb(100% 100%  100% / 20%));
         leptonic-table-cell {
             text-align: center;
-            padding: 0.75em 0.3em;
+            padding: 0.1em;
         }
         // FIXME use more explicit qualifier than child number
         leptonic-table-cell:nth-child(2),
