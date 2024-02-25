@@ -36,13 +36,13 @@ leptonic-app-bar {
 leptonic-drawer.army_details {
     padding: 0.2em;
     position: fixed;
-    top: var(--app-bar-height);
+    top: 0;
     background-color: color-mix(in srgb,
                                 var(--drawer-background-color),
                                 rgb(100% 100%  100% / 80%));
     border: 1px solid gray;
     width: 40%;
-    max-height: calc(100vh - var(--app-bar-height) - 1px);
+    max-height: calc(100vh - 1px);
 
     h3 {
         margin: 0;
