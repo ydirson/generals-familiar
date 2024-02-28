@@ -434,6 +434,7 @@ dependencies = [
 name = "generals-familiar"
 version = "0.1.0"
 dependencies = [
+ "cfg-if",
  "console_error_panic_hook",
  "gloo-net 0.5.0",
  "leptonic",
@@ -442,6 +443,7 @@ dependencies = [
  "leptos_meta",
  "leptos_router",
  "opr",
+ "opr-test-data",
  "serde",
  "web-sys",
 ]
@@ -1293,10 +1295,19 @@ checksum = "3fdb12b2476b595f9358c5161aa467c2438859caa136dec86c26fdd2efe17b92"
 [[package]]
 name = "opr"
 version = "0.1.0"
-source = "git+https://github.com/ydirson/opr-rs?rev=e91e4be4862ca16482b8106f532c9d5dfc10e1da#e91e4be4862ca16482b8106f532c9d5dfc10e1da"
+source = "git+https://github.com/ydirson/opr-rs?rev=ee913b3cba8b14ac61f1d5c11db845e8a3ec5645#ee913b3cba8b14ac61f1d5c11db845e8a3ec5645"
 dependencies = [
+ "cfg-if",
  "serde",
  "serde-aux",
+]
+
+[[package]]
+name = "opr-test-data"
+version = "0.0.1"
+source = "git+https://github.com/ydirson/opr-rs?rev=ee913b3cba8b14ac61f1d5c11db845e8a3ec5645#ee913b3cba8b14ac61f1d5c11db845e8a3ec5645"
+dependencies = [
+ "include_dir",
 ]
 
 [[package]]

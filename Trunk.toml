@@ -4,3 +4,8 @@ ignore = [
     # The Leptonic build writes these files. Not ignoring them could lead to infinite rebuilds when using `trunk serve`.
     "./style/leptonic"
 ]
+
+[[hooks]]
+stage = "post_build"
+command = "sh"
+command_arguments = ["-c", "test ! -e data || cp -a data $TRUNK_STAGING_DIR"]

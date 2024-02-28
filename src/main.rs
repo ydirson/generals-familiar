@@ -39,7 +39,7 @@ impl Army {
         let army_data = create_resource(
             move || army_id.get(),
             |army_id_value| {
-                let url = format!("{}?id={army_id_value}", opr::GET_ARMY_BASE_URL);
+                let url = opr::get_army_url(&army_id_value);
                 async move { load_json_from_url::<Rc<opr::Army>>(&url).await }
             });
         Army{unit_selection, army_data}
