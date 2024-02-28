@@ -10,6 +10,7 @@ use std::rc::Rc;
 const APP_NAME: &str = "General's Familiar";
 
 // `println!(..)`-style syntax for debugging in browser console
+#[allow(unused_macros)]
 macro_rules! log {
     ( $( $t:tt )* ) => {
         web_sys::console::log_1(&format!( $( $t )* ).into());
