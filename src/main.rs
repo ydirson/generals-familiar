@@ -50,9 +50,9 @@ where
     T: serde::de::DeserializeOwned,
 {
     Request::get(url).send().await
-        .map_err(|e| format!("communication error: {}", e.to_string()))?
+        .map_err(|e| format!("communication error: {e}"))?
         .json().await
-        .map_err(|e| format!("parse error: {}", e.to_string()))
+        .map_err(|e| format!("parse error: {e}"))
 }
 
 /// component dedicated to boilerplate not really part of the app per
