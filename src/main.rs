@@ -6,6 +6,7 @@ use leptos_meta::{provide_meta_context, Title};
 use leptos_router as ltr;
 use leptos_router::Params; // derive(ltr::Params) won't work ?!
 use std::rc::Rc;
+use std::str::FromStr;
 
 const APP_NAME: &str = "General's Familiar";
 
@@ -199,8 +200,12 @@ fn ArmyList(army: Army,
                     Some(Ok(army_data)) => {
                         let army_title = {
                             let opr::Army{ref game_system, ref name, ..} = **army_data;
+                            let game_system = match opr::GameSystem::from_str(game_system) {
+                                Ok(game_system) => game_system.to_string(),
+                                _ => "".to_string(),
+                            };
                             view! {
-                                {game_system.to_uppercase()}
+                                {game_system}
                                 " - "
                                 {name}
                             }
