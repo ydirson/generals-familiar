@@ -16,8 +16,8 @@ serde = { version = "1.0.0" }
 
 [dependencies.opr]
 git = "https://github.com/ydirson/opr-rs"
-rev = "213c3663a1ad657382d38209f8605e137ee50bb5"
 #path = "../opr-rs"
+rev = "e91e4be4862ca16482b8106f532c9d5dfc10e1da"
 
 [dependencies.web-sys]
 version = "0.3"

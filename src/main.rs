@@ -89,6 +89,21 @@ fn App() -> impl IntoView {
     let game_system = create_rw_signal(None::<opr::GameSystem>);
     provide_context(game_system);
 
+    let common_rules: Resource<Option<opr::GameSystem>,
+                               Result<Vec<Rc<opr::SpecialRuleDef>>, String>> =
+        create_resource(
+            move || game_system.get(),
+            |game_system| async move {
+                match game_system {
+                    Some(game_system) => {
+                        let url = opr::get_common_rules_url(game_system);
+                        load_json_from_url(&url).await
+                    },
+                    None => Err("no common-rules, game system not known yet".to_string()),
+                }
+            });
+    provide_context(common_rules);
+
     let army_ids = move || {
         query.with(|params| {
             match params.as_ref().map(|params| params.armies.clone()) {
@@ -481,20 +496,58 @@ fn SpecialRulesDefList(unit: Rc<opr::Unit>,
                        army: Army,) -> impl IntoView {
     view! {
         <specialrules-def-list>
-            {move || army.army_data.with(
-                |army_data|
-                if let Some(Ok(army_data)) = army_data {
-                    // the rules def
-                    let opr::Army{ref special_rules, ..} = **army_data;
-                    let special_rules_def = special_rules;
-                    rules_descriptions_from_list_for_unit(Rc::clone(&unit), &special_rules_def)
-                        .into_view()
-                } else {
-                    // cannot happen - FIXME should pass opr::Army directly instead?
-                    view!{}.into_view()
-                }
-            )}
+            {move || {
+                let unit = Rc::clone(&unit);
+                army.army_data.with(
+                    move |army_data| {
+                        if let Some(Ok(army_data)) = army_data {
+                            // the rules def
+                            let opr::Army{ref special_rules, ..} = **army_data;
+                            let special_rules_def = special_rules;
+
+                            view!{
+                                {match common_rules_def() {
+                                    Ok(common_rules_def) => view! {
+                                        {rules_descriptions_from_list_for_unit(
+                                            Rc::clone(&unit), &common_rules_def.clone())}
+                                    }.into_view(),
+                                    Err(message) => view! {
+                                        <ltn::Alert variant=ltn::AlertVariant::Danger>
+                                            <AlertContent slot>{message}</AlertContent>
+                                        </ltn::Alert>
+                                    }.into_view(),
+                                }}
+                                {rules_descriptions_from_list_for_unit(
+                                    Rc::clone(&unit), &special_rules_def)}
+                            }.into_view()
+                        } else {
+                            // cannot happen - FIXME should pass opr::Army directly instead?
+                            view!{}.into_view()
+                        }
+                    }
+                )
+            }}
         </specialrules-def-list>
+    }
+}
+
+/// extract common-rules definitions from the Context Resource, or an
+/// error string to display
+fn common_rules_def() -> Result<Vec<Rc<opr::SpecialRuleDef>>, String> {
+    let common_rules_def = use_context::<
+            Resource<Option<opr::GameSystem>, Result<Vec<Rc<opr::SpecialRuleDef>>, String>>
+            >();
+
+    if let Some(common_rules_def) = common_rules_def {
+        let common_rules_def = common_rules_def.get();
+        match common_rules_def {
+            Some(Ok(common_rules_def)) => Ok(common_rules_def),
+            Some(Err(message)) => Err(format!("common rules not found: {message}")),
+            // FIXME that one is not really an error
+            None => Err("(common rules still loading)".to_string()),
+        }
+    } else {
+        Err("(internal error, common rules resource not found in context)".to_string())
     }
 }
 

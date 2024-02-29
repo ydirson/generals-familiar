@@ -28,14 +28,13 @@ browser to access it - if you choose to build it yourself, just run
 * specify armies to load using their ID (extracted from "share as
   link" in Army Forge).  Some examples are provided in the landing
   page.
-* display unit-relevant special rules in unit details
+* display unit-relevant common- and army-rules in unit details
 
 ### Plans and ideas for the future
 
 * essential
   * let users select their own armies from a UI, let them paste the
     full URL provided by "share as link"
-  * get text for standard special-rules
   * support combined/joined units
   * show spells when needed
 * QoL
