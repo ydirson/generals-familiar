@@ -283,7 +283,7 @@ fn DetailsDrawer(side: ltn::DrawerSide,
 
     view! {
         <ltn::Drawer side shown class={format!("army_details {pos_class}")}>
-            <Show when={move || shown.get()}>
+            <Show when=move || shown.get() >
                 <UnitDetails side set_shown unit=unit_selection.get().unwrap() />
             </Show>
         </ltn::Drawer>
