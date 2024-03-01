@@ -1092,9 +1092,9 @@ dependencies = [
 
 [[package]]
 name = "leptos_router"
-version = "0.6.6"
+version = "0.6.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ac85523a2d11d135955670b89eb3c0cadf2f51547779dece5e74584380767276"
+checksum = "eb7d251c8fad83d5f6ff83971e1f489101a6993dc798c54166d09e366162bd69"
 dependencies = [
  "cfg-if",
  "gloo-net 0.2.6",
