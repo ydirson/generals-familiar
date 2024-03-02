@@ -28,22 +28,21 @@ fn main() {
 
 #[derive(Clone, Debug)]
 struct Army {
-    unit_selection: ReadSignal<Option<Rc<opr::Unit>>>,
-    set_unit_selection: WriteSignal<Option<Rc<opr::Unit>>>,
+    unit_selection: RwSignal<Option<Rc<opr::Unit>>>,
     army_data: Resource<String, Result<Rc<opr::Army>, String>>,
 }
 
 impl Army {
     fn new(army_id: Signal<String>) -> Army
     {
-        let (unit_selection, set_unit_selection) = create_signal(None::<Rc<opr::Unit>>);
+        let unit_selection = create_rw_signal(None::<Rc<opr::Unit>>);
         let army_data = create_resource(
             move || army_id.get(),
             |army_id_value| {
                 let url = format!("{}?id={army_id_value}", opr::GET_ARMY_BASE_URL);
                 async move { load_json_from_url::<Rc<opr::Army>>(&url).await }
             });
-        Army{unit_selection, set_unit_selection, army_data}
+        Army{unit_selection, army_data}
     }
 }
 
@@ -261,7 +260,7 @@ fn ArmyList(army: Army,
                                 if check_inconsistency.is_none() {
                                     view! {
                                         <UnitsList units={units.clone()}
-                                         select_unit=army.set_unit_selection />
+                                         select_unit=army.unit_selection />
                                     }.into_view()
                                 } else {
                                     view! {
@@ -284,7 +283,7 @@ fn ArmyList(army: Army,
 
 #[component]
 fn UnitsList(units: Vec<Rc<opr::Unit>>,
-             select_unit: WriteSignal<Option<Rc<opr::Unit>>>,
+             select_unit: RwSignal<Option<Rc<opr::Unit>>>, // FIXME only need WriteSignal here
 ) -> impl IntoView {
     let (selected_row_num, set_selected_row_num) = create_signal(None::<usize>);
     view! {
