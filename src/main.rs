@@ -86,6 +86,9 @@ struct UrlQuery {
 #[component]
 fn App() -> impl IntoView {
     let query = ltr::use_query::<UrlQuery>();
+    let game_system = create_rw_signal(None::<opr::GameSystem>);
+    provide_context(game_system);
+
     let army_ids = move || {
         query.with(|params| {
             match params.as_ref().map(|params| params.armies.clone()) {
@@ -106,7 +109,13 @@ fn App() -> impl IntoView {
     let army_id1 = Signal::derive(move || army_ids().unwrap().unwrap()[1].clone());
     view! {
         <ltn::AppBar>
-            <h1>{APP_NAME}</h1>
+            <h1>
+                {APP_NAME}
+                {move || match game_system.get() {
+                    Some(game_system) => format!(" - {game_system}"),
+                    None => "".to_string(),
+                }}
+            </h1>
             <ltn::ThemeToggle off=ltn::LeptonicTheme::Light on=ltn::LeptonicTheme::Dark/>
         </ltn::AppBar>
         <ltn::Box style="padding: 0 1em 1em 1em;">
@@ -129,6 +138,10 @@ fn App() -> impl IntoView {
 
 #[component]
 fn SelectView(message: String, alert_type: ltn::AlertVariant) -> impl IntoView {
+    // reset global game_system so a different can be enabled by new armies
+    let app_game_system = expect_context::<RwSignal<Option<opr::GameSystem>>>();
+    app_game_system.set(None);
+
     view! {
         <Title text="select armies"/>
         <ltn::Alert variant=alert_type>
@@ -183,6 +196,7 @@ fn ArmiesView(army_id0: Signal<String>,
 #[component]
 fn ArmyList(army: Army,
 ) -> impl IntoView {
+    let app_game_system = expect_context::<RwSignal<Option<opr::GameSystem>>>();
     view! {
         <ltn::Stack spacing=ltn::Size::Em(0.5)>
         { move || {
@@ -198,28 +212,52 @@ fn ArmyList(army: Army,
                         }.into_view()
                     },
                     Some(Ok(army_data)) => {
-                        let army_title = {
-                            let opr::Army{ref game_system, ref name, ..} = **army_data;
-                            let game_system = match opr::GameSystem::from_str(game_system) {
-                                Ok(game_system) => game_system.to_string(),
-                                _ => "".to_string(),
-                            };
-                            view! {
-                                {game_system}
-                                " - "
-                                {name}
-                            }
-                        };
-                        let army_contents = {
-                            let opr::Army{ref units, ..} = **army_data;
-                            view! {
-                                <UnitsList units={units.clone()}
-                                 select_unit=army.set_unit_selection />
+                        let opr::Army{ref game_system, ref name, ref units, ..} = **army_data;
+                        let name = name.clone();
+                        let units = units.clone();
+
+                        let game_system = opr::GameSystem::from_str(game_system);
+                        let check_inconsistency = move || {
+                            match game_system.clone() {
+                                Err(e) => Some(e),
+                                Ok(game_system) => match app_game_system.get() {
+                                    // not yet set: set it, ok
+                                    None => {
+                                        app_game_system.set(Some(game_system));
+                                        None },
+                                    // already set and matching this army: ok
+                                    Some(app_game_system) if game_system == app_game_system
+                                        => None,
+                                    // already set and not matching: KO
+                                    Some(_)
+                                        => Some(format!("game system mismatch: {game_system}")),
+                                }
                             }
                         };
                         view! {
-                            <h2>{army_title}</h2>
-                            {army_contents}
+                            {move || {
+                                let name = name.clone();
+                                view! {
+                                    <h2>{name}</h2>
+                                }
+                            }}
+                            {move || {
+                                let check_inconsistency = check_inconsistency();
+                                if check_inconsistency.is_none() {
+                                    view! {
+                                        <UnitsList units={units.clone()}
+                                         select_unit=army.set_unit_selection />
+                                    }.into_view()
+                                } else {
+                                    view! {
+                                        <ltn::Alert variant=ltn::AlertVariant::Danger>
+                                            <AlertContent slot>
+                                        {check_inconsistency.unwrap()}
+                                        </AlertContent>
+                                            </ltn::Alert>
+                                    }.into_view()
+                                }
+                            }}
                         }.into_view()
                     },
                 }

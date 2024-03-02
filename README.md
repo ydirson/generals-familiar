@@ -65,7 +65,6 @@ browser to access it - if you choose to build it yourself, just run
     * keep history of stat changes (to help check about forgotten stuff,
       and help battle reports)
   * UI structuring
-    * move game name to AppBar, consistency check accross armies
     * order units (replicating AF order currently requires accessing
       the books)
     * regroup identical units
