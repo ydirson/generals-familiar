@@ -110,7 +110,7 @@ fn App() -> impl IntoView {
                 Err(err) => Err(err.to_string()),
                 Ok(Some(armies_string)) => {
                     let v = armies_string
-                        .split(",")
+                        .split(',')
                         .map(|s| s.to_string())
                         .collect::<Vec<String>>();
                     if v.len() >= 2 {Ok(Some(v))} else {Err("not enough armies".to_string())}
@@ -303,10 +303,8 @@ fn UnitsList(units: Vec<Rc<opr::Unit>>,
                                     // not allow for dynamic classes or even for class
                                     <leptonic-table-row
                                          class:selected=move || {
-                                             match selected_row_num.get() {
-                                                 Some(index) if index == i => true,
-                                                 _ => false,
-                                             }
+                                             matches!(selected_row_num.get(),
+                                                      Some(index) if index == i)
                                          }
                                          on:click=move |_| {
                                              select_unit.set(Some(unit.clone()));
@@ -518,7 +516,7 @@ fn SpecialRulesDefList(unit: Rc<opr::Unit>,
                                     }.into_view(),
                                 }}
                                 {rules_descriptions_from_list_for_unit(
-                                    Rc::clone(&unit), &special_rules_def)}
+                                    Rc::clone(&unit), special_rules_def)}
                             }.into_view()
                         } else {
                             // cannot happen - FIXME should pass opr::Army directly instead?
@@ -552,7 +550,7 @@ fn common_rules_def() -> Result<Vec<Rc<opr::SpecialRuleDef>>, String> {
 }
 
 fn rules_descriptions_from_list_for_unit(unit: Rc<opr::Unit>,
-                                         rules_def: &Vec<Rc<opr::SpecialRuleDef>>
+                                         rules_def: &[Rc<opr::SpecialRuleDef>]
 ) -> impl IntoView {
     let opr::Unit{ref special_rules, ref loadout, ..} = *unit;
     rules_def
