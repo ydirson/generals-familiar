@@ -6,3 +6,8 @@ edition = "2021"
 [[bin]]
 name = "post_build"
 path = "src/post_build.rs"
+
+[dependencies.opr-test-data]
+git = "https://github.com/ydirson/opr-rs"
+rev = "ef24793128183706ccb055563fe7da1c9518a15b"
+#path = "../opr-rs/opr-test-data"

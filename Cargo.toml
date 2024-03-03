@@ -14,11 +14,6 @@ leptos_meta = { version = "0.6.0", features = ["csr"] }
 leptos_router = { version = "0.6.0", features = ["csr"] }
 serde = { version = "1.0.0" }
 
-[build-dependencies.opr-test-data]
-git = "https://github.com/ydirson/opr-rs"
-optional = true
-rev = "ef24793128183706ccb055563fe7da1c9518a15b"
-#path = "../opr-rs/opr-test-data"
 [dependencies.opr]
 git = "https://github.com/ydirson/opr-rs"
 rev = "ef24793128183706ccb055563fe7da1c9518a15b"
@@ -35,7 +30,7 @@ cfg-if = "1.0.0"
 
 [features]
 dev = ["dep:console_error_panic_hook"]
-local-files = ["dep:opr-test-data", "opr/local-files"]
+local-files = ["opr/local-files"]
 
 [package.metadata.leptonic]
 style-dir = "style"
