@@ -112,21 +112,21 @@ fn App() -> impl IntoView {
     let army_ids = move || {
         query.with(|params| {
             match params.as_ref().map(|params| params.armies.clone()) {
-                Ok(None) => Ok(None),
+                Ok(None) => Ok(vec!()),
                 Err(err) => Err(err.to_string()),
                 Ok(Some(armies_string)) => {
                     let v = armies_string
                         .split(',')
                         .map(|s| s.to_string())
                         .collect::<Vec<String>>();
-                    if v.len() >= 2 {Ok(Some(v))} else {Err("not enough armies".to_string())}
+                    if v.len() >= 2 {Ok(v)} else {Err("not enough armies".to_string())}
                 },
             }
         })
     };
-    // army_id's are only read if OK(Some(Vec of length 2)), unwrap() is safe.
-    let army_id0 = Signal::derive(move || army_ids().unwrap().unwrap()[0].clone());
-    let army_id1 = Signal::derive(move || army_ids().unwrap().unwrap()[1].clone());
+    // army_id's are only read if OK(Vec of length >=2), unwrap() is safe.
+    let army_id0 = Signal::derive(move || army_ids().unwrap()[0].clone());
+    let army_id1 = Signal::derive(move || army_ids().unwrap()[1].clone());
     view! {
         <ltn::AppBar>
             <h1>
@@ -144,7 +144,7 @@ fn App() -> impl IntoView {
                       <SelectView alert_type={ltn::AlertVariant::Warn}
                                   message=army_ids().err().unwrap() />
                   } >
-                <Show when=move || { army_ids().unwrap().is_some() }
+                <Show when=move || { ! army_ids().unwrap().is_empty() }
                       fallback=|| view! {
                           <SelectView alert_type={ltn::AlertVariant::Info}
                                       message="no army selected".to_string() />
