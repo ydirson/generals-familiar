@@ -1,0 +1,8 @@
+[package]
+name = "generals-familiar-xtasks"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "post_build"
+path = "src/post_build.rs"
