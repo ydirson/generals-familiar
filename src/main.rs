@@ -124,9 +124,6 @@ fn App() -> impl IntoView {
             }
         })
     });
-    // army_id's are only read if OK(Vec of length >=2), unwrap() is safe.
-    let army_id0 = Signal::derive(move || army_ids.get().unwrap()[0].clone());
-    let army_id1 = Signal::derive(move || army_ids.get().unwrap()[1].clone());
     view! {
         <ltn::AppBar>
             <h1>
@@ -149,7 +146,7 @@ fn App() -> impl IntoView {
                           <SelectView alert_type={ltn::AlertVariant::Info}
                                       message="no army selected".to_string() />
                       } >
-                    <ArmiesView army_id0 army_id1 />
+                    <ArmiesView army_ids=Signal::derive(move || army_ids.get().unwrap().clone()) />
                 </Show>
             </Show>
         </ltn::Box>
@@ -200,11 +197,9 @@ fn SampleMatchups() -> impl IntoView {
 /// the main view, showing multiple armies and providing detail
 /// drawers for selections
 #[component]
-fn ArmiesView(army_id0: Signal<String>,
-              army_id1: Signal<String>,
-) -> impl IntoView {
-    let army0 = Army::new(army_id0);
-    let army1 = Army::new(army_id1);
+fn ArmiesView(army_ids: Signal<Vec<String>>) -> impl IntoView {
+    let army0 = Army::new(Signal::derive(move || army_ids.with(|ids| ids[0].clone())));
+    let army1 = Army::new(Signal::derive(move || army_ids.with(|ids| ids[1].clone())));
     view! {
         <Title text="view armies" />
         <ltn::Stack orientation=ltn::StackOrientation::Horizontal
