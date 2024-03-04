@@ -109,7 +109,7 @@ fn App() -> impl IntoView {
             });
     provide_context(common_rules);
 
-    let army_ids = move || {
+    let army_ids = Signal::derive(move || {
         query.with(|params| {
             match params.as_ref().map(|params| params.armies.clone()) {
                 Ok(None) => Ok(vec!()),
@@ -123,10 +123,10 @@ fn App() -> impl IntoView {
                 },
             }
         })
-    };
+    });
     // army_id's are only read if OK(Vec of length >=2), unwrap() is safe.
-    let army_id0 = Signal::derive(move || army_ids().unwrap()[0].clone());
-    let army_id1 = Signal::derive(move || army_ids().unwrap()[1].clone());
+    let army_id0 = Signal::derive(move || army_ids.get().unwrap()[0].clone());
+    let army_id1 = Signal::derive(move || army_ids.get().unwrap()[1].clone());
     view! {
         <ltn::AppBar>
             <h1>
@@ -139,12 +139,12 @@ fn App() -> impl IntoView {
             <ltn::ThemeToggle off=ltn::LeptonicTheme::Light on=ltn::LeptonicTheme::Dark/>
         </ltn::AppBar>
         <ltn::Box style="padding: 0 1em 1em 1em;">
-            <Show when=move || { army_ids().is_ok() }
+            <Show when=move || { army_ids.with(Result::is_ok) }
                   fallback=move || view! {
                       <SelectView alert_type={ltn::AlertVariant::Warn}
-                                  message=army_ids().err().unwrap() />
+                                  message=army_ids.get().err().unwrap() />
                   } >
-                <Show when=move || { ! army_ids().unwrap().is_empty() }
+                <Show when=move || { ! army_ids.get().unwrap().is_empty() }
                       fallback=|| view! {
                           <SelectView alert_type={ltn::AlertVariant::Info}
                                       message="no army selected".to_string() />
