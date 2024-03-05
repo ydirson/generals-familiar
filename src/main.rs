@@ -200,16 +200,22 @@ fn ArmiesView(army_id0: Signal<String>,
     let army1 = Army::new(army_id1);
     view! {
         <Title text="view armies" />
-        <DetailsDrawer side=ltn::DrawerSide::Left
-                       army=army0.clone() />
-        <DetailsDrawer side=ltn::DrawerSide::Right
-                       army=army1.clone() />
         <ltn::Stack orientation=ltn::StackOrientation::Horizontal
                spacing=ltn::Size::Em(1.0)
                style="align-items: flex-start;">
-            <ArmyList army=army0 />
-            <ArmyList army=army1 />
+            <ArmyContainer army=army0 side=ltn::DrawerSide::Left />
+            <ArmyContainer army=army1 side=ltn::DrawerSide::Right />
         </ltn::Stack>
+    }
+}
+
+/// A component container for the army list and the drawer, so they
+/// can share a common context
+#[component]
+fn ArmyContainer(army: Army, side: ltn::DrawerSide) -> impl IntoView {
+    view! {
+        <DetailsDrawer side army=army.clone() />
+        <ArmyList army />
     }
 }
 
