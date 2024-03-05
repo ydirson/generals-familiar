@@ -259,6 +259,11 @@ fn ArmyList(army: Army,
                         let name = Rc::clone(name);
                         let units = units.clone();
 
+                        // since we are recreating an ArmyList, the Army must have changed
+                        // (or this is an over-refresh bug), drawer is outdated so close it
+                        let shown = use_context::<DrawerControl>().unwrap().shown;
+                        shown.set(false);
+
                         let game_system = opr::GameSystem::from_str(game_system);
                         let check_inconsistency = move || {
                             match game_system.clone() {
