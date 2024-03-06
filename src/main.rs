@@ -28,6 +28,7 @@ fn main() {
 
 #[derive(Clone, Debug)]
 struct Army {
+    army_id: Signal<String>,
     unit_selection: RwSignal<Option<Rc<opr::Unit>>>,
     army_data: Resource<String, Result<Rc<opr::Army>, String>>,
 }
@@ -42,7 +43,7 @@ impl Army {
                 let url = opr::get_army_url(&army_id_value);
                 async move { load_json_from_url::<Rc<opr::Army>>(&url).await }
             });
-        Army{unit_selection, army_data}
+        Army{army_id, unit_selection, army_data}
     }
 }
 
@@ -212,7 +213,7 @@ fn ArmyList(army: Army,
 ) -> impl IntoView {
     let app_game_system = expect_context::<RwSignal<Option<opr::GameSystem>>>();
     view! {
-        <ltn::Stack spacing=ltn::Size::Em(0.5)>
+        <ltn::Stack spacing=ltn::Size::Em(0.5) class="army_list" >
         { move || {
             army.army_data.with(
                 |army_data| match army_data {
@@ -251,8 +252,11 @@ fn ArmyList(army: Army,
                         view! {
                             {move || {
                                 let name = name.clone();
+                                let url = format!("{}?id={}",
+                                                  opr::ARMYFORGE_SHARE_URL,
+                                                  army.army_id.get());
                                 view! {
-                                    <h2>{name}</h2>
+                                    <h2><a target="_blank" href={url}>{name}</a></h2>
                                 }
                             }}
                             {move || {

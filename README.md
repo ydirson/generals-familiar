@@ -24,6 +24,9 @@ browser to access it - if you choose to build it yourself, just run
 
 * download two army lists from [the One Page Rules Army
   Forge](https://army-forge.onepagerules.com/)
+* show both unit lists in a dense format suitable to fit completely on
+  screen for most armies; direct link to armies' Army Forge page for
+  convenience
 * display face to face the details of the selected unit from each army
 * specify armies to load using their ID (extracted from "share as
   link" in Army Forge).  Some examples are provided in the landing
@@ -48,8 +51,7 @@ browser to access it - if you choose to build it yourself, just run
     * scroll to rule def on click on keyword
   * additional info
     * provide a menu with a few links (project's github, AF, rules)
-    * provide army links to army book, AF shared page, AF edit page
-      (will require edit link)
+    * provide army links to army book
     * extract meaningful army-level info for permanent display (aura
       available from units, (optionally) spells, ...)
     * see how we can determine which characteristic of displayed unit is

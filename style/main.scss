@@ -33,6 +33,14 @@ leptonic-app-bar {
     padding: 0 1em;
 }
 
+leptonic-stack {
+    h2 a {
+        &:link, &:visited {
+            color: var(--box-color);
+        }
+    }
+}
+
 leptonic-drawer.army_details {
     padding: 0.2em;
     position: fixed;
