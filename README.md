@@ -22,8 +22,9 @@ browser to access it - if you choose to build it yourself, just run
 
 ### Currently available
 
-* download two army lists from [the One Page Rules Army
-  Forge](https://army-forge.onepagerules.com/)
+* download one or more army lists from [the One Page Rules Army
+  Forge](https://army-forge.onepagerules.com/), allowing global view
+  also on opponent army(ies) (optimized for 1-2 armies for now)
 * show both unit lists in a dense format suitable to fit completely on
   screen for most armies; direct link to armies' Army Forge page for
   convenience
@@ -83,7 +84,20 @@ browser to access it - if you choose to build it yourself, just run
     * allow some UI customization (font size...)
 * extra features
   * some access to the rules for reference
-  * support more than 2 armies
+  * better support more than 2 armies
+    * in 1v1 enough of the list display usually remain visible (if the
+      lists have similar-enough width) between panels to change the
+      selection (even though the unit names may not be visible enough
+      despite transparency), but with 3 units the 2nd army is easily
+      the only one accessible. Make sure the detailed armies are
+      accessible with folders open.
+    * in team play like 2v2 we would want to use left panel for more
+      than the 1st army
+    * in 1v1v1 we may want to show units for the 2 opponent armies
+      instead of ours (use 2 different areas on unit list to open to
+      the left or right?  use swipe with direction?)
+    * at most a single panel should be displayed on each side at any
+      given time (deselect other armies?)
   * allow using community translations
   * explore possible use of opr-af-to-tts output to improve presentation
   * proximity communication to share stats update, armies
