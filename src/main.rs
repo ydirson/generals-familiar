@@ -264,15 +264,15 @@ fn ArmyList(army: Army,
                                 if check_inconsistency.is_none() {
                                     view! {
                                         <UnitsList units={units.clone()}
-                                         select_unit=army.unit_selection />
+                                                   select_unit=army.unit_selection />
                                     }.into_view()
                                 } else {
                                     view! {
                                         <ltn::Alert variant=ltn::AlertVariant::Danger>
                                             <AlertContent slot>
-                                        {check_inconsistency.unwrap()}
-                                        </AlertContent>
-                                            </ltn::Alert>
+                                                {check_inconsistency.unwrap()}
+                                            </AlertContent>
+                                        </ltn::Alert>
                                     }.into_view()
                                 }
                             }}
