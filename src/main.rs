@@ -119,7 +119,7 @@ fn App() -> impl IntoView {
                         .split(',')
                         .map(|s| s.to_string())
                         .collect::<Vec<String>>();
-                    if v.len() >= 2 {Ok(v)} else {Err("not enough armies".to_string())}
+                    Ok(v)
                 },
             }
         })
@@ -188,6 +188,12 @@ fn SampleMatchups() -> impl IntoView {
                             " — War Disciples vs. Eternal Wardens"
                         </a></ltn::TableCell>
                     </ltn::TableRow>
+                    <ltn::TableRow>
+                        <ltn::TableCell><a href="./?armies=Mlwpoh1AGLC2">
+                            <em>"Grimdark Future"</em>
+                            " — single list, Robots Legion"
+                        </a></ltn::TableCell>
+                    </ltn::TableRow>
                 </ltn::TableBody>
             </ltn::Table>
         </ltn::TableContainer>
@@ -198,15 +204,21 @@ fn SampleMatchups() -> impl IntoView {
 /// drawers for selections
 #[component]
 fn ArmiesView(army_ids: Signal<Vec<String>>) -> impl IntoView {
-    let army0 = Army::new(Signal::derive(move || army_ids.with(|ids| ids[0].clone())));
-    let army1 = Army::new(Signal::derive(move || army_ids.with(|ids| ids[1].clone())));
     view! {
         <Title text="view armies" />
         <ltn::Stack orientation=ltn::StackOrientation::Horizontal
                spacing=ltn::Size::Em(1.0)
                style="align-items: flex-start;">
-            <ArmyContainer army=army0 side=ltn::DrawerSide::Left />
-            <ArmyContainer army=army1 side=ltn::DrawerSide::Right />
+            <For each=move || army_ids.with(|ids| ids.iter()
+                                            .map(String::clone)
+                                            .enumerate().collect::<Vec<(usize, String)>>())
+                 key=|k: &(usize, String)| k.clone()
+                 children=move |(i, id)| view! {
+                     <ArmyContainer army={Army::new(Signal::derive(move || id.clone()))}
+                                    side={if i == 0 {ltn::DrawerSide::Left}
+                                          else {ltn::DrawerSide::Right}} />
+                 }
+             />
         </ltn::Stack>
     }
 }
