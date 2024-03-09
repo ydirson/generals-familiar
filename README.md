@@ -71,6 +71,10 @@ browser to access it - if you choose to build it yourself, just run
     * regroup identical units
     * ensure important list-level info is displayed, and not hidden by
       the drawer
+  * data management
+    * keep (in local storage) a list of recently-used armies
+    * keep (in local storage) a list of prefered armies for easy selection
+    * allow keeping army/book data in local storage for offline usage
   * UX
     * quick switch of selection (for small lists) by e.g. swiping the
       drawer up/down
