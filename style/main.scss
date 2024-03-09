@@ -33,7 +33,7 @@ leptonic-app-bar {
     padding: 0 1em;
 }
 
-leptonic-stack {
+.army_list {
     h2 a {
         &:link, &:visited {
             color: var(--box-color);
@@ -79,12 +79,13 @@ leptonic-drawer.army_details {
             width: 2em;
         }
     }
-}
-leptonic-drawer.right {
-    right: 0;
-}
-leptonic-drawer.left {
-    left: 0;
+
+    &.right {
+        right: 0;
+    }
+    &.left {
+        left: 0;
+    }
 }
 
 specialrules-def-list {
