@@ -48,8 +48,7 @@ browser to access it - if you choose to build it yourself, just run
 ### Plans and ideas for the future
 
 * essential
-  * let users select their own armies from a UI, let them paste the
-    full URL provided by "share as link"
+  * let users paste the full URL provided by "share as link"
   * show spells when needed (requires fetching json army book)
   * (bug) on army removal, removal link for previous armies are not updated
 * QoL

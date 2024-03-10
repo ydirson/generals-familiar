@@ -443,6 +443,7 @@ dependencies = [
  "cfg-if",
  "console_error_panic_hook",
  "gloo-net 0.5.0",
+ "itertools 0.13.0",
  "leptonic",
  "leptos",
  "leptos_macro",

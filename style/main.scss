@@ -55,9 +55,16 @@ leptonic-app-bar {
 
 .army_view {
     align-items: flex-start;
+    padding: 1em;
+
+    button.new_army .name {
+        padding: 0.2em;
+        font-size: 1.5em;
+    }
 
     .army_list {
         h2 {
+            margin: 0;
             a {
                 &:link, &:visited {
                     color: var(--box-color);
