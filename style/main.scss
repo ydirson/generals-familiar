@@ -33,19 +33,23 @@ leptonic-app-bar {
     padding: 0 1em;
 }
 
-.army_list {
-    h2 {
-        a {
-            &:link, &:visited {
-                color: var(--box-color);
+.army_view {
+    align-items: flex-start;
+
+    .army_list {
+        h2 {
+            a {
+                &:link, &:visited {
+                    color: var(--box-color);
+                }
             }
         }
-    }
-    button.rm_army {
-        padding: 0;
-        padding-left: 0.2em;
-        border: 0;
-        vertical-align: middle;
+        button.rm_army {
+            padding: 0;
+            padding-left: 0.2em;
+            border: 0;
+            vertical-align: middle;
+        }
     }
 }
 
