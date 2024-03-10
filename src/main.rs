@@ -1,10 +1,12 @@
 use gloo_net::http::Request;
+use itertools::Itertools;
 use leptonic::prelude as ltn;
 use leptonic::prelude::AlertContent;
 use leptos::*;
 use leptos_meta::{provide_meta_context, Title};
 use leptos_router as ltr;
 use leptos_router::Params; // derive(ltr::Params) won't work ?!
+use std::iter::once;
 use std::rc::Rc;
 use std::str::FromStr;
 
@@ -199,6 +201,7 @@ fn SampleMatchups() -> impl IntoView {
 /// drawers for selections
 #[component]
 fn ArmiesView(army_ids: Signal<Vec<String>>) -> impl IntoView {
+    let dialog_shown = create_rw_signal(false);
     provide_context(army_ids);
     view! {
         <Title text="view armies" />
@@ -215,7 +218,52 @@ fn ArmiesView(army_ids: Signal<Vec<String>>) -> impl IntoView {
                                           else {ltn::DrawerSide::Right}} />
                  }
              />
+            <ltn::Button class="new_army" on_click=move |_| dialog_shown.set(true) >
+                 "+"
+            </ltn::Button>
         </ltn::Stack>
+        <NewArmyDialog show_when=dialog_shown />
+    }
+}
+
+#[component]
+fn NewArmyDialog(#[prop(into)] show_when: RwSignal<bool>) -> impl IntoView {
+    let (new_id, set_new_id) = create_signal("".to_string());
+    view! {
+        <ltn::Modal show_when >
+            <ltn::ModalHeader><ltn::ModalTitle>"Load Army"</ltn::ModalTitle></ltn::ModalHeader>
+            <ltn::ModalBody>
+                <ltn::TextInput placeholder="AF Share ID"
+                                get=new_id set=set_new_id
+                 />
+            </ltn::ModalBody>
+            <ltn::ModalFooter>
+                <ltn::ButtonWrapper>
+                    <ltn::Button color=ltn::ButtonColor::Secondary
+                                 on_click=move |_| show_when.set(false)>"Cancel"</ltn::Button>
+                    {move || {
+                        let ids =
+                            use_context::<Signal<Vec<String>>>()
+                            .expect("should find army_ids in context")
+                            .get();
+                        let armies = ids.into_iter()
+                            .chain(once(new_id.get()))
+                            .join(",");
+                        let url = format!("./?armies={armies}");
+                        view! {
+                            <ltn::Button color=ltn::ButtonColor::Primary
+                                         on_click=move |_| {
+                                             show_when.set(false);
+                                             let navigate = leptos_router::use_navigate();
+                                             navigate(url.as_str(), Default::default());
+                                         } >
+                                "Load"
+                            </ltn::Button>
+                        }
+                    }}
+                </ltn::ButtonWrapper>
+            </ltn::ModalFooter>
+        </ltn::Modal>
     }
 }
 

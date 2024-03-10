@@ -437,6 +437,7 @@ dependencies = [
  "cfg-if",
  "console_error_panic_hook",
  "gloo-net 0.5.0",
+ "itertools",
  "leptonic",
  "leptos",
  "leptos_macro 0.6.9 (registry+https://github.com/rust-lang/crates.io-index)",
