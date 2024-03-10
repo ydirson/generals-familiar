@@ -207,8 +207,8 @@ fn ArmiesView(army_ids: Signal<Vec<String>>) -> impl IntoView {
     view! {
         <Title text="view armies" />
         <ltn::Stack orientation=ltn::StackOrientation::Horizontal
-               spacing=ltn::Size::Em(1.0)
-               style="align-items: flex-start;">
+                    spacing=ltn::Size::Em(1.0)
+                    class="army_view" >
             <For each=move || army_ids.with(|ids| ids.iter()
                                             .map(String::clone)
                                             .enumerate().collect::<Vec<(usize, String)>>())
