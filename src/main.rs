@@ -239,14 +239,28 @@ fn ArmiesView(army_ids: Signal<Vec<String>>) -> impl IntoView {
 
 #[component]
 fn NewArmyDialog(#[prop(into)] show_when: RwSignal<bool>) -> impl IntoView {
-    let (new_id, set_new_id) = create_signal("".to_string());
+    let (input, set_input) = create_signal("".to_string());
+    let new_id = Signal::derive(move || {
+        let url_prefix = opr::ARMYFORGE_SHARE_URL.to_string() + "?id=";
+        match input.get() {
+            url if url.starts_with(url_prefix.as_str()) => {
+                // Q&D extraction of id from shared URL
+                let id_start = url_prefix.len();
+                match url.find("&") {
+                    Some(amp_idx) => &url[id_start..amp_idx],
+                    None => &url[id_start..],
+                }.to_string()
+            },
+            id => id,
+        }
+    });
     view! {
         <ltn::Modal show_when >
             <ltn::ModalHeader><ltn::ModalTitle>"Load Army"</ltn::ModalTitle></ltn::ModalHeader>
             <ltn::ModalBody>
-                <ltn::TextInput placeholder="AF Share ID"
+                <ltn::TextInput placeholder="AF Shared URL or ID"
                                 should_be_focused=|| true
-                                get=new_id set=set_new_id
+                                get=input set=set_input
                  />
             </ltn::ModalBody>
             <ltn::ModalFooter>
@@ -268,7 +282,7 @@ fn NewArmyDialog(#[prop(into)] show_when: RwSignal<bool>) -> impl IntoView {
                                              show_when.set(false);
                                              let navigate = ltr::use_navigate();
                                              navigate(url.as_str(), Default::default());
-                                             set_new_id.set("".to_string());
+                                             set_input.set("".to_string());
                                          } >
                                 "Load"
                             </ltn::Button>
