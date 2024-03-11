@@ -37,7 +37,6 @@ browser to access it - if you choose to build it yourself, just run
 ### Plans and ideas for the future
 
 * essential
-  * let users paste the full URL provided by "share as link"
   * support combined/joined units
   * show spells when needed
 * QoL
