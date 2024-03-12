@@ -40,6 +40,7 @@ browser to access it - if you choose to build it yourself, just run
     full URL provided by "share as link"
   * support combined/joined units
   * show spells when needed
+  * fix unit cost (needs to add upgrades)
 * QoL
   * special rules
     * in DetailsDrawer, highlight occurrences of a rule when clicking
@@ -88,6 +89,7 @@ browser to access it - if you choose to build it yourself, just run
   * explore possible use of opr-af-to-tts ourput to improve presentation
   * proximity communication to share stats update, armies
   * WarFleets support (needs an API endpoint)
+  * campaign mode support
 * plumbing
   * flags for WASM size reduction
   * hunt for any unused features in deps
