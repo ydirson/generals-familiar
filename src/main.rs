@@ -1,3 +1,6 @@
+mod widgets;
+
+use crate::widgets::*;
 use gloo_net::http::Request;
 use itertools::Itertools;
 use leptonic::prelude as ltn;
@@ -373,11 +376,28 @@ fn ArmyList(army: Army,
                                 let name = Rc::clone(&name);
                                 let army_id = army.army_id.get();
                                 let af_url = format!("{}?id={army_id}", opr::ARMYFORGE_SHARE_URL);
+                                let remove_army_url = {
+                                    let mut ids =
+                                        use_context::<Signal<Vec<String>>>()
+                                        .expect("should find army_ids in context")
+                                        .get();
+                                    ids.remove(ids.iter().position(|x| *x == army_id)
+                                               .expect("id should be in the list to remove it"));
+                                    if ids.is_empty() {
+                                        "./".to_string()
+                                    } else {
+                                        format!("./?armies={}", ids.join(","))
+                                    }
+                                };
+                                let dropdown_shown = create_rw_signal(false);
                                 view! {
-                                    <h2>
-                                        <a target="_blank" href={af_url}>{name}</a>
-                                        <RemoveArmyButton army_id />
-                                    </h2>
+                                    <h2 on:click=move |_| dropdown_shown.set(true)>{name.clone()}</h2>
+                                    <DropdownMenu title={name.to_string()}
+                                                  show_when=dropdown_shown>
+                                        <a target="_blank" href={af_url}>"Open in ArmyForge"</a>
+                                        <a href={remove_army_url}>"Close Army"</a>
+                                        <p on:click=move |_| dropdown_shown.set(false)>"Close menu"</p>
+                                    </DropdownMenu>
                                 }
                             }}
                             {move || {
