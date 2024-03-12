@@ -17,6 +17,12 @@ macro_rules! log {
     }
 }
 
+fn open_in_new_tab_and(url: &str, action: impl FnOnce() -> ()) {
+    window().open_with_url_and_target(url, "_blank")
+        .expect("should open a window");
+    action();
+}
+
 fn main() {
     #[cfg(feature = "dev")]
     console_error_panic_hook::set_once();
@@ -293,6 +299,7 @@ fn ArmyList(army: Army,
                     },
                     Some(Ok(army_data)) => {
                         let opr::Army{ref game_system, ref name, ref unit_groups, ..} = **army_data;
+                        let army_data = Rc::clone(army_data);
                         let game_system = game_system.clone();
                         let name = Rc::clone(name);
                         let unit_groups = unit_groups.clone();
@@ -321,14 +328,16 @@ fn ArmyList(army: Army,
                         };
                         view! {
                             {move || {
-                                let name = Rc::clone(&name);
                                 let army_id = army.army_id.get();
-                                let af_url = format!("{}?id={army_id}", opr::ARMYFORGE_SHARE_URL);
+                                let dialog_shown = create_rw_signal(false);
                                 view! {
                                     <h2>
-                                        <a target="_blank" href={af_url}>{name}</a>
+                                        <span on:click=move |_| dialog_shown.set(true)>
+                                            {name.clone()}</span>
                                         <RemoveArmyButton army_id />
                                     </h2>
+                                    <ArmyDialog army={Rc::clone(&army_data)}
+                                                show_when=dialog_shown />
                                 }
                             }}
                             {move || {
@@ -354,6 +363,42 @@ fn ArmyList(army: Army,
             )
         }}
         </ltn::Stack>
+    }
+}
+
+#[component]
+fn ArmyDialog(
+    army: Rc<opr::Army>,
+    #[prop(into)] show_when: RwSignal<bool>,
+) -> impl IntoView {
+    provide_context(army);
+
+    view! {
+        <ltn::Modal class="army_details" show_when on_escape=move || show_when.set(false) >
+            {
+                let army = use_context::<Rc<opr::Army>>()
+                    .expect("should find my Army");
+                let af_url = format!("{}?id={}", opr::ARMYFORGE_SHARE_URL, army.id);
+                view! {
+                    <ltn::ModalHeader><ltn::ModalTitle>
+                        {Rc::clone(&army.name)}
+                    </ltn::ModalTitle></ltn::ModalHeader>
+                    <ltn::ModalBody>
+                        <ltn::Button on_click=move |_|
+                            open_in_new_tab_and(&af_url, || show_when.set(false))
+                        >
+                            "Open in ArmyForge"
+                        </ltn::Button>
+                    </ltn::ModalBody>
+                    <ltn::ModalFooter>
+                        <ltn::ButtonWrapper>
+                            <ltn::Button on_click=move |_| show_when.set(false)
+                                    color=ltn::ButtonColor::Secondary>"Close"</ltn::Button>
+                        </ltn::ButtonWrapper>
+                    </ltn::ModalFooter>
+                }
+            }
+        </ltn::Modal>
     }
 }
 
