@@ -34,6 +34,26 @@
     --drawer-background-color: #323232;
 }
 
+leptonic-modal-backdrop {
+    background: rgba(92, 92, 92, 0.1);
+    backdrop-filter: blur(1px);
+}
+
+// drop-down menus
+leptonic-modal.menu {
+    padding: 0;
+    min-width: 10vw;
+    leptonic-modal-header {
+        padding: 0.3em;
+    }
+    leptonic-modal-body {
+        padding: 0;
+        leptonic-table-cell {
+            padding: 0.5em;
+        }
+    }
+}
+
 html {
     font-size: 12px;
 }
