@@ -17,11 +17,11 @@ serde = { version = "1.0.0" }
 [build-dependencies.opr-test-data]
 git = "https://github.com/ydirson/opr-rs"
 optional = true
-rev = "5082781b7339cbc201ba082a23951eb7cbb4f0a2"
+rev = "238c2d658ecf7feb1af5a3aea506171d6515bc1f"
 #path = "../opr-rs/opr-test-data"
 [dependencies.opr]
 git = "https://github.com/ydirson/opr-rs"
-rev = "5082781b7339cbc201ba082a23951eb7cbb4f0a2"
+rev = "238c2d658ecf7feb1af5a3aea506171d6515bc1f"
 #path = "../opr-rs/opr"
 
 [dependencies.web-sys]
