@@ -6,6 +6,7 @@ on:
     branches:
       - master
       - dev
+      - experiments
 
   # Allows to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -53,6 +54,17 @@ jobs:
           path: ./pages/dev
       - name: fix location for dev artifacts
         run: mv pages/dev/static-webapp/* pages/dev/ && rmdir pages/dev/static-webapp/
+
+      - name: Download experiments artifacts
+        id: download-artifact-experiments
+        uses: dawidd6/action-download-artifact@v3
+        with:
+          workflow: ci.yml
+          workflow_conclusion: success
+          branch: experiments
+          path: ./pages/experiments
+      - name: fix location for experiments artifacts
+        run: mv pages/experiments/static-webapp/* pages/experiments/ && rmdir pages/experiments/static-webapp/
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
