@@ -1,7 +1,7 @@
 # General's Familiar
 
 This project aims to provide a helper-in-your-pocket-phone app for
-figurine wargame players, primarily targetting
+figurine wargame players, primarily targeting
 [OnePageRules](https://onepagerules.com/) for now, and potentially
 extended in the future to support other games.
 
@@ -18,7 +18,7 @@ or build it yourself.  You will still need a web server to allow your
 browser to access it - if you choose to build it yourself, just run
 `trunk serve` to build and run a server on the result.
 
-## Functionnalities and Roadmap
+## Functionalities and Roadmap
 
 ### Currently available
 
@@ -45,13 +45,13 @@ browser to access it - if you choose to build it yourself, just run
   * special rules
     * in DetailsDrawer, highlight occurrences of a rule when clicking
       its description
-    * identify special-rules mentionned in special-rules descriptions
-      (eg. Shadow-Protocol, Rending in Melee, Tunneller, Frenzy)
+    * identify special-rules mentioned in special-rules descriptions
+      (eg. Shadow-Protocol, Rending in Melee, Tunneler, Frenzy)
     * color-coding for common- vs army-rules
     * easy way to highlight units with a given rule (eg. for Robot)
     * scroll to rule def on click on keyword
   * additional info
-    * provide a menu with a few links (project's github, AF, rules)
+    * provide a menu with a few links (project's GitHub, AF, rules)
     * provide army links to army book
     * extract meaningful army-level info for permanent display (aura
       available from units, (optionally) spells, ...)
@@ -74,7 +74,7 @@ browser to access it - if you choose to build it yourself, just run
       the drawer
   * data management
     * keep (in local storage) a list of recently-used armies
-    * keep (in local storage) a list of prefered armies for easy selection
+    * keep (in local storage) a list of preferred armies for easy selection
     * allow keeping army/book data in local storage for offline usage
   * UX
     * quick switch of selection (for small lists) by e.g. swiping the
@@ -86,7 +86,7 @@ browser to access it - if you choose to build it yourself, just run
   * some access to the rules for reference
   * support more than 2 armies
   * allow using community translations
-  * explore possible use of opr-af-to-tts ourput to improve presentation
+  * explore possible use of opr-af-to-tts output to improve presentation
   * proximity communication to share stats update, armies
   * WarFleets support (needs an API endpoint)
   * campaign mode support
@@ -111,7 +111,7 @@ I'm not really happy yet with the generated WASM size, so maybe
 technical choices will change at some point - at least this setup
 makes it really easy to prototype things.
 
-## Building locally / developping
+## Building locally / developing
 
 The easiest for development is to launch in a terminal:
 ```
@@ -119,7 +119,7 @@ trunk serve --features dev
 ```
 
 It will rebuild the project as you save files and trigger a browser
-reload.  The `dev` feature will provide usable strack traces when the
+reload.  The `dev` feature will provide usable stack traces when the
 app goes `panic!()`.
 
 `trunk serve` and flexible deployment of the build result however
@@ -133,7 +133,7 @@ GitHub CI), you will need to build the project using `trunk build
 --public-url ./`.
 
 Also note that `trunk serve` adds some additional javascript to the
-generated `dist/index.html`, useful while developping (to trigger
+generated `dist/index.html`, useful while developing (to trigger
 immediate reload on build success and a "build error" overlay when
 that kind of things happen).  You definitely don't want to deploy this
 code, which will periodically retry to open a websocket to trunk for
