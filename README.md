@@ -5,7 +5,7 @@ figurine wargame players, primarily targeting
 [OnePageRules](https://onepagerules.com/) for now, and potentially
 extended in the future to support other games.
 
-## [Check the app in your browser](https://ydirson.github.io/generals-familiar/master/)
+## [Check the app in your browser](https://ydirson.github.io/generals-familiar/)
 
 This is a standalone web app: once loaded in your browser the only
 network interaction will be to load your army lists.  It is intended
