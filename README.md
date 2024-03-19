@@ -40,7 +40,6 @@ browser to access it - if you choose to build it yourself, just run
     full URL provided by "share as link"
   * support combined/joined units
   * show spells when needed
-  * fix unit cost (needs to add upgrades)
 * QoL
   * special rules
     * in DetailsDrawer, highlight occurrences of a rule when clicking
