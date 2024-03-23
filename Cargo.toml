@@ -14,14 +14,18 @@ leptos_meta = { version = "0.6.0", features = ["csr"] }
 leptos_router = { version = "0.6.0", features = ["csr"] }
 serde = { version = "1.0.0" }
 
+[patch.crates-io]
+# PR for Rc<String>
+leptos = { git = "https://github.com/leptos-rs/leptos", rev = "refs/pull/2462/head" }
+
 [build-dependencies.opr-test-data]
 git = "https://github.com/ydirson/opr-rs"
 optional = true
-rev = "238c2d658ecf7feb1af5a3aea506171d6515bc1f"
+rev = "16bc159570a435515893d1b5b069b088ab39a740"
 #path = "../opr-rs/opr-test-data"
 [dependencies.opr]
 git = "https://github.com/ydirson/opr-rs"
-rev = "238c2d658ecf7feb1af5a3aea506171d6515bc1f"
+rev = "16bc159570a435515893d1b5b069b088ab39a740"
 #path = "../opr-rs/opr"
 
 [dependencies.web-sys]
