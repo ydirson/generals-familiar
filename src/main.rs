@@ -484,9 +484,9 @@ fn SpecialRulesList(special_rules: Vec<Rc<opr::SpecialRule>>) -> impl IntoView {
         .enumerate()
         .map(|(i, special_rule)| {
             let separator = if i == 0 { "" } else { ", " };
-            let rating = match special_rule.rating.as_str() {
-                "" => { "".to_string() },
-                rating => { format!("({})", rating) },
+            let rating = match special_rule.rating {
+                None => { "".to_string() },
+                Some(rating) => { format!("({})", rating) },
             };
             view! {
                 {separator}
