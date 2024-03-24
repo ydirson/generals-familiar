@@ -204,6 +204,7 @@ fn SampleMatchups() -> impl IntoView {
 /// drawers for selections
 #[component]
 fn ArmiesView(army_ids: Signal<Vec<String>>) -> impl IntoView {
+    provide_context(army_ids);
     view! {
         <Title text="view armies" />
         <ltn::Stack orientation=ltn::StackOrientation::Horizontal
@@ -267,10 +268,19 @@ fn ArmyList(army: Army,
                     None => view! { <h2>"Loading..."</h2> }.into_view(),
                     Some(Err(message)) => {
                         let message = message.clone();
+                        let army_id = army.army_id.get();
                         view! {
-                            <ltn::Alert variant=ltn::AlertVariant::Danger>
-                                <AlertContent slot>{message}</AlertContent>
-                            </ltn::Alert>
+                            <ltn::Stack spacing=ltn::Size::Em(0.5)
+                                        orientation=ltn::StackOrientation::Horizontal >
+                                <ltn::Alert variant=ltn::AlertVariant::Danger>
+                                    <AlertContent slot>{message}</AlertContent>
+                                </ltn::Alert>
+                                // FIXME: hack to have the button on errors have the same
+                                // size as the one on titles
+                                <span style="font-size: var(--typography-h2-font-size);">
+                                    <RemoveArmyButton army_id />
+                                </span>
+                            </ltn::Stack>
                         }.into_view()
                     },
                     Some(Ok(army_data)) => {
@@ -304,11 +314,13 @@ fn ArmyList(army: Army,
                         view! {
                             {move || {
                                 let name = Rc::clone(&name);
-                                let url = format!("{}?id={}",
-                                                  opr::ARMYFORGE_SHARE_URL,
-                                                  army.army_id.get());
+                                let army_id = army.army_id.get();
+                                let af_url = format!("{}?id={army_id}", opr::ARMYFORGE_SHARE_URL);
                                 view! {
-                                    <h2><a target="_blank" href={url}>{name}</a></h2>
+                                    <h2>
+                                        <a target="_blank" href={af_url}>{name}</a>
+                                        <RemoveArmyButton army_id />
+                                    </h2>
                                 }
                             }}
                             {move || {
@@ -375,6 +387,29 @@ fn UnitsList(units: Vec<Rc<opr::Unit>>,
                 </ltn::TableBody>
             </ltn::Table>
         </ltn::TableContainer>
+    }
+}
+
+#[component]
+fn RemoveArmyButton(army_id: String) -> impl IntoView {
+    let mut ids =
+        use_context::<Signal<Vec<String>>>()
+        .expect("should find army_ids in context")
+        .get();
+    ids.remove(ids.iter().position(|x| *x == army_id)
+               .expect("id should be in the list to remove it"));
+    let remove_army_url = if ids.is_empty() {
+        "./".to_string()
+    } else {
+        format!("./?armies={}", ids.join(","))
+    };
+
+    view! {
+        <a href=remove_army_url >
+            <button class="rm_army">
+                <ltn::Icon icon=ltn::icondata::IoCloseCircleOutline />
+            </button>
+        </a>
     }
 }
 

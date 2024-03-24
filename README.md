@@ -82,6 +82,7 @@ browser to access it - if you choose to build it yourself, just run
     * quick switch of selection for larger lists, by using e.g. an iconbar
       to jump to given unit type (use eg. unit acronyms for a first step)
     * allow some UI customization (font size...)
+    * on army removal, avoid reloading armies after the removed one
 * extra features
   * some access to the rules for reference
   * better support more than 2 armies

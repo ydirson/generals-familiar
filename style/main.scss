@@ -37,10 +37,20 @@ leptonic-app-bar {
     align-items: flex-start;
 
     .army_list {
-        h2 a {
-            &:link, &:visited {
-                color: var(--box-color);
+        h2 {
+            a {
+                &:link, &:visited {
+                    color: var(--box-color);
+                }
             }
+        }
+        button.rm_army {
+            padding: 0;
+            margin-left: 0.2em;
+            border: 0;
+            height: 1em;
+            width: 1em;
+            border-radius: 0.5em;
         }
     }
 }
