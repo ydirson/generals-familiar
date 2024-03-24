@@ -209,13 +209,35 @@ fn ArmiesView(army_id0: Signal<String>,
     }
 }
 
+#[derive(Clone)]
+struct DrawerControl {
+    shown: RwSignal<bool>,
+}
+impl Default for DrawerControl {
+    fn default() -> Self {
+        DrawerControl {
+            shown: create_rw_signal(false),
+        }
+    }
+}
+
 /// A component container for the army list and the drawer, so they
 /// can share a common context
 #[component]
 fn ArmyContainer(army: Army, side: ltn::DrawerSide) -> impl IntoView {
+    // the `shown` status can be changed by eg. selecting in the army
+    // list, or using close button in the drawer itself
+    let drawer_control = DrawerControl::default();
+    let shown = drawer_control.shown.clone();
+    create_effect(move |_| {
+        shown.set(army.unit_selection.with(Option::is_some));
+    });
+
     view! {
-        <DetailsDrawer side army=army.clone() />
-        <ArmyList army />
+        <Provider value=drawer_control >
+            <DetailsDrawer side army=army.clone() />
+            <ArmyList army />
+        </Provider>
     }
 }
 
@@ -345,17 +367,11 @@ fn DetailsDrawer(army: Army,
         ltn::DrawerSide::Right => "right",
     };
 
-    // the `shown` status can be changed by eg. selecting in the army
-    // list, or using close button in the drawer itself
-    let (shown, set_shown) = create_signal(false);
-    create_effect(move |_| {
-        set_shown.set(army.unit_selection.with(Option::is_some));
-    });
-
+    let shown = use_context::<DrawerControl>().unwrap().shown;
     view! {
         <ltn::Drawer side shown class={format!("army_details {pos_class}")}>
             <Show when=move || shown.get() >
-                <UnitDetails army=army.clone() side set_shown
+                <UnitDetails army=army.clone() side
                              unit=army.unit_selection.get().unwrap() />
             </Show>
         </ltn::Drawer>
@@ -366,13 +382,15 @@ fn DetailsDrawer(army: Army,
 fn UnitDetails(unit: Rc<opr::Unit>,
                army: Army,
                side: ltn::DrawerSide,
-               set_shown: WriteSignal<bool>) -> impl IntoView
+) -> impl IntoView
 {
+    let shown = use_context::<DrawerControl>().unwrap().shown;
     let unit_name = unit.formatted_name();
     let opr::Unit{quality, defense, full_cost, ref loadout, ref special_rules, ..} = *unit;
-    let close_button = |glyph|
-        view!{ <ltn::Button color=ltn::ButtonColor::Secondary
-                            on_click=move |_| set_shown.set(false)> {glyph} </ltn::Button> };
+    let close_button = |glyph| view! {
+        <ltn::Button color=ltn::ButtonColor::Secondary
+                     on_click=move |_| shown.set(false)> {glyph} </ltn::Button>
+    };
     let (left_button, right_button) = match side {
         ltn::DrawerSide::Left  => ( Some(close_button("<")), None ),
         ltn::DrawerSide::Right => ( None, Some(close_button(">")) ),
