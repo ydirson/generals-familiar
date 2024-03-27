@@ -344,9 +344,11 @@ fn ArmyList(army: Army,
                         }.into_view()
                     },
                     Some(Ok(army_data)) => {
-                        let opr::Army{ref game_system, ref name, ref units, ..} = **army_data;
+                        let opr::Army{ref game_system, ref name, ref units,
+                                      ref armybook_ids, ..} = **army_data;
                         let name = Rc::clone(name);
                         let units = units.clone();
+                        let armybook_ids = armybook_ids.clone();
 
                         // since we are recreating an ArmyList, the Army must have changed
                         // (or this is an over-refresh bug), drawer is outdated so close it
@@ -374,6 +376,7 @@ fn ArmyList(army: Army,
                         view! {
                             {move || {
                                 let name = Rc::clone(&name);
+                                let armybook_ids = armybook_ids.clone();
                                 let army_id = army.army_id.get();
                                 let af_url = format!("{}?id={army_id}", opr::ARMYFORGE_SHARE_URL);
                                 let remove_army_url = {
@@ -390,12 +393,23 @@ fn ArmyList(army: Army,
                                     }
                                 };
                                 let dropdown_shown = create_rw_signal(false);
+                                let app_game_system = app_game_system.get();
                                 view! {
                                     <h2 on:click=move |_| dropdown_shown.set(true)>{name.clone()}</h2>
                                     <DropdownMenu title={name.to_string()}
                                                   show_when=dropdown_shown>
                                         <a target="_blank" href={af_url}>"Open in ArmyForge"</a>
                                         <a href={remove_army_url}>"Close Army"</a>
+                                        {armybook_ids.iter().map(|id| view! {
+                                            <p><a target="_blank"
+                                                  href={match app_game_system {
+                                                      Some(game_system) =>
+                                                          opr::get_bookinfo_url(id, game_system),
+                                                      None => "".to_string()}
+                                                  }
+                                            > "book"//{id.as_ref()}
+                                                </a></p>
+                                        }).collect_view() }
                                         <p on:click=move |_| dropdown_shown.set(false)>"Close menu"</p>
                                     </DropdownMenu>
                                 }

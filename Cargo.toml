@@ -22,11 +22,11 @@ leptos = { git = "https://github.com/leptos-rs/leptos", rev = "refs/pull/2462/he
 [build-dependencies.opr-test-data]
 git = "https://github.com/ydirson/opr-rs"
 optional = true
-rev = "6d4b376b6395473582b550ea9baef88dbdcf841a"
+rev = "be592752aba31d68760f5edbe0b1b96065b2764d"
 #path = "../opr-rs/opr-test-data"
 [dependencies.opr]
 git = "https://github.com/ydirson/opr-rs"
-rev = "6d4b376b6395473582b550ea9baef88dbdcf841a"
+rev = "be592752aba31d68760f5edbe0b1b96065b2764d"
 #path = "../opr-rs/opr"
 
 [dependencies.web-sys]

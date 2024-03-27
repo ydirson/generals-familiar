@@ -1330,7 +1330,7 @@ checksum = "3fdb12b2476b595f9358c5161aa467c2438859caa136dec86c26fdd2efe17b92"
 [[package]]
 name = "opr"
 version = "0.1.0"
-source = "git+https://github.com/ydirson/opr-rs?rev=6d4b376b6395473582b550ea9baef88dbdcf841a#6d4b376b6395473582b550ea9baef88dbdcf841a"
+source = "git+https://github.com/ydirson/opr-rs?rev=be592752aba31d68760f5edbe0b1b96065b2764d#be592752aba31d68760f5edbe0b1b96065b2764d"
 dependencies = [
  "cfg-if",
  "serde",
@@ -1340,7 +1340,7 @@ dependencies = [
 [[package]]
 name = "opr-test-data"
 version = "0.0.1"
-source = "git+https://github.com/ydirson/opr-rs?rev=6d4b376b6395473582b550ea9baef88dbdcf841a#6d4b376b6395473582b550ea9baef88dbdcf841a"
+source = "git+https://github.com/ydirson/opr-rs?rev=be592752aba31d68760f5edbe0b1b96065b2764d#be592752aba31d68760f5edbe0b1b96065b2764d"
 dependencies = [
  "include_dir",
 ]
