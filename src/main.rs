@@ -434,10 +434,15 @@ fn ArmyDialog(
             {
                 let army = use_context::<Rc<opr::Army>>()
                     .expect("should find my Army");
-                let af_url = format!("{}?id={}", opr::ARMYFORGE_SHARE_URL, army.id);
+                let opr::Army{ref id, ref game_system, ref name, ref armybook_ids, ..} = *army;
+                let game_system = game_system.clone();
+                let name = Rc::clone(name);
+                let armybook_ids = armybook_ids.clone();
+
+                let af_url = format!("{}?id={}", opr::ARMYFORGE_SHARE_URL, id);
                 view! {
                     <ltn::ModalHeader><ltn::ModalTitle>
-                        {Rc::clone(&army.name)}
+                        {Rc::clone(&name)}
                     </ltn::ModalTitle></ltn::ModalHeader>
                     <ltn::ModalBody>
                         <ltn::Button on_click=move |_|
@@ -445,6 +450,28 @@ fn ArmyDialog(
                         >
                             "Open in ArmyForge"
                         </ltn::Button>
+                        {
+                            armybook_ids.iter()
+                                .map(move |id| {
+                                    match &game_system {
+                                        Ok(game_system) => {
+                                            let id = Rc::clone(&id);
+                                            let url = opr::get_bookinfo_url(id.as_ref(),
+                                                                            *game_system);
+                                            view! {
+                                                <ltn::Button on_click=move |_|
+                                                    open_in_new_tab_and(url.as_str(),
+                                                                        || show_when.set(false))
+                                                 >
+                                                    {format!("book {}", Rc::clone(&id))}
+                                                </ltn::Button>
+                                            }
+                                        }.into_view(),
+                                        Err(e) => format!("book {id} failed: {e}").into_view(),
+                                    }
+                                })
+                                .collect_view()
+                        }
                     </ltn::ModalBody>
                     <ltn::ModalFooter>
                         <ltn::ButtonWrapper>
