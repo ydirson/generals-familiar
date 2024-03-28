@@ -6,7 +6,6 @@ use leptos_meta::{provide_meta_context, Title};
 use leptos_router as ltr;
 use leptos_router::Params; // derive(ltr::Params) won't work ?!
 use std::rc::Rc;
-use std::str::FromStr;
 
 const APP_NAME: &str = "General's Familiar";
 
@@ -234,10 +233,10 @@ fn ArmyList(army: Army,
                     },
                     Some(Ok(army_data)) => {
                         let opr::Army{ref game_system, ref name, ref units, ..} = **army_data;
+                        let game_system = game_system.clone();
                         let name = Rc::clone(name);
                         let units = units.clone();
 
-                        let game_system = opr::GameSystem::from_str(game_system);
                         let check_inconsistency = move || {
                             match game_system.clone() {
                                 Err(e) => Some(e),
