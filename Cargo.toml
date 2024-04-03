@@ -2,6 +2,7 @@
 name = "generals-familiar"
 version = "0.1.0"
 edition = "2021"
+rust-version = "1.72"
 
 [dependencies]
 console_error_panic_hook = { version = "0.1.0", optional = true }

@@ -74,15 +74,23 @@ where
 /// se, and mandatory parents of the app
 #[component]
 fn AppBoilerplate() -> impl IntoView {
+    // get app URL to workaround Router assuming by default path
+    // components are a route
+    let path: &'static str = document()
+        .location().expect("document should have a location")
+        .pathname().expect("document location should have a pathname")
+        .leak();
     view! {
         <ltn::Root default_theme=ltn::LeptonicTheme::default()>
             <Title formatter=|text| format!("{APP_NAME} — {text}")/>
             <ltn::Box style="min-height: 100vh;">
-                <ltr::Router fallback=|| view! {
-                    <ltn::Alert variant=ltn::AlertVariant::Danger>
-                        <AlertContent slot>"Bad URL (route not matched)"</AlertContent>
-                    </ltn::Alert>
-                }.into_view() >
+                <ltr::Router base=path
+                             fallback=|| view! {
+                                 <ltn::Alert variant=ltn::AlertVariant::Danger>
+                                     <AlertContent slot>"Bad URL (route not matched)"</AlertContent>
+                                 </ltn::Alert>
+                             }.into_view()
+                >
                     <App/>
                 </ltr::Router>
             </ltn::Box>
