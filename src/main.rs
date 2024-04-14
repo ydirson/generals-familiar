@@ -51,10 +51,16 @@ async fn load_json_from_url<T>(url: &str) -> Result<T, String>
 where
     T: serde::de::DeserializeOwned,
 {
-    Request::get(url).send().await
-        .map_err(|e| format!("communication error: {e}"))?
-        .json().await
-        .map_err(|e| format!("parse error: {e}"))
+    let response = Request::get(url).send().await
+        .map_err(|e| format!("communication error: {e}"));
+    match response {
+        Err(e) => Err(e),
+        Ok(response) if ! response.ok() =>
+            Err(format!("HTTP error {} - {}", response.status(), response.status_text())),
+        Ok(response) =>
+            response.json().await
+            .map_err(|e| format!("parse error: {e}")),
+    }
 }
 
 /// component dedicated to boilerplate not really part of the app per
