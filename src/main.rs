@@ -234,7 +234,7 @@ fn ArmyList(army: Army,
                     },
                     Some(Ok(army_data)) => {
                         let opr::Army{ref game_system, ref name, ref units, ..} = **army_data;
-                        let name = name.clone();
+                        let name = Rc::clone(name);
                         let units = units.clone();
 
                         let game_system = opr::GameSystem::from_str(game_system);
@@ -257,7 +257,7 @@ fn ArmyList(army: Army,
                         };
                         view! {
                             {move || {
-                                let name = name.clone();
+                                let name = Rc::clone(&name);
                                 let url = format!("{}?id={}",
                                                   opr::ARMYFORGE_SHARE_URL,
                                                   army.army_id.get());
@@ -411,7 +411,7 @@ fn UnitUpgradesList(loadout_list: Vec<Rc<opr::UnitLoadout>>) -> impl IntoView {
                         let opr::UnitUpgrade{name, ref content, ..} = upgrade;
                         view! {
                             {move || if i > 0 { ", " } else { "" }}
-                            {name} " (" <SpecialRulesList special_rules={content.clone()} /> ")"
+                            {Rc::clone(name)} " (" <SpecialRulesList special_rules={content.clone()} /> ")"
                         }
                     } else {
                         panic!();
@@ -449,7 +449,7 @@ fn EquipmentList(loadout_list: Vec<Rc<opr::UnitLoadout>>) -> impl IntoView {
 #[component]
 fn EquipmentItem(loadout: Rc<opr::UnitLoadout>) -> impl IntoView {
     if let opr::UnitLoadout::Equipment(ref equipment) = *loadout {
-        let name = equipment.name.clone();
+        let name = Rc::clone(&equipment.name);
         let special_rules = equipment.special_rules.clone();
         let opr::Equipment{count, range, attacks, ..} = *equipment;
         view! {
@@ -491,7 +491,7 @@ fn SpecialRulesList(special_rules: Vec<Rc<opr::SpecialRule>>) -> impl IntoView {
             view! {
                 {separator}
                 <special-rule>
-                    {special_rule.name.clone()}
+                    {Rc::clone(&special_rule.name)}
                 </special-rule>
                 {rating}
             }
@@ -581,8 +581,8 @@ fn rules_descriptions_from_list_for_unit(unit: Rc<opr::Unit>,
                 let opr::SpecialRuleDef{ref name, ref description} = **rule_def;
                 view!{
                     <p>
-                        <rule-name>{name}</rule-name> ": "
-                        {description}
+                        <rule-name>{Rc::clone(name)}</rule-name> ": "
+                        {Rc::clone(description)}
                     </p>
                 }.into_view()
             } else {view!{}.into_view()}})
