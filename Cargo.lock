@@ -446,7 +446,6 @@ dependencies = [
  "leptos_meta",
  "leptos_router",
  "opr",
- "opr-test-data",
  "serde",
  "web-sys",
 ]
@@ -1270,14 +1269,6 @@ dependencies = [
  "cfg-if",
  "serde",
  "serde-aux",
-]
-
-[[package]]
-name = "opr-test-data"
-version = "0.0.1"
-source = "git+https://github.com/ydirson/opr-rs?rev=ef24793128183706ccb055563fe7da1c9518a15b#ef24793128183706ccb055563fe7da1c9518a15b"
-dependencies = [
- "include_dir",
 ]
 
 [[package]]
