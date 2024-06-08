@@ -40,7 +40,7 @@ browser to access it - if you choose to build it yourself, just run
   * let users select their own armies from a UI, let them paste the
     full URL provided by "share as link"
   * support combined/joined units
-  * show spells when needed
+  * show spells when needed (requires fetching json army book)
 * QoL
   * special rules
     * in DetailsDrawer, highlight occurrences of a rule when clicking
@@ -52,7 +52,8 @@ browser to access it - if you choose to build it yourself, just run
     * scroll to rule def on click on keyword
   * additional info
     * provide a menu with a few links (project's GitHub, AF, rules)
-    * provide army links to army book
+    * provide army links to army book (book name in the link requires
+      fetching json army book)
     * extract meaningful army-level info for permanent display (aura
       available from units, (optionally) spells, ...)
     * see how we can determine which characteristic of displayed unit is
@@ -67,8 +68,8 @@ browser to access it - if you choose to build it yourself, just run
     * keep history of stat changes (to help check about forgotten stuff,
       and help battle reports)
   * UI structuring
-    * order units (replicating AF order currently requires accessing
-      the books)
+    * order units (replicating AF order currently requires fetching
+      json army book)
     * regroup identical units
     * ensure important list-level info is displayed, and not hidden by
       the drawer
