@@ -95,7 +95,7 @@ fn App() -> impl IntoView {
     provide_context(game_system);
 
     let common_rules: Resource<Option<opr::GameSystem>,
-                               Result<Vec<Rc<opr::SpecialRuleDef>>, String>> =
+                               Result<Rc<opr::CommonRules>, String>> =
         create_resource(
             move || game_system.get(),
             |game_system| async move {
@@ -620,13 +620,13 @@ fn SpecialRulesDefList(unit: Rc<opr::Unit>,
 /// error string to display
 fn common_rules_def() -> Result<Vec<Rc<opr::SpecialRuleDef>>, String> {
     let common_rules_def = use_context::<
-            Resource<Option<opr::GameSystem>, Result<Vec<Rc<opr::SpecialRuleDef>>, String>>
+            Resource<Option<opr::GameSystem>, Result<Rc<opr::CommonRules>, String>>
             >();
 
     if let Some(common_rules_def) = common_rules_def {
         let common_rules_def = common_rules_def.get();
         match common_rules_def {
-            Some(Ok(common_rules_def)) => Ok(common_rules_def),
+            Some(Ok(common_rules_def)) => Ok(common_rules_def.rules.clone()),
             Some(Err(message)) => Err(format!("common rules not found: {message}")),
             // FIXME that one is not really an error
             None => Err("(common rules still loading)".to_string()),
