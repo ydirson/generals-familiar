@@ -74,6 +74,10 @@ leptonic-drawer.army_details {
         }
     }
 
+    span.unit {
+        font-weight: bold
+    }
+
     leptonic-table-container {
         // FIXME: not ideal but how to do better?  Should be sufficient anyway
         flex-shrink: 0;

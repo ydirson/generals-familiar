@@ -28,14 +28,14 @@ fn main() {
 #[derive(Clone, Debug)]
 struct Army {
     army_id: Signal<String>,
-    unit_selection: RwSignal<Option<Rc<opr::Unit>>>,
+    unit_selection: RwSignal<Option<Rc<opr::UnitGroup>>>,
     army_data: Resource<String, Result<Rc<opr::Army>, String>>,
 }
 
 impl Army {
     fn new(army_id: Signal<String>) -> Army
     {
-        let unit_selection = create_rw_signal(None::<Rc<opr::Unit>>);
+        let unit_selection = create_rw_signal(None::<Rc<opr::UnitGroup>>);
         let army_data = create_resource(
             move || army_id.get(),
             |army_id_value| {
@@ -284,10 +284,10 @@ fn ArmyList(army: Army,
                         }.into_view()
                     },
                     Some(Ok(army_data)) => {
-                        let opr::Army{ref game_system, ref name, ref units, ..} = **army_data;
+                        let opr::Army{ref game_system, ref name, ref unit_groups, ..} = **army_data;
                         let game_system = game_system.clone();
                         let name = Rc::clone(name);
-                        let units = units.clone();
+                        let unit_groups = unit_groups.clone();
 
                         // since we are recreating an ArmyList, the Army must have changed
                         // (or this is an over-refresh bug), drawer is outdated so close it
@@ -327,7 +327,7 @@ fn ArmyList(army: Army,
                                 let check_inconsistency = check_inconsistency();
                                 if check_inconsistency.is_none() {
                                     view! {
-                                        <UnitsList units={units.clone()}
+                                        <UnitsList unit_groups={unit_groups.clone()}
                                                    select_unit=army.unit_selection />
                                     }.into_view()
                                 } else {
@@ -350,8 +350,8 @@ fn ArmyList(army: Army,
 }
 
 #[component]
-fn UnitsList(units: Vec<Rc<opr::Unit>>,
-             select_unit: RwSignal<Option<Rc<opr::Unit>>>, // FIXME only need WriteSignal here
+fn UnitsList(unit_groups: Vec<Rc<opr::UnitGroup>>,
+             select_unit: RwSignal<Option<Rc<opr::UnitGroup>>>, // FIXME only need WriteSignal here
 ) -> impl IntoView {
     let (selected_row_num, set_selected_row_num) = create_signal(None::<usize>);
     view! {
@@ -359,12 +359,12 @@ fn UnitsList(units: Vec<Rc<opr::Unit>>,
             <ltn::Table bordered=true hoverable=true>
                 <ltn::TableBody>
                     {move || {
-                        units
+                        unit_groups
                             .clone()
                             .into_iter()
                             .enumerate()
-                            .map(|(i, unit)| {
-                                let unit_name = (*unit).formatted_name();
+                            .map(|(i, group)| {
+                                let group_name = (*group).formatted_name();
                                 //let opr::Unit{..} = *unit;
                                 view! {
                                     // FIXME this ought to be a ltn::TableRow, which does
@@ -375,10 +375,10 @@ fn UnitsList(units: Vec<Rc<opr::Unit>>,
                                                       Some(index) if index == i)
                                          }
                                          on:click=move |_| {
-                                             select_unit.set(Some(unit.clone()));
+                                             select_unit.set(Some(group.clone()));
                                              set_selected_row_num.set(Some(i));
                                     }>
-                                        <ltn::TableCell> {unit_name} </ltn::TableCell>
+                                        <ltn::TableCell> {group_name} </ltn::TableCell>
                                     </leptonic-table-row>
                                 }
                             })
@@ -425,22 +425,22 @@ fn DetailsDrawer(army: Army,
     view! {
         <ltn::Drawer side shown class={format!("army_details {pos_class}")}>
             <Show when=move || shown.get() >
-                <UnitDetails army=army.clone() side
-                             unit=army.unit_selection.get().unwrap() />
+                <GroupDetails army=army.clone() side
+                              group=army.unit_selection.get().unwrap() />
             </Show>
         </ltn::Drawer>
     }
 }
 
 #[component]
-fn UnitDetails(unit: Rc<opr::Unit>,
-               army: Army,
-               side: ltn::DrawerSide,
+fn GroupDetails(group: Rc<opr::UnitGroup>,
+                army: Army,
+                side: ltn::DrawerSide,
 ) -> impl IntoView
 {
+    let opr::UnitGroup{full_cost, ..} = *group;
     let shown = use_context::<DrawerControl>().unwrap().shown;
-    let unit_name = unit.formatted_name();
-    let opr::Unit{quality, defense, full_cost, ref loadout, ref special_rules, ..} = *unit;
+    let group_name = group.formatted_name();
     let close_button = |glyph| view! {
         <ltn::Button color=ltn::ButtonColor::Secondary
                      on_click=move |_| shown.set(false)> {glyph} </ltn::Button>
@@ -458,7 +458,7 @@ fn UnitDetails(unit: Rc<opr::Unit>,
                 <ltn::Stack orientation=ltn::StackOrientation::Horizontal
                             spacing=ltn::Size::Em(1.0)>
                     {left_button}
-                    {format!("{unit_name}: Q{quality} D{defense}")}
+                    {group_name}
                 </ltn::Stack>
                 <ltn::Stack orientation=ltn::StackOrientation::Horizontal
                             spacing=ltn::Size::Em(1.0)>
@@ -467,10 +467,45 @@ fn UnitDetails(unit: Rc<opr::Unit>,
                 </ltn::Stack>
             </ltn::Stack>
         </h3>
-        <p><SpecialRulesList special_rules={special_rules.clone()} /></p>
+
+        {
+            let single = group.units.len() == 1;
+            group.units.iter()
+                .map(|unit| view! {<UnitDetails unit=Rc::clone(unit) single />})
+                .collect_view()
+        }
+
+        <SpecialRulesDefList group=Rc::clone(&group) army />
+    }
+}
+
+#[component]
+fn UnitDetails(unit: Rc<opr::Unit>,
+               single: bool,
+) -> impl IntoView
+{
+    let unit_name = unit.formatted_name();
+    let opr::Unit{quality, defense, full_cost, ref loadout, ref special_rules, ..} = *unit;
+    let special_rules = special_rules.clone();
+
+    view! {
+        <p>
+            <ltn::Stack orientation=ltn::StackOrientation::Horizontal
+                        style="width: 100%; justify-content: space-between;"
+                        spacing=ltn::Size::Em(0.0)>
+                <span>
+                    <span class="unit">
+                        {(!single).then(|| format!("{unit_name}: "))}
+                        {format!("Q{quality} D{defense}")}
+                    </span>
+                    " "
+                    <SpecialRulesList special_rules={special_rules.clone()} />
+                </span>
+                {format!("{full_cost} pts")}
+            </ltn::Stack>
+        </p>
         <p><UnitUpgradesList loadout_list={loadout.clone()} /></p>
         <EquipmentList loadout_list={loadout.clone()} />
-        <SpecialRulesDefList unit=Rc::clone(&unit) army />
     }
 }
 
@@ -577,12 +612,12 @@ fn SpecialRulesList(special_rules: Vec<Rc<opr::SpecialRule>>) -> impl IntoView {
 }
 
 #[component]
-fn SpecialRulesDefList(unit: Rc<opr::Unit>,
+fn SpecialRulesDefList(group: Rc<opr::UnitGroup>,
                        army: Army,) -> impl IntoView {
     view! {
         <specialrules-def-list>
             {move || {
-                let unit = Rc::clone(&unit);
+                let group = Rc::clone(&group);
                 army.army_data.with(
                     move |army_data| {
                         if let Some(Ok(army_data)) = army_data {
@@ -593,8 +628,8 @@ fn SpecialRulesDefList(unit: Rc<opr::Unit>,
                             view!{
                                 {match common_rules_def() {
                                     Ok(common_rules_def) => view! {
-                                        {rules_descriptions_from_list_for_unit(
-                                            Rc::clone(&unit), &common_rules_def.clone())}
+                                        {rules_descriptions_from_list_for_group(
+                                            Rc::clone(&group), &common_rules_def.clone())}
                                     }.into_view(),
                                     Err(message) => view! {
                                         <ltn::Alert variant=ltn::AlertVariant::Danger>
@@ -602,8 +637,8 @@ fn SpecialRulesDefList(unit: Rc<opr::Unit>,
                                         </ltn::Alert>
                                     }.into_view(),
                                 }}
-                                {rules_descriptions_from_list_for_unit(
-                                    Rc::clone(&unit), special_rules_def)}
+                                {rules_descriptions_from_list_for_group(
+                                    Rc::clone(&group), special_rules_def)}
                             }.into_view()
                         } else {
                             // cannot happen - FIXME should pass opr::Army directly instead?
@@ -636,25 +671,13 @@ fn common_rules_def() -> Result<Vec<Rc<opr::SpecialRuleDef>>, String> {
     }
 }
 
-fn rules_descriptions_from_list_for_unit(unit: Rc<opr::Unit>,
-                                         rules_def: &[Rc<opr::SpecialRuleDef>]
+fn rules_descriptions_from_list_for_group(group: Rc<opr::UnitGroup>,
+                                          rules_def: &[Rc<opr::SpecialRuleDef>]
 ) -> impl IntoView {
-    let opr::Unit{ref special_rules, ref loadout, ..} = *unit;
     rules_def
         .iter()
         .map(|rule_def| {
-            if special_rules
-                .iter()
-                .any(|rule| rule.name == rule_def.name) ||
-                loadout
-                .iter()
-                .any(|item| match &**item {
-                    opr::UnitLoadout::Equipment(equipment) =>
-                        equipment.special_rules.iter().any(|rule| rule.name == rule_def.name),
-                    opr::UnitLoadout::Upgrade(upgrade) =>
-                        upgrade.content.iter().any(|rule| rule.name == rule_def.name),
-                })
-            {
+            if group_uses_rule(Rc::clone(&group), rule_def) {
                 let opr::SpecialRuleDef{ref name, ref description} = **rule_def;
                 view!{
                     <p>
@@ -664,4 +687,24 @@ fn rules_descriptions_from_list_for_unit(unit: Rc<opr::Unit>,
                 }.into_view()
             } else {view!{}.into_view()}})
         .collect_view()
+}
+
+fn group_uses_rule(group: Rc<opr::UnitGroup>,
+                   rule_def: &Rc<opr::SpecialRuleDef>) -> bool {
+    for unit in group.units.iter() {
+        let opr::Unit{ref special_rules, ref loadout, ..} = **unit;
+        if special_rules
+            .iter()
+            .any(|rule| rule.name == rule_def.name) ||
+           loadout
+            .iter()
+            .any(|item| match &**item {
+                opr::UnitLoadout::Equipment(equipment) =>
+                    equipment.special_rules.iter().any(|rule| rule.name == rule_def.name),
+                opr::UnitLoadout::Upgrade(upgrade) =>
+                    upgrade.content.iter().any(|rule| rule.name == rule_def.name),
+            })
+        { return true; }
+    }
+    return false;
 }

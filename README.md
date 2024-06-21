@@ -28,6 +28,7 @@ browser to access it - if you choose to build it yourself, just run
 * show both unit lists in a dense format suitable to fit completely on
   screen for most armies; direct link to armies' Army Forge page for
   convenience
+* regroup combined/joined units into a single display
 * display face to face the details of the selected unit from each army
 * specify armies to load using their ID (extracted from "share as
   link" in Army Forge).  Some examples are provided in the landing
@@ -39,14 +40,15 @@ browser to access it - if you choose to build it yourself, just run
 * essential
   * let users select their own armies from a UI, let them paste the
     full URL provided by "share as link"
-  * support combined/joined units
   * show spells when needed (requires fetching json army book)
 * QoL
   * special rules
     * in DetailsDrawer, highlight occurrences of a rule when clicking
       its description
     * identify special-rules mentioned in special-rules descriptions
-      (eg. Shadow-Protocol, Rending in Melee, Tunneler, Frenzy)
+      (eg. Shadow-Protocol, Rending in Melee, Tunneler, Frenzy); may
+      need manual tagging to handle mentions of opponent rules
+      (eg. Rending)
     * color-coding for common- vs army-rules
     * easy way to highlight units with a given rule (eg. for Robot)
     * scroll to rule def on click on keyword
@@ -84,6 +86,9 @@ browser to access it - if you choose to build it yourself, just run
       to jump to given unit type (use eg. unit acronyms for a first step)
     * allow some UI customization (font size...)
     * on army removal, avoid reloading armies after the removed one
+    * [opr-rs] further merge display of combined units (best effect
+      would likely be with merging into a single unit, doubling unit
+      and attack counts)
 * extra features
   * some access to the rules for reference
   * better support more than 2 armies
