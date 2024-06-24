@@ -6,6 +6,7 @@ use leptos_meta::{provide_meta_context, Title};
 use leptos_router as ltr;
 use leptos_router::components as ltrc;
 use leptos_router::params::Params; // derive(ltr::Params) won't work ?!
+use std::collections::HashMap;
 use std::iter::once;
 use std::sync::Arc;
 
@@ -37,6 +38,8 @@ struct Army {
     army_id: Signal<String>,
     unit_selection: RwSignal<Option<Arc<opr::UnitGroup>>>,
     army_data: AsyncDerived<Result<Arc<opr::Army>, String>, LocalStorage>,
+    factions_data: AsyncDerived<Result<Arc<opr::ArmyBook>, //HashMap<Arc<str>, Arc<opr::ArmyBook>>,
+                                       String>, LocalStorage>,
 }
 
 impl Army {
@@ -49,7 +52,24 @@ impl Army {
                 let url = opr::get_army_url(&army_id_value);
                 async move { load_json_from_url::<Arc<opr::Army>>(&url).await }
             });
-        Army{army_id, unit_selection, army_data}
+        let factions_data = AsyncDerived::new_unsync(
+            move || async move {
+                match army_data.get() {
+                    Some(Ok(army)) => {
+                        let opr::Army{ref game_system, ref armybook_ids, ..} = *army;
+                        let game_system = game_system.clone().unwrap();
+                        //Ok(HashMap::<Arc<str>, Arc<opr::ArmyBook>>::from_iter(
+                        //    armybook_ids.iter().map(async move |id| {
+                        let id = &armybook_ids[0];
+                        let url = opr::get_book_url(id.as_ref(), game_system);
+                        load_json_from_url::<Arc<opr::ArmyBook>>(&url).await //})))
+                    },
+                    Some(Err(err)) => Err(err),
+                    None => Err("army mot loaded yet".into()),
+                }
+            }
+        );
+        Army{army_id, unit_selection, army_data, factions_data}
     }
 }
 
