@@ -69,6 +69,9 @@ impl Army {
                 }
             }
         );
+        Effect::new(move |_| {
+            log!("factions_data: {:?}", factions_data.get());
+        });
         Army{army_id, unit_selection, army_data, factions_data}
     }
 }
