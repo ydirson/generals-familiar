@@ -669,7 +669,8 @@ fn GroupDetails(group: Arc<opr::UnitGroup>,
                 .collect_view()
         }
 
-        <SpecialRulesDefList group=Arc::clone(&group) army />
+        <SpecialRulesDefList group=Arc::clone(&group) army=army.clone() />
+        <SpellList group army />
     }
 }
 
@@ -843,6 +844,14 @@ fn SpecialRulesDefList(group: Arc<opr::UnitGroup>,
                 )
             }}
         </specialrules-def-list>
+    }
+}
+
+#[component]
+fn SpellList(group: Arc<opr::UnitGroup>,
+             army: Army,) -> impl IntoView {
+    view! {
+        <h4>Spells</h4>
     }
 }
 
