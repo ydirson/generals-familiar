@@ -172,6 +172,11 @@ fn SelectView(message: String, alert_type: ltn::AlertVariant) -> impl IntoView {
 #[component]
 fn SampleMatchups() -> impl IntoView {
     view! {
+        <h3> "Notice" </h3>
+        <p>
+            "This app is a technical preview. "
+            "Remember to use smartphones in landscape mode."
+        </p>
         <h3> "Sample matchups" </h3>
         <ltn::TableContainer>
             <ltn::Table bordered=true hoverable=true>

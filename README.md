@@ -1,15 +1,25 @@
 # General's Familiar
 
 This project aims to provide a helper-in-your-pocket-phone app for
-figurine wargame players, primarily targeting
-[OnePageRules](https://onepagerules.com/) for now, and potentially
-extended in the future to support other games.
+tabletop/figurine wargame players, with focus on games from
+[OnePageRules](https://onepagerules.com/).
 
-## [Check the app in your browser](https://ydirson.github.io/generals-familiar/)
+It was born from the primary desire to easily access information about
+units from both armies without having to switch browser tabs, which
+lacks fluidity in today's mobile browsers.
+
+It is primarily meant to be displayed on a smartphone in landscape
+orientation.
+
+## Check the app in your browser
 
 This is a standalone web app: once loaded in your browser the only
-network interaction will be to load your army lists.  It is intended
-to be used in landscape orientation.
+network interaction will be to load your army lists.
+
+This app is not considered "fully ready" yet, the best balance for a
+first contact should be the ["development"
+version](https://ydirson.github.io/generals-familiar/dev), more are
+accessible [here](https://ydirson.github.io/generals-familiar/).
 
 You can also choose to download a prebuilt app as *Artifact* of a
 *workflow run* from [the CI
