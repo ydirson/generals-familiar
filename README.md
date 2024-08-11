@@ -5,8 +5,8 @@ tabletop/figurine wargame players, with focus on games from
 [OnePageRules](https://onepagerules.com/).
 
 It was born from the primary desire to easily access information about
-units from both armies without having to switch browser tabs, which
-lacks fluidity in today's mobile browsers.
+units from *both armies* without having to switch browser tabs (which
+lacks fluidity in today's mobile browsers).
 
 It is primarily meant to be displayed on a smartphone in landscape
 orientation.

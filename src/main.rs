@@ -182,22 +182,25 @@ fn SampleMatchups() -> impl IntoView {
             <ltn::Table bordered=true hoverable=true>
                 <ltn::TableBody>
                     <ltn::TableRow>
-                        <ltn::TableCell><a href="./?armies=Rrlct39EGuct,p2KIbSBOYpSB">
-                            <em>"Grimdark Future"</em>
-                            " — Robots Legion vs. Prime Brothers"
-                        </a></ltn::TableCell>
+                        <ltn::TableCell>
+                            <em>"Grimdark Future — "</em>
+                            <a href="./?armies=Rrlct39EGuct,p2KIbSBOYpSB">
+                            "Robots Legion vs. Prime Brothers" </a>
+                        </ltn::TableCell>
                     </ltn::TableRow>
                     <ltn::TableRow>
-                        <ltn::TableCell><a href="./?armies=zhz5uajqHdt5,ZTgIvcYABynP">
-                            <em>"Age of Fantasy – Skirmish"</em>
-                            " — War Disciples vs. Eternal Wardens"
-                        </a></ltn::TableCell>
+                        <ltn::TableCell>
+                            <em>"Grimdark Future — "</em>
+                            <a href="./?armies=Mlwpoh1AGLC2">
+                            "Robots Legion (single list)" </a>
+                        </ltn::TableCell>
                     </ltn::TableRow>
                     <ltn::TableRow>
-                        <ltn::TableCell><a href="./?armies=Mlwpoh1AGLC2">
-                            <em>"Grimdark Future"</em>
-                            " — single list, Robots Legion"
-                        </a></ltn::TableCell>
+                        <ltn::TableCell>
+                            <em>"Age of Fantasy: Skirmish — "</em>
+                            <a href="./?armies=zhz5uajqHdt5,ZTgIvcYABynP">
+                            "War Disciples vs. Eternal Wardens" </a>
+                        </ltn::TableCell>
                     </ltn::TableRow>
                 </ltn::TableBody>
             </ltn::Table>
