@@ -23,11 +23,11 @@ features = ["csr"]
 [build-dependencies.opr-test-data]
 git = "https://github.com/ydirson/opr-rs"
 optional = true
-rev = "2cf1a2857fb1eadd4b8e43b9a28cdf374c15b9ba"
+rev = "75e574ae5fae51532c2e9455befaa31082206a1c"
 #path = "../opr-rs/opr-test-data"
 [dependencies.opr]
 git = "https://github.com/ydirson/opr-rs"
-rev = "2cf1a2857fb1eadd4b8e43b9a28cdf374c15b9ba"
+rev = "75e574ae5fae51532c2e9455befaa31082206a1c"
 #path = "../opr-rs/opr"
 
 [dependencies.web-sys]
