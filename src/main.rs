@@ -136,13 +136,13 @@ fn App() -> impl IntoView {
             <thaw::Space class="app-contents" justify=thaw::SpaceJustify::Center>
                 <Show when=move || { army_ids.with(Result::is_ok) }
                       fallback=move || view! {
-                          // <SelectView alert_type={ltn::AlertVariant::Warn}
-                          //             message=army_ids.get().err().unwrap() />
+                          <SelectView alert_type={thaw::AlertVariant::Warning}
+                                      message=army_ids.get().err().unwrap() />
                       } >
                     <Show when=move || { ! army_ids.get().unwrap().is_empty() }
                           fallback=|| view! {
-                              // <SelectView alert_type={ltn::AlertVariant::Info}
-                              //             message="no army selected".to_string() />
+                              <SelectView alert_type={thaw::AlertVariant::Warning} // FIXME: Info
+                                          message="no army selected".to_string() />
                           } >
                         "Armies" // <ArmiesView army_ids=Signal::derive(move || army_ids.get().unwrap().clone()) />
                     </Show>
@@ -152,21 +152,21 @@ fn App() -> impl IntoView {
     }
 }
 
-// #[component]
-// fn SelectView(message: String, alert_type: ltn::AlertVariant) -> impl IntoView {
-//     // reset global game_system so a different can be enabled by new armies
-//     let app_game_system = expect_context::<RwSignal<Option<opr::GameSystem>>>();
-//     app_game_system.set(None);
+#[component]
+fn SelectView(message: String, alert_type: thaw::AlertVariant) -> impl IntoView {
+    // reset global game_system so a different can be enabled by new armies
+    let app_game_system = expect_context::<RwSignal<Option<opr::GameSystem>>>();
+    app_game_system.set(None);
 
-//     view! {
-//         <Title text="select armies"/>
-//         <ltn::Alert variant=alert_type>
-//             <AlertContent slot>{message}</AlertContent>
-//         </ltn::Alert>
+    view! {
+        <Title text="select armies"/>
+        <thaw::Alert variant=alert_type>
+            {message}
+        </thaw::Alert>
 
-//         <SampleMatchups/>
-//     }
-// }
+        // <SampleMatchups/>
+    }
+}
 
 // #[component]
 // fn SampleMatchups() -> impl IntoView {
