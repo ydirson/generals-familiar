@@ -8,6 +8,7 @@
     --table-wrapper-box-shadow-color: #666666;
     --table-background-color: white;
     --table-background-color-selected: color-mix(in srgb, white 70%, var(--brand-color));
+    --table-border-color: #e0e0e0;
     --drawer-background-color: #f9f7f6;
 }
 
@@ -17,6 +18,7 @@
     --table-wrapper-box-shadow-color: #101010;
     --table-background-color: #202020;
     --table-background-color-selected: color-mix(in srgb, black 70%, var(--brand-color));
+    --table-border-color: #4c4c4c;
     --drawer-background-color: #323232;
 }
 
@@ -60,6 +62,18 @@ table-wrapper {
     border-radius: 0.5em;
     // FIXME: shadow is cropped horizontally
     box-shadow: -2px 3px 15px -6px var(--table-wrapper-box-shadow-color);
+
+    table {
+        background-color: var(--table-background-color);
+        width: 100%;
+        line-height: 2;
+
+        border-collapse: collapse;
+        td {
+            border-bottom: 0.05em solid var(--table-border-color);
+            padding: 0.75em 1em;
+        }
+    }
 }
 
 .army_view {
@@ -138,7 +152,7 @@ specialrules-def-list {
     overflow-y: scroll;
 }
 
-leptonic-table-row.selected {
+tr.selected {
     background-color: var(--table-background-color-selected);
 }
 
