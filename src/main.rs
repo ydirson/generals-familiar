@@ -220,46 +220,46 @@ fn ArmiesView(army_ids: Signal<Vec<String>>) -> impl IntoView {
                                             .enumerate().collect::<Vec<(usize, String)>>())
                  key=|k: &(usize, String)| k.clone()
                  children=move |(i, id)| view! {
-                     "Army" //<ArmyContainer army={Army::new(Signal::derive(move || id.clone()))}
-                            //        side={if i == 0 {ltn::DrawerSide::Left}
-                            //              else {ltn::DrawerSide::Right}} />
+                     <ArmyContainer army={Army::new(Signal::derive(move || id.clone()))}
+                                    side={if i == 0 {thaw::DrawerPlacement::Left}
+                                          else {thaw::DrawerPlacement::Right}} />
                  }
              />
         </thaw::Flex>
     }
 }
 
-// #[derive(Clone)]
-// struct DrawerControl {
-//     shown: RwSignal<bool>,
-// }
-// impl Default for DrawerControl {
-//     fn default() -> Self {
-//         DrawerControl {
-//             shown: create_rw_signal(false),
-//         }
-//     }
-// }
+#[derive(Clone)]
+struct DrawerControl {
+    shown: RwSignal<bool>,
+}
+impl Default for DrawerControl {
+    fn default() -> Self {
+        DrawerControl {
+            shown: create_rw_signal(false),
+        }
+    }
+}
 
-// /// A component container for the army list and the drawer, so they
-// /// can share a common context
-// #[component]
-// fn ArmyContainer(army: Army, side: ltn::DrawerSide) -> impl IntoView {
-//     // the `shown` status can be changed by eg. selecting in the army
-//     // list, or using close button in the drawer itself
-//     let drawer_control = DrawerControl::default();
-//     let shown = drawer_control.shown.clone();
-//     create_effect(move |_| {
-//         shown.set(army.unit_selection.with(Option::is_some));
-//     });
+/// A component container for the army list and the drawer, so they
+/// can share a common context
+#[component]
+fn ArmyContainer(army: Army, side: thaw::DrawerPlacement) -> impl IntoView {
+    // the `shown` status can be changed by eg. selecting in the army
+    // list, or using close button in the drawer itself
+    let drawer_control = DrawerControl::default();
+    let shown = drawer_control.shown.clone();
+    create_effect(move |_| {
+        shown.set(army.unit_selection.with(Option::is_some));
+    });
 
-//     view! {
-//         <Provider value=drawer_control >
-//             <DetailsDrawer side army=army.clone() />
-//             <ArmyList army />
-//         </Provider>
-//     }
-// }
+    view! {
+        <Provider value=drawer_control >
+            //<DetailsDrawer side army=army.clone() />
+            "Army" //<ArmyList army />
+        </Provider>
+    }
+}
 
 // #[component]
 // fn ArmyList(army: Army,
