@@ -48,6 +48,20 @@ body {
     padding: 0 1em 1em 1em;
 }
 
+h3 {
+    margin: 0.5em 0 0.5em 0;
+}
+
+table-wrapper {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    transition: height 0.5s ease;
+    border-radius: 0.5em;
+    // FIXME: shadow is cropped horizontally
+    box-shadow: -2px 3px 15px -6px var(--table-wrapper-box-shadow-color);
+}
+
 .army_view {
     align-items: flex-start;
 
