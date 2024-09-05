@@ -255,7 +255,7 @@ fn ArmyContainer(army: Army, side: thaw::DrawerPlacement) -> impl IntoView {
 
     view! {
         <Provider value=drawer_control >
-            //<DetailsDrawer side army=army.clone() />
+            <DetailsDrawer side army=army.clone() />
             <ArmyList army />
         </Provider>
     }
@@ -413,24 +413,26 @@ fn RemoveArmyButton(army_id: String) -> impl IntoView {
     }
 }
 
-// #[component]
-// fn DetailsDrawer(army: Army,
-//                  side: ltn::DrawerSide) -> impl IntoView {
-//     let pos_class = match side {
-//         ltn::DrawerSide::Left => "left",
-//         ltn::DrawerSide::Right => "right",
-//     };
+#[component]
+fn DetailsDrawer(army: Army,
+                 side: thaw::DrawerPlacement) -> impl IntoView {
+    let pos_class = match side {
+        thaw::DrawerPlacement::Left => "left",
+        thaw::DrawerPlacement::Right => "right",
+        _ => unreachable!(),
+    };
 
-//     let shown = use_context::<DrawerControl>().unwrap().shown;
-//     view! {
-//         <ltn::Drawer side shown class={format!("army_details {pos_class}")}>
-//             <Show when=move || shown.get() >
-//                 <GroupDetails army=army.clone() side
-//                               group=army.unit_selection.get().unwrap() />
-//             </Show>
-//         </ltn::Drawer>
-//     }
-// }
+    let shown = use_context::<DrawerControl>().unwrap().shown;
+    view! {
+        <thaw::Drawer placement=side show=shown modal_type=thaw::DrawerModalType::NonModal
+                      class={format!("army_details {pos_class} color-scheme--light")}>
+            <Show when=move || shown.get() >
+                "GroupDetails" // <GroupDetails army=army.clone() placement
+                //               group=army.unit_selection.get().unwrap() />
+            </Show>
+        </thaw::Drawer>
+    }
+}
 
 // #[component]
 // fn GroupDetails(group: Rc<opr::UnitGroup>,
