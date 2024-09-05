@@ -164,48 +164,48 @@ fn SelectView(message: String, alert_type: thaw::AlertVariant) -> impl IntoView 
             {message}
         </thaw::Alert>
 
-        // <SampleMatchups/>
+        <SampleMatchups/>
     }
 }
 
-// #[component]
-// fn SampleMatchups() -> impl IntoView {
-//     view! {
-//         <h3> "Notice" </h3>
-//         <p>
-//             "This app is a technical preview. "
-//             "Remember to use smartphones in landscape mode."
-//         </p>
-//         <h3> "Sample matchups" </h3>
-//         <ltn::TableContainer>
-//             <ltn::Table bordered=true hoverable=true>
-//                 <ltn::TableBody>
-//                     <ltn::TableRow>
-//                         <ltn::TableCell>
-//                             <em>"Grimdark Future — "</em>
-//                             <a href="./?armies=Rrlct39EGuct,p2KIbSBOYpSB">
-//                             "Robots Legion vs. Prime Brothers" </a>
-//                         </ltn::TableCell>
-//                     </ltn::TableRow>
-//                     <ltn::TableRow>
-//                         <ltn::TableCell>
-//                             <em>"Grimdark Future — "</em>
-//                             <a href="./?armies=Mlwpoh1AGLC2">
-//                             "Robots Legion (single list)" </a>
-//                         </ltn::TableCell>
-//                     </ltn::TableRow>
-//                     <ltn::TableRow>
-//                         <ltn::TableCell>
-//                             <em>"Age of Fantasy: Skirmish — "</em>
-//                             <a href="./?armies=zhz5uajqHdt5,ZTgIvcYABynP">
-//                             "War Disciples vs. Eternal Wardens" </a>
-//                         </ltn::TableCell>
-//                     </ltn::TableRow>
-//                 </ltn::TableBody>
-//             </ltn::Table>
-//         </ltn::TableContainer>
-//     }
-// }
+#[component]
+fn SampleMatchups() -> impl IntoView {
+    view! {
+        <h3> "Notice" </h3>
+        <p>
+            "This app is a technical preview. "
+            "Remember to use smartphones in landscape mode."
+        </p>
+        <h3> "Sample matchups" </h3>
+        <table-wrapper>
+            <thaw::Table> // FIXME: bordered=true hoverable=true>
+                <tbody>
+                    <tr>
+                        <td>
+                            <em>"Grimdark Future — "</em>
+                            <a href="./?armies=Rrlct39EGuct,p2KIbSBOYpSB">
+                            "Robots Legion vs. Prime Brothers" </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <em>"Grimdark Future — "</em>
+                            <a href="./?armies=Mlwpoh1AGLC2">
+                            "Robots Legion (single list)" </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <em>"Age of Fantasy: Skirmish — "</em>
+                            <a href="./?armies=zhz5uajqHdt5,ZTgIvcYABynP">
+                            "War Disciples vs. Eternal Wardens" </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </thaw::Table>
+        </table-wrapper>
+    }
+}
 
 // /// the main view, showing multiple armies and providing detail
 // /// drawers for selections
