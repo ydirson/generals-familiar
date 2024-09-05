@@ -256,103 +256,100 @@ fn ArmyContainer(army: Army, side: thaw::DrawerPlacement) -> impl IntoView {
     view! {
         <Provider value=drawer_control >
             //<DetailsDrawer side army=army.clone() />
-            "Army" //<ArmyList army />
+            <ArmyList army />
         </Provider>
     }
 }
 
-// #[component]
-// fn ArmyList(army: Army,
-// ) -> impl IntoView {
-//     let app_game_system = expect_context::<RwSignal<Option<opr::GameSystem>>>();
-//     view! {
-//         <ltn::Stack spacing=ltn::Size::Em(0.5) class="army_list" >
-//         { move || {
-//             army.army_data.with(
-//                 |army_data| match army_data {
-//                     None => view! { <h2>"Loading..."</h2> }.into_view(),
-//                     Some(Err(message)) => {
-//                         let message = message.clone();
-//                         let army_id = army.army_id.get();
-//                         view! {
-//                             <ltn::Stack spacing=ltn::Size::Em(0.5)
-//                                         orientation=ltn::StackOrientation::Horizontal >
-//                                 <ltn::Alert variant=ltn::AlertVariant::Danger>
-//                                     <AlertContent slot>{message}</AlertContent>
-//                                 </ltn::Alert>
-//                                 // FIXME: hack to have the button on errors have the same
-//                                 // size as the one on titles
-//                                 <span style="font-size: var(--typography-h2-font-size);">
-//                                     <RemoveArmyButton army_id />
-//                                 </span>
-//                             </ltn::Stack>
-//                         }.into_view()
-//                     },
-//                     Some(Ok(army_data)) => {
-//                         let opr::Army{ref game_system, ref name, ref unit_groups, ..} = **army_data;
-//                         let game_system = game_system.clone();
-//                         let name = Rc::clone(name);
-//                         let unit_groups = unit_groups.clone();
+#[component]
+fn ArmyList(army: Army,
+) -> impl IntoView {
+    let app_game_system = expect_context::<RwSignal<Option<opr::GameSystem>>>();
+    view! {
+        <thaw::Space class="army_list" >
+        { move || {
+            army.army_data.with(
+                |army_data| match army_data {
+                    None => view! { <h2>"Loading..."</h2> }.into_view(),
+                    Some(Err(message)) => {
+                        let message = message.clone();
+                        let army_id = army.army_id.get();
+                        view! {
+                            <thaw::Space gap=thaw::SpaceGap::Small >
+                                <thaw::Alert variant=thaw::AlertVariant::Error>
+                                    {message}
+                                </thaw::Alert>
+                                // // FIXME: hack to have the button on errors have the same
+                                // // size as the one on titles
+                                // <span style="font-size: var(--typography-h2-font-size);">
+                                //     <RemoveArmyButton army_id />
+                                // </span>
+                            </thaw::Space>
+                        }.into_view()
+                    },
+                    Some(Ok(army_data)) => {
+                        let opr::Army{ref game_system, ref name, ref unit_groups, ..} = **army_data;
+                        let game_system = game_system.clone();
+                        let name = Rc::clone(name);
+                        let unit_groups = unit_groups.clone();
 
-//                         // since we are recreating an ArmyList, the Army must have changed
-//                         // (or this is an over-refresh bug), drawer is outdated so close it
-//                         let shown = use_context::<DrawerControl>().unwrap().shown;
-//                         shown.set(false);
+                        // since we are recreating an ArmyList, the Army must have changed
+                        // (or this is an over-refresh bug), drawer is outdated so close it
+                        let shown = use_context::<DrawerControl>().unwrap().shown;
+                        shown.set(false);
 
-//                         let check_inconsistency = move || {
-//                             match game_system.clone() {
-//                                 Err(e) => Some(e),
-//                                 Ok(game_system) => match app_game_system.get() {
-//                                     // not yet set: set it, ok
-//                                     None => {
-//                                         app_game_system.set(Some(game_system));
-//                                         None },
-//                                     // already set and matching this army: ok
-//                                     Some(app_game_system) if game_system == app_game_system
-//                                         => None,
-//                                     // already set and not matching: KO
-//                                     Some(_)
-//                                         => Some(format!("game system mismatch: {game_system}")),
-//                                 }
-//                             }
-//                         };
-//                         view! {
-//                             {move || {
-//                                 let name = Rc::clone(&name);
-//                                 let army_id = army.army_id.get();
-//                                 let af_url = format!("{}?id={army_id}", opr::ARMYFORGE_SHARE_URL);
-//                                 view! {
-//                                     <h2>
-//                                         <a target="_blank" href={af_url}>{name}</a>
-//                                         <RemoveArmyButton army_id />
-//                                     </h2>
-//                                 }
-//                             }}
-//                             {move || {
-//                                 let check_inconsistency = check_inconsistency();
-//                                 if check_inconsistency.is_none() {
-//                                     view! {
-//                                         <UnitsList unit_groups={unit_groups.clone()}
-//                                                    select_unit=army.unit_selection />
-//                                     }.into_view()
-//                                 } else {
-//                                     view! {
-//                                         <ltn::Alert variant=ltn::AlertVariant::Danger>
-//                                             <AlertContent slot>
-//                                                 {check_inconsistency.unwrap()}
-//                                             </AlertContent>
-//                                         </ltn::Alert>
-//                                     }.into_view()
-//                                 }
-//                             }}
-//                         }.into_view()
-//                     },
-//                 }
-//             )
-//         }}
-//         </ltn::Stack>
-//     }
-// }
+                        let check_inconsistency = move || {
+                            match game_system.clone() {
+                                Err(e) => Some(e),
+                                Ok(game_system) => match app_game_system.get() {
+                                    // not yet set: set it, ok
+                                    None => {
+                                        app_game_system.set(Some(game_system));
+                                        None },
+                                    // already set and matching this army: ok
+                                    Some(app_game_system) if game_system == app_game_system
+                                        => None,
+                                    // already set and not matching: KO
+                                    Some(_)
+                                        => Some(format!("game system mismatch: {game_system}")),
+                                }
+                            }
+                        };
+                        view! {
+                            {move || {
+                                let name = Rc::clone(&name);
+                                let army_id = army.army_id.get();
+                                let af_url = format!("{}?id={army_id}", opr::ARMYFORGE_SHARE_URL);
+                                view! {
+                                    <h2>
+                                        <a target="_blank" href={af_url}>{name}</a>
+                                        // <RemoveArmyButton army_id />
+                                    </h2>
+                                }
+                            }}
+                            {move || {
+                                let check_inconsistency = check_inconsistency();
+                                if check_inconsistency.is_none() {
+                                    view! {
+                                        // <UnitsList unit_groups={unit_groups.clone()}
+                                        //            select_unit=army.unit_selection />
+                                    }.into_view()
+                                } else {
+                                    view! {
+                                        <thaw::Alert variant=thaw::AlertVariant::Error>
+                                            {check_inconsistency.unwrap()}
+                                        </thaw::Alert>
+                                    }.into_view()
+                                }
+                            }}
+                        }.into_view()
+                    },
+                }
+            )
+        }}
+        </thaw::Space>
+    }
+}
 
 // #[component]
 // fn UnitsList(unit_groups: Vec<Rc<opr::UnitGroup>>,
