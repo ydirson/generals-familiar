@@ -52,6 +52,10 @@ body {
     padding: 0 1em 1em 1em;
 }
 
+h3 {
+    margin: var(--typography-h3-margin);
+}
+
 table-wrapper {
     display: block;
     width: 100%;

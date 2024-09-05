@@ -427,59 +427,56 @@ fn DetailsDrawer(army: Army,
         <thaw::Drawer placement=side show=shown modal_type=thaw::DrawerModalType::NonModal
                       class={format!("army_details {pos_class} color-scheme--light")}>
             <Show when=move || shown.get() >
-                "GroupDetails" // <GroupDetails army=army.clone() placement
-                //               group=army.unit_selection.get().unwrap() />
+                <GroupDetails army=army.clone() side
+                              group=army.unit_selection.get().unwrap() />
             </Show>
         </thaw::Drawer>
     }
 }
 
-// #[component]
-// fn GroupDetails(group: Rc<opr::UnitGroup>,
-//                 army: Army,
-//                 side: ltn::DrawerSide,
-// ) -> impl IntoView
-// {
-//     let opr::UnitGroup{full_cost, ..} = *group;
-//     let shown = use_context::<DrawerControl>().unwrap().shown;
-//     let group_name = group.formatted_name();
-//     let close_button = |glyph| view! {
-//         <ltn::Button color=ltn::ButtonColor::Secondary
-//                      on_click=move |_| shown.set(false)> {glyph} </ltn::Button>
-//     };
-//     let (left_button, right_button) = match side {
-//         ltn::DrawerSide::Left  => ( Some(close_button("<")), None ),
-//         ltn::DrawerSide::Right => ( None, Some(close_button(">")) ),
-//     };
+#[component]
+fn GroupDetails(group: Rc<opr::UnitGroup>,
+                army: Army,
+                side: thaw::DrawerPlacement,
+) -> impl IntoView
+{
+    let opr::UnitGroup{full_cost, ..} = *group;
+    let shown = use_context::<DrawerControl>().unwrap().shown;
+    let group_name = group.formatted_name();
+    let close_button = |glyph| view! {
+        <thaw::Button //color=ltn::ButtonColor::Secondary
+                      on_click=move |_| shown.set(false)> {glyph} </thaw::Button>
+    };
+    let (left_button, right_button) = match side {
+        thaw::DrawerPlacement::Left  => ( Some(close_button("<")), None ),
+        thaw::DrawerPlacement::Right => ( None, Some(close_button(">")) ),
+        _ => unreachable!(),
+    };
 
-//     view! {
-//         <h3>
-//             <ltn::Stack orientation=ltn::StackOrientation::Horizontal
-//                         style="width: 100%; justify-content: space-between;"
-//                         spacing=ltn::Size::Em(0.0)>
-//                 <ltn::Stack orientation=ltn::StackOrientation::Horizontal
-//                             spacing=ltn::Size::Em(1.0)>
-//                     {left_button}
-//                     {group_name}
-//                 </ltn::Stack>
-//                 <ltn::Stack orientation=ltn::StackOrientation::Horizontal
-//                             spacing=ltn::Size::Em(1.0)>
-//                     {format!("{full_cost} pts")}
-//                     {right_button}
-//                 </ltn::Stack>
-//             </ltn::Stack>
-//         </h3>
+    view! {
+        <h3>
+            <thaw::Space justify=thaw::SpaceJustify::SpaceBetween >
+                <thaw::Space>
+                    {left_button}
+                    {group_name}
+                </thaw::Space>
+                <thaw::Space>
+                    {format!("{full_cost} pts")}
+                    {right_button}
+                </thaw::Space>
+            </thaw::Space>
+        </h3>
 
-//         {
-//             let single = group.units.len() == 1;
-//             group.units.iter()
-//                 .map(|unit| view! {<UnitDetails unit=Rc::clone(unit) single />})
-//                 .collect_view()
-//         }
+        // {
+        //     let single = group.units.len() == 1;
+        //     group.units.iter()
+        //         .map(|unit| view! {<UnitDetails unit=Rc::clone(unit) single />})
+        //         .collect_view()
+        // }
 
-//         <SpecialRulesDefList group=Rc::clone(&group) army />
-//     }
-// }
+        // <SpecialRulesDefList group=Rc::clone(&group) army />
+    }
+}
 
 // #[component]
 // fn UnitDetails(unit: Rc<opr::Unit>,
