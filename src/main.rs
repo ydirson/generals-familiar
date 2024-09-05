@@ -331,8 +331,8 @@ fn ArmyList(army: Army,
                                 let check_inconsistency = check_inconsistency();
                                 if check_inconsistency.is_none() {
                                     view! {
-                                        // <UnitsList unit_groups={unit_groups.clone()}
-                                        //            select_unit=army.unit_selection />
+                                        <UnitsList unit_groups={unit_groups.clone()}
+                                                   select_unit=army.unit_selection />
                                     }.into_view()
                                 } else {
                                     view! {
@@ -351,46 +351,44 @@ fn ArmyList(army: Army,
     }
 }
 
-// #[component]
-// fn UnitsList(unit_groups: Vec<Rc<opr::UnitGroup>>,
-//              select_unit: RwSignal<Option<Rc<opr::UnitGroup>>>, // FIXME only need WriteSignal here
-// ) -> impl IntoView {
-//     let (selected_row_num, set_selected_row_num) = create_signal(None::<usize>);
-//     view! {
-//         <ltn::TableContainer>
-//             <ltn::Table bordered=true hoverable=true>
-//                 <ltn::TableBody>
-//                     {move || {
-//                         unit_groups
-//                             .clone()
-//                             .into_iter()
-//                             .enumerate()
-//                             .map(|(i, group)| {
-//                                 let group_name = (*group).formatted_name();
-//                                 //let opr::Unit{..} = *unit;
-//                                 view! {
-//                                     // FIXME this ought to be a ltn::TableRow, which does
-//                                     // not allow for dynamic classes or even for class
-//                                     <leptonic-table-row
-//                                          class:selected=move || {
-//                                              matches!(selected_row_num.get(),
-//                                                       Some(index) if index == i)
-//                                          }
-//                                          on:click=move |_| {
-//                                              select_unit.set(Some(group.clone()));
-//                                              set_selected_row_num.set(Some(i));
-//                                     }>
-//                                         <ltn::TableCell> {group_name} </ltn::TableCell>
-//                                     </leptonic-table-row>
-//                                 }
-//                             })
-//                             .collect_view()
-//                     }}
-//                 </ltn::TableBody>
-//             </ltn::Table>
-//         </ltn::TableContainer>
-//     }
-// }
+#[component]
+fn UnitsList(unit_groups: Vec<Rc<opr::UnitGroup>>,
+             select_unit: RwSignal<Option<Rc<opr::UnitGroup>>>, // FIXME only need WriteSignal here
+) -> impl IntoView {
+    let (selected_row_num, set_selected_row_num) = create_signal(None::<usize>);
+    view! {
+        <table-wrapper>
+            <table bordered=true hoverable=true>
+                <tbody>
+                    {move || {
+                        unit_groups
+                            .clone()
+                            .into_iter()
+                            .enumerate()
+                            .map(|(i, group)| {
+                                let group_name = (*group).formatted_name();
+                                //let opr::Unit{..} = *unit;
+                                view! {
+                                    <tr
+                                         class:selected=move || {
+                                             matches!(selected_row_num.get(),
+                                                      Some(index) if index == i)
+                                         }
+                                         on:click=move |_| {
+                                             select_unit.set(Some(group.clone()));
+                                             set_selected_row_num.set(Some(i));
+                                    }>
+                                        <td> {group_name} </td>
+                                    </tr>
+                                }
+                            })
+                            .collect_view()
+                    }}
+                </tbody>
+            </table>
+        </table-wrapper>
+    }
+}
 
 // #[component]
 // fn RemoveArmyButton(army_id: String) -> impl IntoView {
