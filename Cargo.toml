@@ -11,7 +11,7 @@ leptos_macro = { version = "0.6.0", features = ["csr"] }
 leptos_meta = { version = "0.6.0", features = ["csr"] }
 leptos_router = { version = "0.6.0", features = ["csr"] }
 serde = { version = "1.0.0" }
-thaw = { version = "0.3.3", features = ["csr"] }
+thaw = { version = "0.3.4", features = ["csr"] }
 
 [build-dependencies.opr-test-data]
 git = "https://github.com/ydirson/opr-rs"
