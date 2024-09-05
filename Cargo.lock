@@ -1752,8 +1752,7 @@ dependencies = [
 [[package]]
 name = "thaw"
 version = "0.3.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1a2ea14de27ddd0ce167c69e78852122c5a9c755b3c083c8249e491c4a8821ce"
+source = "git+https://github.com/thaw-ui/thaw?branch=thaw-v0.3#23230a6d65a45e56c6bb4e52a34f6e217d4ba55c"
 dependencies = [
  "cfg-if",
  "chrono",
@@ -1772,8 +1771,7 @@ dependencies = [
 [[package]]
 name = "thaw_components"
 version = "0.1.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f4ee9d9598f7a5162845a83ef0ed3ccde52c23d987cf64433056b2fd4542161c"
+source = "git+https://github.com/thaw-ui/thaw?branch=thaw-v0.3#23230a6d65a45e56c6bb4e52a34f6e217d4ba55c"
 dependencies = [
  "cfg-if",
  "leptos",
@@ -1785,8 +1783,7 @@ dependencies = [
 [[package]]
 name = "thaw_utils"
 version = "0.0.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8d5fe5c99ba6b6730ec533810dd4d92422b778d4fbaffa9b6d7fb705b28b3978"
+source = "git+https://github.com/thaw-ui/thaw?branch=thaw-v0.3#23230a6d65a45e56c6bb4e52a34f6e217d4ba55c"
 dependencies = [
  "cfg-if",
  "chrono",

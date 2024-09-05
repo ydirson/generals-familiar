@@ -98,7 +98,11 @@ table-wrapper {
     }
 }
 
-leptonic-drawer.army_details {
+.thaw-drawer.army_details {
+    .thaw-card {
+        background-color: transparent;
+    }
+
     padding: 0.2em;
     position: fixed;
     top: 0;
