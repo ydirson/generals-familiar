@@ -12,7 +12,12 @@ leptos_macro = { version = "0.6.0", features = ["csr"] }
 leptos_meta = { version = "0.6.0", features = ["csr"] }
 leptos_router = { version = "0.6.0", features = ["csr"] }
 serde = { version = "1.0.0" }
-thaw = { version = "0.3.4", features = ["csr"] }
+
+[dependencies.thaw]
+features = ["csr"]
+#version = "0.3.4"
+git = "https://github.com/thaw-ui/thaw"
+branch = "thaw-v0.3"
 
 [build-dependencies.opr-test-data]
 git = "https://github.com/ydirson/opr-rs"
