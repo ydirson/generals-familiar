@@ -10,7 +10,7 @@ leptos = { version = "0.6.11", default-features = false, features = ["csr"] }
 leptos_macro = { version = "0.6.0", features = ["csr"] }
 leptos_meta = { version = "0.6.0", features = ["csr"] }
 leptos_router = { version = "0.6.0", features = ["csr"] }
-serde = { version = "1.0.0" }
+serde = { version = "1.0.210" }
 
 [dependencies.leptonic]
 #version = "0.5.0"
