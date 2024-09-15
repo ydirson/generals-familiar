@@ -154,6 +154,10 @@ table-wrapper {
 
 specialrules-def-list {
     overflow-y: scroll;
+
+    p {
+        margin: 0.1em 0 0.1em 0;
+    }
 }
 
 tr.selected {
