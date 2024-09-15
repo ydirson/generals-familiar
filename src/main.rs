@@ -502,7 +502,7 @@ fn UnitDetails(unit: Rc<opr::Unit>,
             </thaw::Space>
         </p>
         <p><UnitUpgradesList loadout_list={loadout.clone()} /></p>
-//        <EquipmentList loadout_list={loadout.clone()} />
+        <EquipmentList loadout_list={loadout.clone()} />
     }
 }
 
@@ -532,29 +532,29 @@ fn UnitUpgradesList(loadout_list: Vec<Rc<opr::UnitLoadout>>) -> impl IntoView {
     }
 }
 
-// #[component]
-// fn EquipmentList(loadout_list: Vec<Rc<opr::UnitLoadout>>) -> impl IntoView {
-//     view! {
-//         <ltn::TableContainer>
-//             <ltn::Table bordered=true hoverable=true>
-//                 <ltn::TableBody>
-//                     {move || {
-//                         loadout_list
-//                             .clone()
-//                             .into_iter()
-//                             .filter(|loadout| matches!(**loadout, opr::UnitLoadout::Equipment{..}))
-//                             .map(|loadout| {
-//                                 view! {
-//                                     <EquipmentItem loadout />
-//                                 }
-//                             })
-//                             .collect_view()
-//                     }}
-//                 </ltn::TableBody>
-//             </ltn::Table>
-//         </ltn::TableContainer>
-//     }
-// }
+#[component]
+fn EquipmentList(loadout_list: Vec<Rc<opr::UnitLoadout>>) -> impl IntoView {
+    view! {
+        <table-wrapper>
+            <table bordered=true hoverable=true>
+                <tbody>
+                    {move || {
+                        loadout_list
+                            .clone()
+                            .into_iter()
+                            .filter(|loadout| matches!(**loadout, opr::UnitLoadout::Equipment{..}))
+                            .map(|loadout| {
+                                view! {
+//                                    <EquipmentItem loadout />
+                                }
+                            })
+                            .collect_view()
+                    }}
+                </tbody>
+            </table>
+        </table-wrapper>
+    }
+}
 
 // #[component]
 // fn EquipmentItem(loadout: Rc<opr::UnitLoadout>) -> impl IntoView {
