@@ -501,35 +501,36 @@ fn UnitDetails(unit: Rc<opr::Unit>,
                 {format!("{full_cost} pts")}
             </thaw::Space>
         </p>
-//        <p><UnitUpgradesList loadout_list={loadout.clone()} /></p>
+        <p><UnitUpgradesList loadout_list={loadout.clone()} /></p>
 //        <EquipmentList loadout_list={loadout.clone()} />
     }
 }
 
-// #[component]
-// fn UnitUpgradesList(loadout_list: Vec<Rc<opr::UnitLoadout>>) -> impl IntoView {
-//     view! {
-//         {move || {
-//             loadout_list
-//                 .clone()
-//                 .into_iter()
-//                 .filter(|loadout| matches!(**loadout, opr::UnitLoadout::Upgrade{..}))
-//                 .enumerate()
-//                 .map(|(i, loadout)| {
-//                     if let opr::UnitLoadout::Upgrade(ref upgrade) = *loadout {
-//                         let opr::UnitUpgrade{name, ref content, ..} = upgrade;
-//                         view! {
-//                             {move || if i > 0 { ", " } else { "" }}
-//                             {Rc::clone(name)} " (" <SpecialRulesList special_rules={content.clone()} /> ")"
-//                         }
-//                     } else {
-//                         panic!();
-//                     }
-//                 })
-//                 .collect_view()
-//         }}
-//     }
-// }
+#[component]
+fn UnitUpgradesList(loadout_list: Vec<Rc<opr::UnitLoadout>>) -> impl IntoView {
+    view! {
+        {move || {
+            loadout_list
+                .clone()
+                .into_iter()
+                .filter(|loadout| matches!(**loadout, opr::UnitLoadout::Upgrade{..}))
+                .enumerate()
+                .map(|(i, loadout)| {
+                    if let opr::UnitLoadout::Upgrade(ref upgrade) = *loadout {
+                        let opr::UnitUpgrade{name, ref content, ..} = upgrade;
+                        view! {
+                            {move || if i > 0 { ", " } else { "" }}
+                            {Rc::clone(name)} " (" // <SpecialRulesList special_rules={content.clone()} />
+                                ")"
+                        }
+                    } else {
+                        panic!();
+                    }
+                })
+                .collect_view()
+        }}
+    }
+}
 
 // #[component]
 // fn EquipmentList(loadout_list: Vec<Rc<opr::UnitLoadout>>) -> impl IntoView {
