@@ -11,14 +11,7 @@ leptos_macro = { version = "0.6.0", features = ["csr"] }
 leptos_meta = { version = "0.6.0", features = ["csr"] }
 leptos_router = { version = "0.6.0", features = ["csr"] }
 serde = { version = "1.0.0" }
-
-[dependencies.leptonic]
-#version = "0.5.0"
-git = "https://github.com/ydirson/leptonic/"
-branch = "leptonic-0.5"
-#path = "../leptonic/leptonic"
-# leptonic does not like leptos' "nightly"
-features = ["csr"]
+thaw = { version = "0.3.3", features = ["csr"] }
 
 [build-dependencies.opr-test-data]
 git = "https://github.com/ydirson/opr-rs"
@@ -42,7 +35,3 @@ cfg-if = "1.0.0"
 [features]
 dev = ["dep:console_error_panic_hook"]
 local-files = ["dep:opr-test-data", "opr/local-files"]
-
-[package.metadata.leptonic]
-style-dir = "style"
-js-dir = "public/js"
