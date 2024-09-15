@@ -474,7 +474,7 @@ fn GroupDetails(group: Rc<opr::UnitGroup>,
                 .collect_view()
         }
 
-        // <SpecialRulesDefList group=Rc::clone(&group) army />
+        <SpecialRulesDefList group=Rc::clone(&group) army />
     }
 }
 
@@ -609,45 +609,45 @@ fn SpecialRulesList(special_rules: Vec<Rc<opr::SpecialRule>>) -> impl IntoView {
         .collect_view()
 }
 
-// #[component]
-// fn SpecialRulesDefList(group: Rc<opr::UnitGroup>,
-//                        army: Army,) -> impl IntoView {
-//     view! {
-//         <specialrules-def-list>
-//             {move || {
-//                 let group = Rc::clone(&group);
-//                 army.army_data.with(
-//                     move |army_data| {
-//                         if let Some(Ok(army_data)) = army_data {
-//                             // the rules def
-//                             let opr::Army{ref special_rules, ..} = **army_data;
-//                             let special_rules_def = special_rules;
+#[component]
+fn SpecialRulesDefList(group: Rc<opr::UnitGroup>,
+                       army: Army,) -> impl IntoView {
+    view! {
+        <specialrules-def-list>
+            {move || {
+                let group = Rc::clone(&group);
+                army.army_data.with(
+                    move |army_data| {
+                        if let Some(Ok(army_data)) = army_data {
+                            // the rules def
+                            let opr::Army{ref special_rules, ..} = **army_data;
+                            let special_rules_def = special_rules;
 
-//                             view!{
-//                                 {match common_rules_def() {
-//                                     Ok(common_rules_def) => view! {
-//                                         {rules_descriptions_from_list_for_group(
-//                                             Rc::clone(&group), &common_rules_def.clone())}
-//                                     }.into_view(),
-//                                     Err(message) => view! {
-//                                         <ltn::Alert variant=ltn::AlertVariant::Danger>
-//                                             <AlertContent slot>{message}</AlertContent>
-//                                         </ltn::Alert>
-//                                     }.into_view(),
-//                                 }}
-//                                 {rules_descriptions_from_list_for_group(
-//                                     Rc::clone(&group), special_rules_def)}
-//                             }.into_view()
-//                         } else {
-//                             // cannot happen - FIXME should pass opr::Army directly instead?
-//                             view!{}.into_view()
-//                         }
-//                     }
-//                 )
-//             }}
-//         </specialrules-def-list>
-//     }
-// }
+                            view!{
+                                {match common_rules_def() {
+                                    Ok(common_rules_def) => view! {
+                                        {rules_descriptions_from_list_for_group(
+                                            Rc::clone(&group), &common_rules_def.clone())}
+                                    }.into_view(),
+                                    Err(message) => view! {
+                                        <thaw::Alert variant=thaw::AlertVariant::Error>
+                                            {message}
+                                        </thaw::Alert>
+                                    }.into_view(),
+                                }}
+                                {rules_descriptions_from_list_for_group(
+                                    Rc::clone(&group), special_rules_def)}
+                            }.into_view()
+                        } else {
+                            // cannot happen - FIXME should pass opr::Army directly instead?
+                            view!{}.into_view()
+                        }
+                    }
+                )
+            }}
+        </specialrules-def-list>
+    }
+}
 
 /// extract common-rules definitions from the Context Resource, or an
 /// error string to display
