@@ -545,7 +545,7 @@ fn EquipmentList(loadout_list: Vec<Rc<opr::UnitLoadout>>) -> impl IntoView {
                             .filter(|loadout| matches!(**loadout, opr::UnitLoadout::Equipment{..}))
                             .map(|loadout| {
                                 view! {
-//                                    <EquipmentItem loadout />
+                                    <EquipmentItem loadout />
                                 }
                             })
                             .collect_view()
@@ -556,36 +556,36 @@ fn EquipmentList(loadout_list: Vec<Rc<opr::UnitLoadout>>) -> impl IntoView {
     }
 }
 
-// #[component]
-// fn EquipmentItem(loadout: Rc<opr::UnitLoadout>) -> impl IntoView {
-//     if let opr::UnitLoadout::Equipment(ref equipment) = *loadout {
-//         let name = Rc::clone(&equipment.name);
-//         let special_rules = equipment.special_rules.clone();
-//         let opr::Equipment{count, range, attacks, ..} = *equipment;
-//         view! {
-//             <ltn::TableRow>
-//                 <ltn::TableCell>
-//                     {if count != 1
-//                         {format!("{}x ", count)} else {"".to_string()}}
-//                     {name}
-//                 </ltn::TableCell>
-//                 <ltn::TableCell>
-//                     {if range != 0
-//                         {format!(r#"{}""#, range )}
-//                         else {"-".to_string()}}
-//                 </ltn::TableCell>
-//                 <ltn::TableCell>
-//                     {format!("A{}", attacks)}
-//                 </ltn::TableCell>
-//                 <ltn::TableCell>
-//                     <SpecialRulesList special_rules={special_rules.clone()} />
-//                 </ltn::TableCell>
-//             </ltn::TableRow>
-//         }
-//     } else {
-//         panic!("EquipmentItem must be used on Equipment only");
-//     }
-// }
+#[component]
+fn EquipmentItem(loadout: Rc<opr::UnitLoadout>) -> impl IntoView {
+    if let opr::UnitLoadout::Equipment(ref equipment) = *loadout {
+        let name = Rc::clone(&equipment.name);
+        let special_rules = equipment.special_rules.clone();
+        let opr::Equipment{count, range, attacks, ..} = *equipment;
+        view! {
+            <tr>
+                <td>
+                    {if count != 1
+                        {format!("{}x ", count)} else {"".to_string()}}
+                    {name}
+                </td>
+                <td>
+                    {if range != 0
+                        {format!(r#"{}""#, range )}
+                        else {"-".to_string()}}
+                </td>
+                <td>
+                    {format!("A{}", attacks)}
+                </td>
+                <td>
+//                    <SpecialRulesList special_rules={special_rules.clone()} />
+                </td>
+            </tr>
+        }
+    } else {
+        panic!("EquipmentItem must be used on Equipment only");
+    }
+}
 
 // #[component]
 // fn SpecialRulesList(special_rules: Vec<Rc<opr::SpecialRule>>) -> impl IntoView {
