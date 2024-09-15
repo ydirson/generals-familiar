@@ -467,46 +467,44 @@ fn GroupDetails(group: Rc<opr::UnitGroup>,
             </thaw::Space>
         </h3>
 
-        // {
-        //     let single = group.units.len() == 1;
-        //     group.units.iter()
-        //         .map(|unit| view! {<UnitDetails unit=Rc::clone(unit) single />})
-        //         .collect_view()
-        // }
+        {
+            let single = group.units.len() == 1;
+            group.units.iter()
+                .map(|unit| view! {<UnitDetails unit=Rc::clone(unit) single />})
+                .collect_view()
+        }
 
         // <SpecialRulesDefList group=Rc::clone(&group) army />
     }
 }
 
-// #[component]
-// fn UnitDetails(unit: Rc<opr::Unit>,
-//                single: bool,
-// ) -> impl IntoView
-// {
-//     let unit_name = unit.formatted_name();
-//     let opr::Unit{quality, defense, full_cost, ref loadout, ref special_rules, ..} = *unit;
-//     let special_rules = special_rules.clone();
+#[component]
+fn UnitDetails(unit: Rc<opr::Unit>,
+               single: bool,
+) -> impl IntoView
+{
+    let unit_name = unit.formatted_name();
+    let opr::Unit{quality, defense, full_cost, ref loadout, ref special_rules, ..} = *unit;
+    let special_rules = special_rules.clone();
 
-//     view! {
-//         <p>
-//             <ltn::Stack orientation=ltn::StackOrientation::Horizontal
-//                         style="width: 100%; justify-content: space-between;"
-//                         spacing=ltn::Size::Em(0.0)>
-//                 <span>
-//                     <span class="unit">
-//                         {(!single).then(|| format!("{unit_name}: "))}
-//                         {format!("Q{quality} D{defense}")}
-//                     </span>
-//                     " "
-//                     <SpecialRulesList special_rules={special_rules.clone()} />
-//                 </span>
-//                 {format!("{full_cost} pts")}
-//             </ltn::Stack>
-//         </p>
-//         <p><UnitUpgradesList loadout_list={loadout.clone()} /></p>
-//         <EquipmentList loadout_list={loadout.clone()} />
-//     }
-// }
+    view! {
+        <p>
+            <thaw::Space justify=thaw::SpaceJustify::SpaceBetween>
+                <span>
+                    <span class="unit">
+                        {(!single).then(|| format!("{unit_name}: "))}
+                        {format!("Q{quality} D{defense}")}
+                    </span>
+                    " "
+//                    <SpecialRulesList special_rules={special_rules.clone()} />
+                </span>
+                {format!("{full_cost} pts")}
+            </thaw::Space>
+        </p>
+//        <p><UnitUpgradesList loadout_list={loadout.clone()} /></p>
+//        <EquipmentList loadout_list={loadout.clone()} />
+    }
+}
 
 // #[component]
 // fn UnitUpgradesList(loadout_list: Vec<Rc<opr::UnitLoadout>>) -> impl IntoView {
