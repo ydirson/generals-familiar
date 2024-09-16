@@ -6,6 +6,15 @@
     --table-background-color-selected: color-mix(in srgb, white 70%, var(--brand-color));
     --table-border-color: #e0e0e0;
     --drawer-background-color: #f9f7f6;
+
+    .thaw-switch__input:enabled:not(:checked) ~ .thaw-switch__indicator {
+        color: white;
+
+        // mimic dark theme, so only `color` changes
+        --colorCompoundBrandBackground: #479ef5;
+        background-color: var(--colorCompoundBrandBackground);
+        border-color: var(--colorTransparentStroke);
+    }
 }
 
 .color-scheme--dark {

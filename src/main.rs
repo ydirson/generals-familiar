@@ -45,21 +45,21 @@ fn main() {
 //     }
 // }
 
-// async fn load_json_from_url<T>(url: &str) -> Result<T, String>
-// where
-//     T: serde::de::DeserializeOwned,
-// {
-//     let response = Request::get(url).send().await
-//         .map_err(|e| format!("communication error: {e}"));
-//     match response {
-//         Err(e) => Err(e),
-//         Ok(response) if ! response.ok() =>
-//             Err(format!("HTTP error {} - {}", response.status(), response.status_text())),
-//         Ok(response) =>
-//             response.json().await
-//             .map_err(|e| format!("parse error: {e}")),
-//     }
-// }
+async fn load_json_from_url<T>(url: &str) -> Result<T, String>
+where
+    T: serde::de::DeserializeOwned,
+{
+    let response = Request::get(url).send().await
+        .map_err(|e| format!("communication error: {e}"));
+    match response {
+        Err(e) => Err(e),
+        Ok(response) if ! response.ok() =>
+            Err(format!("HTTP error {} - {}", response.status(), response.status_text())),
+        Ok(response) =>
+            response.json().await
+            .map_err(|e| format!("parse error: {e}")),
+    }
+}
 
 /// component dedicated to boilerplate not really part of the app per
 /// se, and mandatory parents of the app
@@ -93,74 +93,84 @@ struct UrlQuery {
     armies: Option<String>,
 }
 
+#[component]
+fn ThemeToggle() -> impl IntoView {
+    let theme = thaw::Theme::use_rw_theme();
+    let checked = RwSignal::new(false);
+    Effect::new(move |_| {
+        theme.set(if checked.get() {thaw::Theme::dark()} else {thaw::Theme::light()});
+    });
+
+    view! {
+        <thaw::Switch checked/>
+    }
+}
+
 /// the main application component
 #[component]
 fn App() -> impl IntoView {
-    view! { <p> "There will be an app." </p> }
-//     let query = ltr::use_query::<UrlQuery>();
-//     let game_system = create_rw_signal(None::<opr::GameSystem>);
-//     provide_context(game_system);
+    let query = ltr::hooks::use_query::<UrlQuery>();
+    let game_system = RwSignal::new(None::<opr::GameSystem>);
+    provide_context(game_system);
 
-//     let common_rules: Resource<Option<opr::GameSystem>,
-//                                Result<Arc<opr::CommonRules>, String>> =
-//         create_resource(
-//             move || game_system.get(),
-//             |game_system| async move {
-//                 match game_system {
-//                     Some(game_system) => {
-//                         let url = opr::get_common_rules_url(game_system);
-//                         load_json_from_url(&url).await
-//                     },
-//                     None => Err("no common-rules, game system not known yet".to_string()),
-//                 }
-//             });
-//     provide_context(common_rules);
+    let common_rules = AsyncDerived::new_unsync(
+        move || async move {
+            match game_system.get() {
+                Some(game_system) => {
+                    let url = opr::get_common_rules_url(game_system);
+                    load_json_from_url::<Arc<opr::CommonRules>>(&url).await
+                },
+                None => Err("no common-rules, game system not known yet".to_string()),
+            }
+        });
+    provide_context(common_rules);
 
-//     let army_ids = Signal::derive(move || {
-//         query.with(|params| {
-//             match params.as_ref().map(|params| params.armies.clone()) {
-//                 Ok(None) => Ok(vec!()),
-//                 Err(err) => Err(err.to_string()),
-//                 Ok(Some(armies_string)) => {
-//                     let v = armies_string
-//                         .split(',')
-//                         .map(|s| s.to_string())
-//                         .collect::<Vec<String>>();
-//                     Ok(v)
-//                 },
-//             }
-//         })
-//     });
-//     view! {
-//         <thaw::Layout class="app">
-//             <thaw::LayoutHeader class="app-bar">
-//                 <thaw::Flex justify=thaw::FlexJustify::SpaceBetween align=thaw::FlexAlign::Center>
-//                     <h1>
-//                         {APP_NAME}
-//                         {move || match game_system.get() {
-//                             Some(game_system) => format!(" - {game_system}"),
-//                             None => "".to_string(),
-//                         }}
-//                     </h1>
-//                 </thaw::Flex>
-//             </thaw::LayoutHeader>
-//             <thaw::Space class="app-contents" justify=thaw::SpaceJustify::Center>
-//                 <Show when=move || { army_ids.with(Result::is_ok) }
-//                       fallback=move || view! {
-//                           <SelectView alert_type={thaw::AlertVariant::Warning}
-//                                       message=army_ids.get().err().unwrap() />
-//                       } >
-//                     <Show when=move || { ! army_ids.get().unwrap().is_empty() }
-//                           fallback=|| view! {
-//                               <SelectView alert_type={thaw::AlertVariant::Warning} // FIXME: Info
-//                                           message="no army selected".to_string() />
-//                           } >
-//                         <ArmiesView army_ids=Signal::derive(move || army_ids.get().unwrap().clone()) />
-//                     </Show>
-//                 </Show>
-//             </thaw::Space>
-//         </thaw::Layout>
-//     }
+    let army_ids = Signal::derive(move || {
+        query.with(|params| {
+            match params.as_ref().map(|params| params.armies.clone()) {
+                Ok(None) => Ok(vec!()),
+                Err(err) => Err(err.to_string()),
+                Ok(Some(armies_string)) => {
+                    let v = armies_string
+                        .split(',')
+                        .map(|s| s.to_string())
+                        .collect::<Vec<String>>();
+                    Ok(v)
+                },
+            }
+        })
+    });
+    view! {
+        <thaw::Layout class="app">
+            <thaw::LayoutHeader class="app-bar">
+                <thaw::Flex justify=thaw::FlexJustify::SpaceBetween align=thaw::FlexAlign::Center>
+                    <h1>
+                        {APP_NAME}
+                        {move || match game_system.get() {
+                            Some(game_system) => format!(" - {game_system}"),
+                            None => "".to_string(),
+                        }}
+                    </h1>
+                    <ThemeToggle/>
+                </thaw::Flex>
+            </thaw::LayoutHeader>
+            <thaw::Flex class="app-contents" justify=thaw::FlexJustify::Center>
+                <Show when=move || { army_ids.with(Result::is_ok) }
+                      fallback=move || view! {
+                          // <SelectView alert_type={thaw::AlertVariant::Warning}
+                          //             message=army_ids.get().err().unwrap() />
+                      } >
+                    <Show when=move || { ! army_ids.get().unwrap().is_empty() }
+                          fallback=|| view! {
+                              // <SelectView alert_type={thaw::AlertVariant::Warning} // FIXME: Info
+                              //             message="no army selected".to_string() />
+                          } >
+                        "Armies" // <ArmiesView army_ids=Signal::derive(move || army_ids.get().unwrap().clone()) />
+                    </Show>
+                </Show>
+            </thaw::Flex>
+        </thaw::Layout>
+    }
 }
 
 // #[component]
