@@ -20,7 +20,6 @@ fn main() {
     #[cfg(feature = "dev")]
     console_error_panic_hook::set_once();
 
-    provide_meta_context();
     mount_to_body(|| view! { <AppBoilerplate/> })
 }
 
@@ -65,6 +64,7 @@ where
 /// se, and mandatory parents of the app
 #[component]
 fn AppBoilerplate() -> impl IntoView {
+    provide_meta_context();
     let theme = RwSignal::new(thaw::Theme::light());
     let theme_class = Memo::new(move |_| {
         theme.with(|theme| format!("color-scheme--{}", theme.color.color_scheme))
