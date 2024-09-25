@@ -167,7 +167,7 @@ fn App() -> impl IntoView {
                               <SelectView alert_type={thaw::MessageBarIntent::Info}
                                           message="no army selected".to_string() />
                           } >
-                        "Armies" // <ArmiesView army_ids=Signal::derive(move || army_ids.get().unwrap().clone()) />
+                        <ArmiesView army_ids=Signal::derive(move || army_ids.get().unwrap().clone()) />
                     </Show>
                 </Show>
             </thaw::Flex>
@@ -234,27 +234,27 @@ fn SampleMatchups() -> impl IntoView {
     }
 }
 
-// /// the main view, showing multiple armies and providing detail
-// /// drawers for selections
-// #[component]
-// fn ArmiesView(army_ids: Signal<Vec<String>>) -> impl IntoView {
-//     provide_context(army_ids);
-//     view! {
-//         <Title text="view armies" />
-//         <thaw::Flex class="army_view" >
-//             <For each=move || army_ids.with(|ids| ids.iter()
-//                                             .map(String::clone)
-//                                             .enumerate().collect::<Vec<(usize, String)>>())
-//                  key=|k: &(usize, String)| k.clone()
-//                  children=move |(i, id)| view! {
-//                      <ArmyContainer army={Army::new(Signal::derive(move || id.clone()))}
-//                                     side={if i == 0 {thaw::DrawerPlacement::Left}
-//                                           else {thaw::DrawerPlacement::Right}} />
-//                  }
-//              />
-//         </thaw::Flex>
-//     }
-// }
+/// the main view, showing multiple armies and providing detail
+/// drawers for selections
+#[component]
+fn ArmiesView(army_ids: Signal<Vec<String>>) -> impl IntoView {
+    provide_context(army_ids);
+    view! {
+        <Title text="view armies" />
+        <thaw::Flex class="army_view" >
+            <For each=move || army_ids.with(|ids| ids.iter()
+                                            .map(String::clone)
+                                            .enumerate().collect::<Vec<(usize, String)>>())
+                 key=|k: &(usize, String)| k.clone()
+                 children=move |(i, id)| view! {
+                     "Army" //<ArmyContainer army={Army::new(Signal::derive(move || id.clone()))}
+                            //       side={if i == 0 {thaw::DrawerPlacement::Left}
+                            //             else {thaw::DrawerPlacement::Right}} />
+                 }
+             />
+        </thaw::Flex>
+    }
+}
 
 // #[derive(Clone)]
 // struct DrawerControl {
