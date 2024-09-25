@@ -183,54 +183,56 @@ fn SelectView(message: String, alert_type: thaw::MessageBarIntent) -> impl IntoV
 
     view! {
         <Title text="select armies"/>
-        <thaw::MessageBar intent=alert_type>
-            <thaw::MessageBarBody>
-                {message}
-            </thaw::MessageBarBody>
-        </thaw::MessageBar>
+        <thaw::Flex vertical=true class="sample-matchups">
+            <thaw::MessageBar intent=alert_type>
+                <thaw::MessageBarBody>
+                    {message}
+                </thaw::MessageBarBody>
+            </thaw::MessageBar>
 
-//        <SampleMatchups/>
+            <SampleMatchups/>
+        </thaw::Flex>
     }
 }
 
-// #[component]
-// fn SampleMatchups() -> impl IntoView {
-//     view! {
-//         <h3> "Notice" </h3>
-//         <p>
-//             "This app is a technical preview. "
-//             "Remember to use smartphones in landscape mode."
-//         </p>
-//         <h3> "Sample matchups" </h3>
-//         <table-wrapper>
-//             <thaw::Table> // FIXME: bordered=true hoverable=true>
-//                 <tbody>
-//                     <tr>
-//                         <td>
-//                             <em>"Grimdark Future — "</em>
-//                             <a href="./?armies=Rrlct39EGuct,p2KIbSBOYpSB">
-//                             "Robots Legion vs. Prime Brothers" </a>
-//                         </td>
-//                     </tr>
-//                     <tr>
-//                         <td>
-//                             <em>"Grimdark Future — "</em>
-//                             <a href="./?armies=Mlwpoh1AGLC2">
-//                             "Robots Legion (single list)" </a>
-//                         </td>
-//                     </tr>
-//                     <tr>
-//                         <td>
-//                             <em>"Age of Fantasy: Skirmish — "</em>
-//                             <a href="./?armies=zhz5uajqHdt5,ZTgIvcYABynP">
-//                             "War Disciples vs. Eternal Wardens" </a>
-//                         </td>
-//                     </tr>
-//                 </tbody>
-//             </thaw::Table>
-//         </table-wrapper>
-//     }
-// }
+#[component]
+fn SampleMatchups() -> impl IntoView {
+    view! {
+        <h3> "Notice" </h3>
+        <p>
+            "This app is a technical preview. "
+            "Remember to use smartphones in landscape mode."
+        </p>
+        <h3> "Sample matchups" </h3>
+        <table-wrapper>
+            <table> // FIXME: bordered=true hoverable=true>
+                <tbody>
+                    <tr>
+                        <td>
+                            <em>"Grimdark Future — "</em>
+                            <a href="./?armies=Rrlct39EGuct,p2KIbSBOYpSB">
+                            "Robots Legion vs. Prime Brothers" </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <em>"Grimdark Future — "</em>
+                            <a href="./?armies=Mlwpoh1AGLC2">
+                            "Robots Legion (single list)" </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <em>"Age of Fantasy: Skirmish — "</em>
+                            <a href="./?armies=zhz5uajqHdt5,ZTgIvcYABynP">
+                            "War Disciples vs. Eternal Wardens" </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </table-wrapper>
+    }
+}
 
 // /// the main view, showing multiple armies and providing detail
 // /// drawers for selections
