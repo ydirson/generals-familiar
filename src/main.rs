@@ -27,21 +27,20 @@ fn main() {
 struct Army {
     army_id: Signal<String>,
     unit_selection: RwSignal<Option<Arc<opr::UnitGroup>>>,
-    //army_data: Resource<String, Result<Arc<opr::Army>, String>>,
+    army_data: AsyncDerived<Result<Arc<opr::Army>, String>, LocalStorage>,
 }
 
 impl Army {
     fn new(army_id: Signal<String>) -> Army
     {
         let unit_selection = RwSignal::new(None::<Arc<opr::UnitGroup>>);
-        //let army_data = Resource::new(
-        //    move || army_id.get(),
-        //    |army_id_value| {
-        //        let url = opr::get_army_url(&army_id_value);
-        //        async move { load_json_from_url::<Arc<opr::Army>>(&url).await }
-        //    });
-        Army{army_id, unit_selection//, army_data
-        }
+        let army_data = AsyncDerived::new_unsync(
+            move || {
+                let army_id_value = army_id.get();
+                let url = opr::get_army_url(&army_id_value);
+                async move { load_json_from_url::<Arc<opr::Army>>(&url).await }
+            });
+        Army{army_id, unit_selection, army_data}
     }
 }
 
