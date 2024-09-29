@@ -3,7 +3,7 @@ use leptos::*;
 use leptos_meta::{provide_meta_context, Title};
 use leptos_router as ltr;
 use leptos_router::Params; // derive(ltr::Params) won't work ?!
-use std::rc::Rc;
+use std::sync::Arc;
 
 const APP_NAME: &str = "General's Familiar";
 
@@ -26,19 +26,19 @@ fn main() {
 #[derive(Clone, Debug)]
 struct Army {
     army_id: Signal<String>,
-    unit_selection: RwSignal<Option<Rc<opr::UnitGroup>>>,
-    army_data: Resource<String, Result<Rc<opr::Army>, String>>,
+    unit_selection: RwSignal<Option<Arc<opr::UnitGroup>>>,
+    army_data: Resource<String, Result<Arc<opr::Army>, String>>,
 }
 
 impl Army {
     fn new(army_id: Signal<String>) -> Army
     {
-        let unit_selection = create_rw_signal(None::<Rc<opr::UnitGroup>>);
+        let unit_selection = create_rw_signal(None::<Arc<opr::UnitGroup>>);
         let army_data = create_resource(
             move || army_id.get(),
             |army_id_value| {
                 let url = opr::get_army_url(&army_id_value);
-                async move { load_json_from_url::<Rc<opr::Army>>(&url).await }
+                async move { load_json_from_url::<Arc<opr::Army>>(&url).await }
             });
         Army{army_id, unit_selection, army_data}
     }
@@ -91,7 +91,7 @@ fn App() -> impl IntoView {
     provide_context(game_system);
 
     let common_rules: Resource<Option<opr::GameSystem>,
-                               Result<Rc<opr::CommonRules>, String>> =
+                               Result<Arc<opr::CommonRules>, String>> =
         create_resource(
             move || game_system.get(),
             |game_system| async move {
@@ -290,7 +290,7 @@ fn ArmyList(army: Army,
                     Some(Ok(army_data)) => {
                         let opr::Army{ref game_system, ref name, ref unit_groups, ..} = **army_data;
                         let game_system = game_system.clone();
-                        let name = Rc::clone(name);
+                        let name = Arc::clone(name);
                         let unit_groups = unit_groups.clone();
 
                         // since we are recreating an ArmyList, the Army must have changed
@@ -317,7 +317,7 @@ fn ArmyList(army: Army,
                         };
                         view! {
                             {move || {
-                                let name = Rc::clone(&name);
+                                let name = Arc::clone(&name);
                                 let army_id = army.army_id.get();
                                 let af_url = format!("{}?id={army_id}", opr::ARMYFORGE_SHARE_URL);
                                 view! {
@@ -352,8 +352,8 @@ fn ArmyList(army: Army,
 }
 
 #[component]
-fn UnitsList(unit_groups: Vec<Rc<opr::UnitGroup>>,
-             select_unit: RwSignal<Option<Rc<opr::UnitGroup>>>, // FIXME only need WriteSignal here
+fn UnitsList(unit_groups: Vec<Arc<opr::UnitGroup>>,
+             select_unit: RwSignal<Option<Arc<opr::UnitGroup>>>, // FIXME only need WriteSignal here
 ) -> impl IntoView {
     let (selected_row_num, set_selected_row_num) = create_signal(None::<usize>);
     view! {
@@ -435,7 +435,7 @@ fn DetailsDrawer(army: Army,
 }
 
 #[component]
-fn GroupDetails(group: Rc<opr::UnitGroup>,
+fn GroupDetails(group: Arc<opr::UnitGroup>,
                 army: Army,
                 side: thaw::DrawerPlacement,
 ) -> impl IntoView
@@ -470,16 +470,16 @@ fn GroupDetails(group: Rc<opr::UnitGroup>,
         {
             let single = group.units.len() == 1;
             group.units.iter()
-                .map(|unit| view! {<UnitDetails unit=Rc::clone(unit) single />})
+                .map(|unit| view! {<UnitDetails unit=Arc::clone(unit) single />})
                 .collect_view()
         }
 
-        <SpecialRulesDefList group=Rc::clone(&group) army />
+        <SpecialRulesDefList group=Arc::clone(&group) army />
     }
 }
 
 #[component]
-fn UnitDetails(unit: Rc<opr::Unit>,
+fn UnitDetails(unit: Arc<opr::Unit>,
                single: bool,
 ) -> impl IntoView
 {
@@ -507,7 +507,7 @@ fn UnitDetails(unit: Rc<opr::Unit>,
 }
 
 #[component]
-fn UnitUpgradesList(loadout_list: Vec<Rc<opr::UnitLoadout>>) -> impl IntoView {
+fn UnitUpgradesList(loadout_list: Vec<Arc<opr::UnitLoadout>>) -> impl IntoView {
     view! {
         {move || {
             loadout_list
@@ -520,7 +520,7 @@ fn UnitUpgradesList(loadout_list: Vec<Rc<opr::UnitLoadout>>) -> impl IntoView {
                         let opr::UnitUpgrade{name, ref content, ..} = upgrade;
                         view! {
                             {move || if i > 0 { ", " } else { "" }}
-                            {Rc::clone(name)} " (" <SpecialRulesList special_rules={content.clone()} />
+                            {Arc::clone(name)} " (" <SpecialRulesList special_rules={content.clone()} />
                                 ")"
                         }
                     } else {
@@ -533,7 +533,7 @@ fn UnitUpgradesList(loadout_list: Vec<Rc<opr::UnitLoadout>>) -> impl IntoView {
 }
 
 #[component]
-fn EquipmentList(loadout_list: Vec<Rc<opr::UnitLoadout>>) -> impl IntoView {
+fn EquipmentList(loadout_list: Vec<Arc<opr::UnitLoadout>>) -> impl IntoView {
     view! {
         <table-wrapper>
             <table bordered=true hoverable=true>
@@ -557,9 +557,9 @@ fn EquipmentList(loadout_list: Vec<Rc<opr::UnitLoadout>>) -> impl IntoView {
 }
 
 #[component]
-fn EquipmentItem(loadout: Rc<opr::UnitLoadout>) -> impl IntoView {
+fn EquipmentItem(loadout: Arc<opr::UnitLoadout>) -> impl IntoView {
     if let opr::UnitLoadout::Equipment(ref equipment) = *loadout {
-        let name = Rc::clone(&equipment.name);
+        let name = Arc::clone(&equipment.name);
         let special_rules = equipment.special_rules.clone();
         let opr::Equipment{count, range, attacks, ..} = *equipment;
         view! {
@@ -588,7 +588,7 @@ fn EquipmentItem(loadout: Rc<opr::UnitLoadout>) -> impl IntoView {
 }
 
 #[component]
-fn SpecialRulesList(special_rules: Vec<Rc<opr::SpecialRule>>) -> impl IntoView {
+fn SpecialRulesList(special_rules: Vec<Arc<opr::SpecialRule>>) -> impl IntoView {
     special_rules.iter()
     // render each rule
         .enumerate()
@@ -601,7 +601,7 @@ fn SpecialRulesList(special_rules: Vec<Rc<opr::SpecialRule>>) -> impl IntoView {
             view! {
                 {separator}
                 <special-rule>
-                    {Rc::clone(&special_rule.name)}
+                    {Arc::clone(&special_rule.name)}
                 </special-rule>
                 {rating}
             }
@@ -610,12 +610,12 @@ fn SpecialRulesList(special_rules: Vec<Rc<opr::SpecialRule>>) -> impl IntoView {
 }
 
 #[component]
-fn SpecialRulesDefList(group: Rc<opr::UnitGroup>,
+fn SpecialRulesDefList(group: Arc<opr::UnitGroup>,
                        army: Army,) -> impl IntoView {
     view! {
         <specialrules-def-list>
             {move || {
-                let group = Rc::clone(&group);
+                let group = Arc::clone(&group);
                 army.army_data.with(
                     move |army_data| {
                         if let Some(Ok(army_data)) = army_data {
@@ -627,7 +627,7 @@ fn SpecialRulesDefList(group: Rc<opr::UnitGroup>,
                                 {match common_rules_def() {
                                     Ok(common_rules_def) => view! {
                                         {rules_descriptions_from_list_for_group(
-                                            Rc::clone(&group), &common_rules_def.clone())}
+                                            Arc::clone(&group), &common_rules_def.clone())}
                                     }.into_view(),
                                     Err(message) => view! {
                                         <thaw::Alert variant=thaw::AlertVariant::Error>
@@ -636,7 +636,7 @@ fn SpecialRulesDefList(group: Rc<opr::UnitGroup>,
                                     }.into_view(),
                                 }}
                                 {rules_descriptions_from_list_for_group(
-                                    Rc::clone(&group), special_rules_def)}
+                                    Arc::clone(&group), special_rules_def)}
                             }.into_view()
                         } else {
                             // cannot happen - FIXME should pass opr::Army directly instead?
@@ -651,9 +651,9 @@ fn SpecialRulesDefList(group: Rc<opr::UnitGroup>,
 
 /// extract common-rules definitions from the Context Resource, or an
 /// error string to display
-fn common_rules_def() -> Result<Vec<Rc<opr::SpecialRuleDef>>, String> {
+fn common_rules_def() -> Result<Vec<Arc<opr::SpecialRuleDef>>, String> {
     let common_rules_def = use_context::<
-            Resource<Option<opr::GameSystem>, Result<Rc<opr::CommonRules>, String>>
+            Resource<Option<opr::GameSystem>, Result<Arc<opr::CommonRules>, String>>
             >();
 
     if let Some(common_rules_def) = common_rules_def {
@@ -669,26 +669,26 @@ fn common_rules_def() -> Result<Vec<Rc<opr::SpecialRuleDef>>, String> {
     }
 }
 
-fn rules_descriptions_from_list_for_group(group: Rc<opr::UnitGroup>,
-                                          rules_def: &[Rc<opr::SpecialRuleDef>]
+fn rules_descriptions_from_list_for_group(group: Arc<opr::UnitGroup>,
+                                          rules_def: &[Arc<opr::SpecialRuleDef>]
 ) -> impl IntoView {
     rules_def
         .iter()
         .map(|rule_def| {
-            if group_uses_rule(Rc::clone(&group), rule_def) {
+            if group_uses_rule(Arc::clone(&group), rule_def) {
                 let opr::SpecialRuleDef{ref name, ref description} = **rule_def;
                 view!{
                     <p>
-                        <rule-name>{Rc::clone(name)}</rule-name> ": "
-                        {Rc::clone(description)}
+                        <rule-name>{Arc::clone(name)}</rule-name> ": "
+                        {Arc::clone(description)}
                     </p>
                 }.into_view()
             } else {view!{}.into_view()}})
         .collect_view()
 }
 
-fn group_uses_rule(group: Rc<opr::UnitGroup>,
-                   rule_def: &Rc<opr::SpecialRuleDef>) -> bool {
+fn group_uses_rule(group: Arc<opr::UnitGroup>,
+                   rule_def: &Arc<opr::SpecialRuleDef>) -> bool {
     for unit in group.units.iter() {
         let opr::Unit{ref special_rules, ref loadout, ..} = **unit;
         if special_rules
