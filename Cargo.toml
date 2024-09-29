@@ -13,6 +13,17 @@ leptos_meta = { version = "0.6.0", features = ["csr"] }
 leptos_router = { version = "0.6.0", features = ["csr"] }
 serde = { version = "1.0.0" }
 
+[patch.crates-io]
+#leptos = {path = "../leptos/leptos"}
+#leptos_macro = {path = "../leptos/leptos_macro"}
+#leptos_meta = {path = "../leptos/meta"}
+#leptos_router = {path = "../leptos/router"}
+
+leptos = {git = "https://github.com/leptos-rs/leptos", branch = "leptos_0.6"}
+leptos_macro = {git = "https://github.com/leptos-rs/leptos", branch = "leptos_0.6"}
+leptos_meta = {git = "https://github.com/leptos-rs/leptos", branch = "leptos_0.6"}
+leptos_router = {git = "https://github.com/leptos-rs/leptos", branch = "leptos_0.6"}
+
 [dependencies.thaw]
 features = ["csr"]
 #version = "0.3.4"
@@ -22,12 +33,14 @@ branch = "thaw-v0.3"
 [build-dependencies.opr-test-data]
 git = "https://github.com/ydirson/opr-rs"
 optional = true
-rev = "68b2f48d1581d829bc7708ba6e024fc716cbb46a"
-#path = "../opr-rs/opr-test-data"
+rev = "854d192c8c85fe09b1b635e1c42e114363353cba"
 [dependencies.opr]
 git = "https://github.com/ydirson/opr-rs"
-rev = "68b2f48d1581d829bc7708ba6e024fc716cbb46a"
-#path = "../opr-rs/opr"
+rev = "854d192c8c85fe09b1b635e1c42e114363353cba"
+
+#[patch."https://github.com/ydirson/opr-rs"]
+#opr = {path = "../opr-rs/opr"}
+#opr-test-data = {path = "../opr-rs/opr-test-data"}
 
 [dependencies.web-sys]
 version = "0.3"
