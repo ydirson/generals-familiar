@@ -107,9 +107,9 @@ table-wrapper {
     }
 }
 
-.thaw-drawer.army_details {
-    .thaw-card {
-        background-color: transparent;
+.army_details .thaw-overlay-drawer {
+    .thaw-drawer-body {
+        padding: 0;
     }
 
     padding: 0.2em;
@@ -153,10 +153,10 @@ table-wrapper {
         }
     }
 
-    &.right {
+    &.thaw-overlay-drawer--position-right {
         right: 0;
     }
-    &.left {
+    &.thaw-overlay-drawer--position-left {
         left: 0;
     }
 }

@@ -283,7 +283,7 @@ fn ArmyContainer(army: Army, side: thaw::DrawerPosition) -> impl IntoView {
 
     view! {
         <leptos::context::Provider value=drawer_control >
-            //<DetailsDrawer side army=army.clone() />
+            <DetailsDrawer side army=army.clone() />
             <ArmyList army />
         </leptos::context::Provider>
     }
@@ -445,26 +445,29 @@ fn RemoveArmyButton(army_id: String) -> impl IntoView {
     }
 }
 
-// #[component]
-// fn DetailsDrawer(army: Army,
-//                  side: thaw::DrawerPlacement) -> impl IntoView {
-//     let pos_class = match side {
-//         thaw::DrawerPlacement::Left => "left",
-//         thaw::DrawerPlacement::Right => "right",
-//         _ => unreachable!(),
-//     };
+#[component]
+fn DetailsDrawer(army: Army,
+                 side: thaw::DrawerPosition) -> impl IntoView {
+    let pos_class = match side {
+        thaw::DrawerPosition::Left => "left",
+        thaw::DrawerPosition::Right => "right",
+        _ => unreachable!(),
+    };
 
-//     let shown = use_context::<DrawerControl>().unwrap().shown;
-//     view! {
-//         <thaw::Drawer placement=side show=shown modal_type=thaw::DrawerModalType::NonModal
-//                       class={format!("army_details {pos_class} color-scheme--light")}>
-//             <Show when=move || shown.get() >
-//                 <GroupDetails army=army.clone() side
-//                               group=army.unit_selection.get().unwrap() />
-//             </Show>
-//         </thaw::Drawer>
-//     }
-// }
+    let shown = use_context::<DrawerControl>().unwrap().shown;
+    view! {
+        <thaw::OverlayDrawer position=side open=shown modal_type=thaw::DrawerModalType::NonModal
+                             class={format!("army_details {pos_class} color-scheme--light")}>
+            // FIXME use DrawerHeader?
+            <thaw::DrawerBody>
+                <Show when=move || shown.get() >
+                   "GroupDetails" // <GroupDetails army=army.clone() side
+                    //               group=army.unit_selection.get().unwrap() />
+                </Show>
+            </thaw::DrawerBody>
+        </thaw::OverlayDrawer>
+    }
+}
 
 // #[component]
 // fn GroupDetails(group: Arc<opr::UnitGroup>,
