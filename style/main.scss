@@ -2,6 +2,7 @@
     font-family: Roboto, sans-serif;
     --typography-p-margin: 0.1em 0 0.1em 0 ;
     --typography-h3-margin: 0.5em 0 0.5em 0 ;
+    //--thaw-drawer--size: 40%; // FIXME does not override inline style
 }
 
 .color-scheme--light {
@@ -117,9 +118,9 @@ table-wrapper {
     }
 }
 
-.thaw-drawer.army_details {
-    .thaw-card {
-        background-color: transparent;
+.army_details .thaw-overlay-drawer {
+    .thaw-drawer-body {
+        padding: 0;
     }
 
     padding: 0.2em;
@@ -164,10 +165,10 @@ table-wrapper {
         }
     }
 
-    &.right {
+    &.thaw-overlay-drawer--position-right {
         right: 0;
     }
-    &.left {
+    &.thaw-overlay-drawer--position-left {
         left: 0;
     }
 }
