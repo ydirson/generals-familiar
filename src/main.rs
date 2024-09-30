@@ -309,11 +309,11 @@ fn ArmyList(army: Army,
                                         {message}
                                     </thaw::MessageBarBody>
                                 </thaw::MessageBar>
-                                // // FIXME: hack to have the button on errors have the same
-                                // // size as the one on titles
-                                // <span style="font-size: var(--typography-h2-font-size);">
-                                //     <RemoveArmyButton army_id />
-                                // </span>
+                                // FIXME: hack to have the button on errors have the same
+                                // size as the one on titles
+                                <span style="font-size: var(--typography-h2-font-size);">
+                                    <RemoveArmyButton army_id />
+                                </span>
                             </thaw::Flex>
                         })
                     },
@@ -353,7 +353,7 @@ fn ArmyList(army: Army,
                                 view! {
                                     <h2>
                                         <a target="_blank" href={af_url}>{name}</a>
-                                    // <RemoveArmyButton army_id />
+                                        <RemoveArmyButton army_id />
                                     </h2>
                                 }
                             }}
@@ -422,28 +422,28 @@ fn UnitsList(unit_groups: Vec<Arc<opr::UnitGroup>>,
     }
 }
 
-// #[component]
-// fn RemoveArmyButton(army_id: String) -> impl IntoView {
-//     let mut ids =
-//         use_context::<Signal<Vec<String>>>()
-//         .expect("should find army_ids in context")
-//         .get();
-//     ids.remove(ids.iter().position(|x| *x == army_id)
-//                .expect("id should be in the list to remove it"));
-//     let remove_army_url = if ids.is_empty() {
-//         "./".to_string()
-//     } else {
-//         format!("./?armies={}", ids.join(","))
-//     };
+#[component]
+fn RemoveArmyButton(army_id: String) -> impl IntoView {
+    let mut ids =
+        use_context::<Signal<Vec<String>>>()
+        .expect("should find army_ids in context")
+        .get();
+    ids.remove(ids.iter().position(|x| *x == army_id)
+               .expect("id should be in the list to remove it"));
+    let remove_army_url = if ids.is_empty() {
+        "./".to_string()
+    } else {
+        format!("./?armies={}", ids.join(","))
+    };
 
-//     view! {
-//         <a href=remove_army_url >
-//             <button class="rm_army">
-//                 <thaw::Icon icon=icondata::IoCloseCircleOutline />
-//             </button>
-//         </a>
-//     }
-// }
+    view! {
+        <a href=remove_army_url >
+            <button class="rm_army">
+                <thaw::Icon icon=icondata::IoCloseCircleOutline />
+            </button>
+        </a>
+    }
+}
 
 // #[component]
 // fn DetailsDrawer(army: Army,
