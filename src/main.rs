@@ -27,14 +27,14 @@ fn main() {
 #[derive(Clone)]
 struct Army {
     army_id: Signal<String>,
-    unit_selection: RwSignal<Option<Arc<opr::UnitGroup>>, LocalStorage>,
+    unit_selection: RwSignal<Option<Arc<opr::UnitGroup>>>,
     army_data: AsyncDerived<Result<Arc<opr::Army>, String>, LocalStorage>,
 }
 
 impl Army {
     fn new(army_id: Signal<String>) -> Army
     {
-        let unit_selection = RwSignal::new_local(None::<Arc<opr::UnitGroup>>);
+        let unit_selection = RwSignal::new(None::<Arc<opr::UnitGroup>>);
         let army_data = AsyncDerived::new_unsync(
             move || {
                 let army_id_value = army_id.get();
