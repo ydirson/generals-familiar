@@ -29,13 +29,23 @@ body {
     padding: 0;
 }
 
-leptonic-app-bar {
+.app {
+    min-height: 100vh;
+}
+
+.app-bar {
     background: var(--brand-color);
     color: white;
     padding: 0 1em;
     h1 {
         margin: 0;
     }
+}
+
+.app-contents {
+    background-color: var(--app-background-color);
+    height: fit-content;
+    padding: 0 1em 1em 1em;
 }
 
 .army_view {
