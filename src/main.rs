@@ -72,82 +72,85 @@ fn AppBoilerplate() -> impl IntoView {
                 "route not matched."
             </thaw::Alert>
         }.into_view() >
-            "There will be an app." //<App/>
+            <App/>
         </ltr::Router>
 // </ltn::Box>
     }
 }
 
-// #[derive(Params,PartialEq)]
-// struct UrlQuery {
-//     armies: Option<String>,
-// }
+#[derive(Params,PartialEq)]
+struct UrlQuery {
+    armies: Option<String>,
+}
 
-// /// the main application component
-// #[component]
-// fn App() -> impl IntoView {
-//     let query = ltr::use_query::<UrlQuery>();
-//     let game_system = create_rw_signal(None::<opr::GameSystem>);
-//     provide_context(game_system);
+/// the main application component
+#[component]
+fn App() -> impl IntoView {
+    let query = ltr::use_query::<UrlQuery>();
+    let game_system = create_rw_signal(None::<opr::GameSystem>);
+    provide_context(game_system);
 
-//     let common_rules: Resource<Option<opr::GameSystem>,
-//                                Result<Rc<opr::CommonRules>, String>> =
-//         create_resource(
-//             move || game_system.get(),
-//             |game_system| async move {
-//                 match game_system {
-//                     Some(game_system) => {
-//                         let url = opr::get_common_rules_url(game_system);
-//                         load_json_from_url(&url).await
-//                     },
-//                     None => Err("no common-rules, game system not known yet".to_string()),
-//                 }
-//             });
-//     provide_context(common_rules);
+    let common_rules: Resource<Option<opr::GameSystem>,
+                               Result<Rc<opr::CommonRules>, String>> =
+        create_resource(
+            move || game_system.get(),
+            |game_system| async move {
+                match game_system {
+                    Some(game_system) => {
+                        let url = opr::get_common_rules_url(game_system);
+                        load_json_from_url(&url).await
+                    },
+                    None => Err("no common-rules, game system not known yet".to_string()),
+                }
+            });
+    provide_context(common_rules);
 
-//     let army_ids = Signal::derive(move || {
-//         query.with(|params| {
-//             match params.as_ref().map(|params| params.armies.clone()) {
-//                 Ok(None) => Ok(vec!()),
-//                 Err(err) => Err(err.to_string()),
-//                 Ok(Some(armies_string)) => {
-//                     let v = armies_string
-//                         .split(',')
-//                         .map(|s| s.to_string())
-//                         .collect::<Vec<String>>();
-//                     Ok(v)
-//                 },
-//             }
-//         })
-//     });
-//     view! {
-//         <ltn::AppBar>
-//             <h1>
-//                 {APP_NAME}
-//                 {move || match game_system.get() {
-//                     Some(game_system) => format!(" - {game_system}"),
-//                     None => "".to_string(),
-//                 }}
-//             </h1>
-//             <ltn::ThemeToggle off=ltn::LeptonicTheme::Light on=ltn::LeptonicTheme::Dark/>
-//         </ltn::AppBar>
-//         <ltn::Box style="padding: 0 1em 1em 1em;">
-//             <Show when=move || { army_ids.with(Result::is_ok) }
-//                   fallback=move || view! {
-//                       <SelectView alert_type={ltn::AlertVariant::Warn}
-//                                   message=army_ids.get().err().unwrap() />
-//                   } >
-//                 <Show when=move || { ! army_ids.get().unwrap().is_empty() }
-//                       fallback=|| view! {
-//                           <SelectView alert_type={ltn::AlertVariant::Info}
-//                                       message="no army selected".to_string() />
-//                       } >
-//                     <ArmiesView army_ids=Signal::derive(move || army_ids.get().unwrap().clone()) />
-//                 </Show>
-//             </Show>
-//         </ltn::Box>
-//     }
-// }
+    let army_ids = Signal::derive(move || {
+        query.with(|params| {
+            match params.as_ref().map(|params| params.armies.clone()) {
+                Ok(None) => Ok(vec!()),
+                Err(err) => Err(err.to_string()),
+                Ok(Some(armies_string)) => {
+                    let v = armies_string
+                        .split(',')
+                        .map(|s| s.to_string())
+                        .collect::<Vec<String>>();
+                    Ok(v)
+                },
+            }
+        })
+    });
+    view! {
+        <thaw::Layout class="app color-scheme--light">
+            <thaw::LayoutHeader class="app-bar">
+                <thaw::Flex justify=thaw::FlexJustify::SpaceBetween align=thaw::FlexAlign::Center>
+                    <h1>
+                        {APP_NAME}
+                        {move || match game_system.get() {
+                            Some(game_system) => format!(" - {game_system}"),
+                            None => "".to_string(),
+                        }}
+                    </h1>
+                </thaw::Flex>
+            </thaw::LayoutHeader>
+            <thaw::Space class="app-contents" justify=thaw::SpaceJustify::Center>
+                <Show when=move || { army_ids.with(Result::is_ok) }
+                      fallback=move || view! {
+                          // <SelectView alert_type={ltn::AlertVariant::Warn}
+                          //             message=army_ids.get().err().unwrap() />
+                      } >
+                    <Show when=move || { ! army_ids.get().unwrap().is_empty() }
+                          fallback=|| view! {
+                              // <SelectView alert_type={ltn::AlertVariant::Info}
+                              //             message="no army selected".to_string() />
+                          } >
+                        "Armies" // <ArmiesView army_ids=Signal::derive(move || army_ids.get().unwrap().clone()) />
+                    </Show>
+                </Show>
+            </thaw::Space>
+        </thaw::Layout>
+    }
+}
 
 // #[component]
 // fn SelectView(message: String, alert_type: ltn::AlertVariant) -> impl IntoView {
