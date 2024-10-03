@@ -502,44 +502,44 @@ fn GroupDetails(group: Arc<opr::UnitGroup>,
             </thaw::Space>
         </h3>
 
-        // {
-        //     let single = group.units.len() == 1;
-        //     group.units.iter()
-        //         .map(|unit| view! {<UnitDetails unit=Arc::clone(unit) single />})
-        //         .collect_view()
-        // }
+        {
+            let single = group.units.len() == 1;
+            group.units.iter()
+                .map(|unit| view! {<UnitDetails unit=Arc::clone(unit) single />})
+                .collect_view()
+        }
 
         // <SpecialRulesDefList group=Arc::clone(&group) army />
     }
 }
 
-// #[component]
-// fn UnitDetails(unit: Arc<opr::Unit>,
-//                single: bool,
-// ) -> impl IntoView
-// {
-//     let unit_name = unit.formatted_name();
-//     let opr::Unit{quality, defense, full_cost, ref loadout, ref special_rules, ..} = *unit;
-//     let special_rules = special_rules.clone();
+#[component]
+fn UnitDetails(unit: Arc<opr::Unit>,
+               single: bool,
+) -> impl IntoView
+{
+    let unit_name = unit.formatted_name();
+    let opr::Unit{quality, defense, full_cost, ref loadout, ref special_rules, ..} = *unit;
+    let special_rules = special_rules.clone();
 
-//     view! {
-//         <p>
-//             <thaw::Space justify=thaw::SpaceJustify::SpaceBetween>
-//                 <span>
-//                     <span class="unit">
-//                         {(!single).then(|| format!("{unit_name}: "))}
-//                         {format!("Q{quality} D{defense}")}
-//                     </span>
-//                     " "
-//                     <SpecialRulesList special_rules={special_rules.clone()} />
-//                 </span>
-//                 {format!("{full_cost} pts")}
-//             </thaw::Space>
-//         </p>
-//         <p><UnitUpgradesList loadout_list={loadout.clone()} /></p>
-//         <EquipmentList loadout_list={loadout.clone()} />
-//     }
-// }
+    view! {
+        <p>
+            <thaw::Space justify=thaw::SpaceJustify::SpaceBetween>
+                <span>
+                    <span class="unit">
+                        {(!single).then(|| format!("{unit_name}: "))}
+                        {format!("Q{quality} D{defense}")}
+                    </span>
+                    " "
+                    // <SpecialRulesList special_rules={special_rules.clone()} />
+                </span>
+                {format!("{full_cost} pts")}
+            </thaw::Space>
+        </p>
+        // <p><UnitUpgradesList loadout_list={loadout.clone()} /></p>
+        // <EquipmentList loadout_list={loadout.clone()} />
+    }
+}
 
 // #[component]
 // fn UnitUpgradesList(loadout_list: Vec<Arc<opr::UnitLoadout>>) -> impl IntoView {
