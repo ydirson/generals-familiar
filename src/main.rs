@@ -461,57 +461,57 @@ fn DetailsDrawer(army: Army,
             // FIXME use DrawerHeader?
             <thaw::DrawerBody>
                 <Show when=move || shown.get() >
-                   "GroupDetails" // <GroupDetails army=army.clone() side
-                    //               group=army.unit_selection.get().unwrap() />
+                    <GroupDetails army=army.clone() side
+                                  group=army.unit_selection.get().unwrap() />
                 </Show>
             </thaw::DrawerBody>
         </thaw::OverlayDrawer>
     }
 }
 
-// #[component]
-// fn GroupDetails(group: Arc<opr::UnitGroup>,
-//                 army: Army,
-//                 side: thaw::DrawerPlacement,
-// ) -> impl IntoView
-// {
-//     let opr::UnitGroup{full_cost, ..} = *group;
-//     let shown = use_context::<DrawerControl>().unwrap().shown;
-//     let group_name = group.formatted_name();
-//     let close_button = |glyph| view! {
-//         <thaw::Button //color=ltn::ButtonColor::Secondary
-//                       on_click=move |_| shown.set(false)> {glyph} </thaw::Button>
-//     };
-//     let (left_button, right_button) = match side {
-//         thaw::DrawerPlacement::Left  => ( Some(close_button("<")), None ),
-//         thaw::DrawerPlacement::Right => ( None, Some(close_button(">")) ),
-//         _ => unreachable!(),
-//     };
+#[component]
+fn GroupDetails(group: Arc<opr::UnitGroup>,
+                army: Army,
+                side: thaw::DrawerPosition,
+) -> impl IntoView
+{
+    let opr::UnitGroup{full_cost, ..} = *group;
+    let shown = use_context::<DrawerControl>().unwrap().shown;
+    let group_name = group.formatted_name();
+    let close_button = |glyph| view! {
+        <thaw::Button //color=ltn::ButtonColor::Secondary
+                      on_click=move |_| shown.set(false)> {glyph} </thaw::Button>
+    };
+    let (left_button, right_button) = match side {
+        thaw::DrawerPosition::Left  => ( Some(close_button("<")), None ),
+        thaw::DrawerPosition::Right => ( None, Some(close_button(">")) ),
+        _ => unreachable!(),
+    };
 
-//     view! {
-//         <h3>
-//             <thaw::Space justify=thaw::SpaceJustify::SpaceBetween >
-//                 <thaw::Space>
-//                     {left_button}
-//                     {group_name}
-//                 </thaw::Space>
-//                 <thaw::Space>
-//                     {format!("{full_cost} pts")}
-//                     {right_button}
-//                 </thaw::Space>
-//             </thaw::Space>
-//         </h3>
+    view! {
+        <h3>
+            <thaw::Space justify=thaw::SpaceJustify::SpaceBetween >
+                <thaw::Space>
+                    {left_button}
+                    {group_name}
+                </thaw::Space>
+                <thaw::Space>
+                    {format!("{full_cost} pts")}
+                    {right_button}
+                </thaw::Space>
+            </thaw::Space>
+        </h3>
 
-//         {
-//             let single = group.units.len() == 1;
-//             group.units.iter()
-//                 .map(|unit| view! {<UnitDetails unit=Arc::clone(unit) single />})
-//                 .collect_view()
-//         }
+        // {
+        //     let single = group.units.len() == 1;
+        //     group.units.iter()
+        //         .map(|unit| view! {<UnitDetails unit=Arc::clone(unit) single />})
+        //         .collect_view()
+        // }
 
-//         <SpecialRulesDefList group=Arc::clone(&group) army />
-//     }
-// }
+        // <SpecialRulesDefList group=Arc::clone(&group) army />
+    }
+}
 
 // #[component]
 // fn UnitDetails(unit: Arc<opr::Unit>,
