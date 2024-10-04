@@ -531,7 +531,7 @@ fn UnitDetails(unit: Arc<opr::Unit>,
                         {format!("Q{quality} D{defense}")}
                     </span>
                     " "
-                    // <SpecialRulesList special_rules={special_rules.clone()} />
+                    <SpecialRulesList special_rules={special_rules.clone()} />
                 </span>
                 {format!("{full_cost} pts")}
             </thaw::Space>
@@ -555,8 +555,8 @@ fn UnitUpgradesList(loadout_list: Vec<Arc<opr::UnitLoadout>>) -> impl IntoView {
                         let opr::UnitUpgrade{name, ref content, ..} = upgrade;
                         view! {
                             {move || if i > 0 { ", " } else { "" }}
-                            {Arc::clone(name)} " (" //<SpecialRulesList special_rules={content.clone()} />
-                                ")"
+                            {Arc::clone(name)}
+                            " (" <SpecialRulesList special_rules={content.clone()} /> ")"
                         }
                     } else {
                         panic!();
@@ -613,7 +613,7 @@ fn EquipmentItem(loadout: Arc<opr::UnitLoadout>) -> impl IntoView {
                     {format!("A{}", attacks)}
                 </td>
                 <td>
-                    // <SpecialRulesList special_rules={special_rules.clone()} />
+                    <SpecialRulesList special_rules={special_rules.clone()} />
                 </td>
             </tr>
         }
@@ -622,27 +622,27 @@ fn EquipmentItem(loadout: Arc<opr::UnitLoadout>) -> impl IntoView {
     }
 }
 
-// #[component]
-// fn SpecialRulesList(special_rules: Vec<Arc<opr::SpecialRule>>) -> impl IntoView {
-//     special_rules.iter()
-//     // render each rule
-//         .enumerate()
-//         .map(|(i, special_rule)| {
-//             let separator = if i == 0 { "" } else { ", " };
-//             let rating = match special_rule.rating {
-//                 None => { "".to_string() },
-//                 Some(rating) => { format!("({})", rating) },
-//             };
-//             view! {
-//                 {separator}
-//                 <special-rule>
-//                     {Arc::clone(&special_rule.name)}
-//                 </special-rule>
-//                 {rating}
-//             }
-//         })
-//         .collect_view()
-// }
+#[component]
+fn SpecialRulesList(special_rules: Vec<Arc<opr::SpecialRule>>) -> impl IntoView {
+    special_rules.iter()
+    // render each rule
+        .enumerate()
+        .map(|(i, special_rule)| {
+            let separator = if i == 0 { "" } else { ", " };
+            let rating = match special_rule.rating {
+                None => { "".to_string() },
+                Some(rating) => { format!("({})", rating) },
+            };
+            view! {
+                {separator}
+                <special-rule>
+                    {Arc::clone(&special_rule.name)}
+                </special-rule>
+                {rating}
+            }
+        })
+        .collect_view()
+}
 
 // #[component]
 // fn SpecialRulesDefList(group: Arc<opr::UnitGroup>,
