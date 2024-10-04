@@ -537,7 +537,7 @@ fn UnitDetails(unit: Arc<opr::Unit>,
             </thaw::Space>
         </p>
         <p><UnitUpgradesList loadout_list={loadout.clone()} /></p>
-        // <EquipmentList loadout_list={loadout.clone()} />
+        <EquipmentList loadout_list={loadout.clone()} />
     }
 }
 
@@ -567,60 +567,60 @@ fn UnitUpgradesList(loadout_list: Vec<Arc<opr::UnitLoadout>>) -> impl IntoView {
     }
 }
 
-// #[component]
-// fn EquipmentList(loadout_list: Vec<Arc<opr::UnitLoadout>>) -> impl IntoView {
-//     view! {
-//         <table-wrapper>
-//             <table bordered=true hoverable=true>
-//                 <tbody>
-//                     {move || {
-//                         loadout_list
-//                             .clone()
-//                             .into_iter()
-//                             .filter(|loadout| matches!(**loadout, opr::UnitLoadout::Equipment{..}))
-//                             .map(|loadout| {
-//                                 view! {
-//                                     <EquipmentItem loadout />
-//                                 }
-//                             })
-//                             .collect_view()
-//                     }}
-//                 </tbody>
-//             </table>
-//         </table-wrapper>
-//     }
-// }
+#[component]
+fn EquipmentList(loadout_list: Vec<Arc<opr::UnitLoadout>>) -> impl IntoView {
+    view! {
+        <table-wrapper>
+            <table> // FIXME bordered=true hoverable=true>
+                <tbody>
+                    {move || {
+                        loadout_list
+                            .clone()
+                            .into_iter()
+                            .filter(|loadout| matches!(**loadout, opr::UnitLoadout::Equipment{..}))
+                            .map(|loadout| {
+                                view! {
+                                    <EquipmentItem loadout />
+                                }
+                            })
+                            .collect_view()
+                    }}
+                </tbody>
+            </table>
+        </table-wrapper>
+    }
+}
 
-// #[component]
-// fn EquipmentItem(loadout: Arc<opr::UnitLoadout>) -> impl IntoView {
-//     if let opr::UnitLoadout::Equipment(ref equipment) = *loadout {
-//         let name = Arc::clone(&equipment.name);
-//         let special_rules = equipment.special_rules.clone();
-//         let opr::Equipment{count, range, attacks, ..} = *equipment;
-//         view! {
-//             <tr>
-//                 <td>
-//                     {if count != 1
-//                         {format!("{}x ", count)} else {"".to_string()}}
-//                     {name}
-//                 </td>
-//                 <td>
-//                     {if range != 0
-//                         {format!(r#"{}""#, range )}
-//                         else {"-".to_string()}}
-//                 </td>
-//                 <td>
-//                     {format!("A{}", attacks)}
-//                 </td>
-//                 <td>
-//                     <SpecialRulesList special_rules={special_rules.clone()} />
-//                 </td>
-//             </tr>
-//         }
-//     } else {
-//         panic!("EquipmentItem must be used on Equipment only");
-//     }
-// }
+#[component]
+fn EquipmentItem(loadout: Arc<opr::UnitLoadout>) -> impl IntoView {
+    if let opr::UnitLoadout::Equipment(ref equipment) = *loadout {
+        let name = Arc::clone(&equipment.name);
+        let special_rules = equipment.special_rules.clone();
+        let opr::Equipment{count, range, attacks, ..} = *equipment;
+        view! {
+            <tr>
+                <td>
+                    {if count != 1
+                        {format!("{}x ", count)} else {"".to_string()}}
+                    {name}
+                </td>
+                <td>
+                    {if range != 0
+                        {format!(r#"{}""#, range )}
+                        else {"-".to_string()}}
+                </td>
+                <td>
+                    {format!("A{}", attacks)}
+                </td>
+                <td>
+                    // <SpecialRulesList special_rules={special_rules.clone()} />
+                </td>
+            </tr>
+        }
+    } else {
+        panic!("EquipmentItem must be used on Equipment only");
+    }
+}
 
 // #[component]
 // fn SpecialRulesList(special_rules: Vec<Arc<opr::SpecialRule>>) -> impl IntoView {
