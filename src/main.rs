@@ -509,7 +509,7 @@ fn GroupDetails(group: Arc<opr::UnitGroup>,
                 .collect_view()
         }
 
-        // <SpecialRulesDefList group=Arc::clone(&group) army />
+        <SpecialRulesDefList group=Arc::clone(&group) army />
     }
 }
 
@@ -644,83 +644,85 @@ fn SpecialRulesList(special_rules: Vec<Arc<opr::SpecialRule>>) -> impl IntoView 
         .collect_view()
 }
 
-// #[component]
-// fn SpecialRulesDefList(group: Arc<opr::UnitGroup>,
-//                        army: Army,) -> impl IntoView {
-//     view! {
-//         <specialrules-def-list>
-//             {move || {
-//                 let group = Arc::clone(&group);
-//                 army.army_data.with(
-//                     move |army_data| {
-//                         if let Some(Ok(army_data)) = army_data {
-//                             // the rules def
-//                             let opr::Army{ref special_rules, ..} = **army_data;
-//                             let special_rules_def = special_rules;
+#[component]
+fn SpecialRulesDefList(group: Arc<opr::UnitGroup>,
+                       army: Army,) -> impl IntoView {
+    view! {
+        <specialrules-def-list>
+            {move || {
+                let group = Arc::clone(&group);
+                army.army_data.with(
+                    move |army_data| {
+                        if let Some(Ok(army_data)) = army_data {
+                            // the rules def
+                            let opr::Army{ref special_rules, ..} = **army_data;
+                            let special_rules_def = special_rules;
 
-//                             view!{
-//                                 {match common_rules_def() {
-//                                     Ok(common_rules_def) => view! {
-//                                         {rules_descriptions_from_list_for_group(
-//                                             Arc::clone(&group), &common_rules_def.clone())}
-//                                     }.into_view(),
-//                                     Err(message) => view! {
-//                                         <thaw::Alert variant=thaw::AlertVariant::Error>
-//                                             {message}
-//                                         </thaw::Alert>
-//                                     }.into_view(),
-//                                 }}
-//                                 {rules_descriptions_from_list_for_group(
-//                                     Arc::clone(&group), special_rules_def)}
-//                             }.into_view()
-//                         } else {
-//                             // cannot happen - FIXME should pass opr::Army directly instead?
-//                             view!{}.into_view()
-//                         }
-//                     }
-//                 )
-//             }}
-//         </specialrules-def-list>
-//     }
-// }
+                            Either::Left(view!{
+                                {match common_rules_def() {
+                                    Ok(common_rules_def) => Either::Left(view! {
+                                        {rules_descriptions_from_list_for_group(
+                                            Arc::clone(&group), &common_rules_def.clone())}
+                                    }),
+                                    Err(message) => Either::Right(view! {
+                                        <thaw::MessageBar intent=thaw::MessageBarIntent::Error>
+                                            <thaw::MessageBarBody>
+                                                {message}
+                                            </thaw::MessageBarBody>
+                                        </thaw::MessageBar>
+                                    }),
+                                }}
+                                {rules_descriptions_from_list_for_group(
+                                    Arc::clone(&group), special_rules_def)}
+                            })
+                        } else {
+                            // cannot happen - FIXME should pass opr::Army directly instead?
+                            Either::Right(view!{})
+                        }
+                    }
+                )
+            }}
+        </specialrules-def-list>
+    }
+}
 
-// /// extract common-rules definitions from the Context Resource, or an
-// /// error string to display
-// fn common_rules_def() -> Result<Vec<Arc<opr::SpecialRuleDef>>, String> {
-//     let common_rules_def = use_context::<
-//             Resource<Option<opr::GameSystem>, Result<Arc<opr::CommonRules>, String>>
-//             >();
+/// extract common-rules definitions from the Context Resource, or an
+/// error string to display
+fn common_rules_def() -> Result<Vec<Arc<opr::SpecialRuleDef>>, String> {
+    let common_rules_def = use_context::<
+            AsyncDerived<Result<Arc<opr::CommonRules>, String>, LocalStorage>
+            >();
 
-//     if let Some(common_rules_def) = common_rules_def {
-//         let common_rules_def = common_rules_def.get();
-//         match common_rules_def {
-//             Some(Ok(common_rules_def)) => Ok(common_rules_def.rules.clone()),
-//             Some(Err(message)) => Err(format!("common rules not found: {message}")),
-//             // FIXME that one is not really an error
-//             None => Err("(common rules still loading)".to_string()),
-//         }
-//     } else {
-//         Err("(internal error, common rules resource not found in context)".to_string())
-//     }
-// }
+    if let Some(common_rules_def) = common_rules_def {
+        let common_rules_def = common_rules_def.get();
+        match common_rules_def {
+            Some(Ok(common_rules_def)) => Ok(common_rules_def.rules.clone()),
+            Some(Err(message)) => Err(format!("common rules not found: {message}")),
+            // FIXME that one is not really an error
+            None => Err("(common rules still loading)".to_string()),
+        }
+    } else {
+        Err("(internal error, common rules resource not found in context)".to_string())
+    }
+}
 
-// fn rules_descriptions_from_list_for_group(group: Arc<opr::UnitGroup>,
-//                                           rules_def: &[Arc<opr::SpecialRuleDef>]
-// ) -> impl IntoView {
-//     rules_def
-//         .iter()
-//         .map(|rule_def| {
-//             if group_uses_rule(Arc::clone(&group), rule_def) {
-//                 let opr::SpecialRuleDef{ref name, ref description} = **rule_def;
-//                 view!{
-//                     <p>
-//                         <rule-name>{Arc::clone(name)}</rule-name> ": "
-//                         {Arc::clone(description)}
-//                     </p>
-//                 }.into_view()
-//             } else {view!{}.into_view()}})
-//         .collect_view()
-// }
+fn rules_descriptions_from_list_for_group(group: Arc<opr::UnitGroup>,
+                                          rules_def: &[Arc<opr::SpecialRuleDef>]
+) -> impl IntoView {
+    rules_def
+        .iter()
+        .map(|rule_def| {
+            if group_uses_rule(Arc::clone(&group), rule_def) {
+                let opr::SpecialRuleDef{ref name, ref description} = **rule_def;
+                Either::Left(view!{
+                    <p>
+                        <rule-name>{Arc::clone(name)}</rule-name> ": "
+                        {Arc::clone(description)}
+                    </p>
+                })
+            } else {Either::Right(view!{})}})
+        .collect_view()
+}
 
 fn group_uses_rule(group: Arc<opr::UnitGroup>,
                    rule_def: &Arc<opr::SpecialRuleDef>) -> bool {
