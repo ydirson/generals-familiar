@@ -274,14 +274,28 @@ fn ArmiesView(army_ids: Signal<Vec<String>>) -> impl IntoView {
 
 #[component]
 fn NewArmyDialog(#[prop(into)] show_when: RwSignal<bool>) -> impl IntoView {
-    let new_id = RwSignal::new("".to_string());
+    let input = RwSignal::new("".to_string());
+    let new_id = Signal::derive(move || {
+        let url_prefix = opr::ARMYFORGE_SHARE_URL.to_string() + "?id=";
+        match input.get() {
+            url if url.starts_with(url_prefix.as_str()) => {
+                // Q&D extraction of id from shared URL
+                let id_start = url_prefix.len();
+                match url.find("&") {
+                    Some(amp_idx) => &url[id_start..amp_idx],
+                    None => &url[id_start..],
+                }.to_string()
+            },
+            id => id,
+        }
+    });
     view! {
         <thaw::Dialog open=show_when ><thaw::DialogSurface><thaw::DialogBody>
             <thaw::DialogTitle>"Load Army"</thaw::DialogTitle>
             <thaw::DialogContent>
-                <thaw::Input placeholder="AF Share ID"
+                <thaw::Input placeholder="AF Shared URL or ID"
                              // should_be_focused=|| true
-                             value=new_id
+                             value=input
                  />
             </thaw::DialogContent>
             <thaw::DialogActions>
@@ -303,7 +317,7 @@ fn NewArmyDialog(#[prop(into)] show_when: RwSignal<bool>) -> impl IntoView {
                                       on_click=move |_| {
                                           show_when.set(false);
                                           navigate(url.as_str(), Default::default());
-                                          new_id.set("".to_string());
+                                          input.set("".to_string());
                                       } >
                             "Load"
                         </thaw::Button>
