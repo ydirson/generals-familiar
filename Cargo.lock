@@ -463,6 +463,7 @@ dependencies = [
  "console_error_panic_hook",
  "gloo-net",
  "icondata",
+ "itertools",
  "leptos",
  "leptos_config",
  "leptos_dom",
