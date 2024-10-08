@@ -8,12 +8,26 @@ rust-version = "1.72"
 console_error_panic_hook = { version = "0.1.0", optional = true }
 gloo-net = ">=0.5, <0.7"
 icondata = { version = "0.4.0", default-features = false, features = ["ionicons"] }
-leptos = { version = "0.7.0-beta5", default-features = false, features = ["csr"] }
-leptos_macro = { version = "0.7.0-beta5", features = ["csr"] }
-leptos_meta = "0.7.0-beta5"
-leptos_router = "0.7.0-beta5"
+leptos = { version = "=0.7.0-gamma2", default-features = false, features = ["csr"] }
+leptos_macro = { version = "=0.7.0-gamma2", features = ["csr"] }
+leptos_meta = "=0.7.0-gamma2"
+leptos_router = "=0.7.0-gamma2"
 serde = { version = "1.0.0" }
 thaw = { version = "0.4.0-beta3", features = ["csr"]}
+
+# those we don't use directly but have to be in sync
+leptos_config = "=0.7.0-gamma2"
+leptos_dom = "=0.7.0-gamma2"
+leptos_hot_reload = "=0.7.0-gamma2"
+leptos_router_macro = "=0.7.0-gamma2"
+leptos_server = "=0.7.0-gamma2"
+next_tuple = "=0.1.0-gamma2"
+reactive_graph = "=0.1.0-gamma2"
+server_fn = "=0.7.0-gamma2"
+server_fn_macro = "=0.7.0-gamma2"
+server_fn_macro_default = "=0.7.0-gamma2"
+tachys = "=0.1.0-gamma2"
+throw_error = "=0.2.0-gamma2"
 
 [patch.crates-io]
 #leptos = {path = "../leptos/leptos"}
@@ -21,15 +35,15 @@ thaw = { version = "0.4.0-beta3", features = ["csr"]}
 #leptos_meta = {path = "../leptos/meta"}
 #leptos_router = {path = "../leptos/router"}
 
-leptos = {git = "https://github.com/ydirson/leptos", branch = "beta5"}
-leptos_macro = {git = "https://github.com/ydirson/leptos", branch = "beta5"}
-leptos_meta = {git = "https://github.com/ydirson/leptos", branch = "beta5"}
-leptos_router = {git = "https://github.com/ydirson/leptos", branch = "beta5"}
+#leptos = {git = "https://github.com/ydirson/leptos", branch = "beta5"}
+#leptos_macro = {git = "https://github.com/ydirson/leptos", branch = "beta5"}
+#leptos_meta = {git = "https://github.com/ydirson/leptos", branch = "beta5"}
+#leptos_router = {git = "https://github.com/ydirson/leptos", branch = "beta5"}
 
 [patch.crates-io.thaw]
 #path = "../thaw/thaw"
 git = "https://github.com/thaw-ui/thaw"
-rev = "dfd5ddd328f2886260069bce9b8150d2307967e8"
+rev = "0c5cb880950ff2229ab2762bfa64a900b70a857d"
 
 [build-dependencies.opr-test-data]
 git = "https://github.com/ydirson/opr-rs"
