@@ -1,6 +1,4 @@
 use gloo_net::http::Request;
-use leptonic::prelude as ltn;
-use leptonic::prelude::AlertContent;
 use leptos::*;
 use leptos_meta::{provide_meta_context, Title};
 use leptos_router as ltr;
@@ -67,18 +65,16 @@ where
 #[component]
 fn AppBoilerplate() -> impl IntoView {
     view! {
-        <ltn::Root default_theme=ltn::LeptonicTheme::default()>
-            <Title formatter=|text| format!("{APP_NAME} — {text}")/>
-            <ltn::Box style="min-height: 100vh;">
-                <ltr::Router fallback=|| view! {
-                    <ltn::Alert variant=ltn::AlertVariant::Danger>
-                        <AlertContent slot>"Bad URL (route not matched)"</AlertContent>
-                    </ltn::Alert>
-                }.into_view() >
-                    <App/>
-                </ltr::Router>
-            </ltn::Box>
-        </ltn::Root>
+        <Title formatter=|text| format!("{APP_NAME} — {text}")/>
+// <ltn::Box style="min-height: 100vh;">
+        <ltr::Router fallback=|| view! {
+            <thaw::Alert title="Bad URL" variant=thaw::AlertVariant::Error>
+                "route not matched."
+            </thaw::Alert>
+        }.into_view() >
+            <App/>
+        </ltr::Router>
+// </ltn::Box>
     }
 }
 
@@ -125,45 +121,48 @@ fn App() -> impl IntoView {
         })
     });
     view! {
-        <ltn::AppBar>
-            <h1>
-                {APP_NAME}
-                {move || match game_system.get() {
-                    Some(game_system) => format!(" - {game_system}"),
-                    None => "".to_string(),
-                }}
-            </h1>
-            <ltn::ThemeToggle off=ltn::LeptonicTheme::Light on=ltn::LeptonicTheme::Dark/>
-        </ltn::AppBar>
-        <ltn::Box style="padding: 0 1em 1em 1em;">
-            <Show when=move || { army_ids.with(Result::is_ok) }
-                  fallback=move || view! {
-                      <SelectView alert_type={ltn::AlertVariant::Warn}
-                                  message=army_ids.get().err().unwrap() />
-                  } >
-                <Show when=move || { ! army_ids.get().unwrap().is_empty() }
-                      fallback=|| view! {
-                          <SelectView alert_type={ltn::AlertVariant::Info}
-                                      message="no army selected".to_string() />
+        <thaw::Layout class="app color-scheme--light">
+            <thaw::LayoutHeader class="app-bar">
+                <thaw::Flex justify=thaw::FlexJustify::SpaceBetween align=thaw::FlexAlign::Center>
+                    <h1>
+                        {APP_NAME}
+                        {move || match game_system.get() {
+                            Some(game_system) => format!(" - {game_system}"),
+                            None => "".to_string(),
+                        }}
+                    </h1>
+                </thaw::Flex>
+            </thaw::LayoutHeader>
+            <thaw::Space class="app-contents" justify=thaw::SpaceJustify::Center>
+                <Show when=move || { army_ids.with(Result::is_ok) }
+                      fallback=move || view! {
+                          <SelectView alert_type={thaw::AlertVariant::Warning}
+                                      message=army_ids.get().err().unwrap() />
                       } >
-                    <ArmiesView army_ids=Signal::derive(move || army_ids.get().unwrap().clone()) />
+                    <Show when=move || { ! army_ids.get().unwrap().is_empty() }
+                          fallback=|| view! {
+                              <SelectView alert_type={thaw::AlertVariant::Warning} // FIXME: Info
+                                          message="no army selected".to_string() />
+                          } >
+                        <ArmiesView army_ids=Signal::derive(move || army_ids.get().unwrap().clone()) />
+                    </Show>
                 </Show>
-            </Show>
-        </ltn::Box>
+            </thaw::Space>
+        </thaw::Layout>
     }
 }
 
 #[component]
-fn SelectView(message: String, alert_type: ltn::AlertVariant) -> impl IntoView {
+fn SelectView(message: String, alert_type: thaw::AlertVariant) -> impl IntoView {
     // reset global game_system so a different can be enabled by new armies
     let app_game_system = expect_context::<RwSignal<Option<opr::GameSystem>>>();
     app_game_system.set(None);
 
     view! {
         <Title text="select armies"/>
-        <ltn::Alert variant=alert_type>
-            <AlertContent slot>{message}</AlertContent>
-        </ltn::Alert>
+        <thaw::Alert variant=alert_type>
+            {message}
+        </thaw::Alert>
 
         <SampleMatchups/>
     }
@@ -178,33 +177,33 @@ fn SampleMatchups() -> impl IntoView {
             "Remember to use smartphones in landscape mode."
         </p>
         <h3> "Sample matchups" </h3>
-        <ltn::TableContainer>
-            <ltn::Table bordered=true hoverable=true>
-                <ltn::TableBody>
-                    <ltn::TableRow>
-                        <ltn::TableCell>
+        <table-wrapper>
+            <thaw::Table> // FIXME: bordered=true hoverable=true>
+                <tbody>
+                    <tr>
+                        <td>
                             <em>"Grimdark Future — "</em>
                             <a href="./?armies=Rrlct39EGuct,p2KIbSBOYpSB">
                             "Robots Legion vs. Prime Brothers" </a>
-                        </ltn::TableCell>
-                    </ltn::TableRow>
-                    <ltn::TableRow>
-                        <ltn::TableCell>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
                             <em>"Grimdark Future — "</em>
                             <a href="./?armies=Mlwpoh1AGLC2">
                             "Robots Legion (single list)" </a>
-                        </ltn::TableCell>
-                    </ltn::TableRow>
-                    <ltn::TableRow>
-                        <ltn::TableCell>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
                             <em>"Age of Fantasy: Skirmish — "</em>
                             <a href="./?armies=zhz5uajqHdt5,ZTgIvcYABynP">
                             "War Disciples vs. Eternal Wardens" </a>
-                        </ltn::TableCell>
-                    </ltn::TableRow>
-                </ltn::TableBody>
-            </ltn::Table>
-        </ltn::TableContainer>
+                        </td>
+                    </tr>
+                </tbody>
+            </thaw::Table>
+        </table-wrapper>
     }
 }
 
@@ -215,20 +214,18 @@ fn ArmiesView(army_ids: Signal<Vec<String>>) -> impl IntoView {
     provide_context(army_ids);
     view! {
         <Title text="view armies" />
-        <ltn::Stack orientation=ltn::StackOrientation::Horizontal
-                    spacing=ltn::Size::Em(1.0)
-                    class="army_view" >
+        <thaw::Flex class="army_view" >
             <For each=move || army_ids.with(|ids| ids.iter()
                                             .map(String::clone)
                                             .enumerate().collect::<Vec<(usize, String)>>())
                  key=|k: &(usize, String)| k.clone()
                  children=move |(i, id)| view! {
                      <ArmyContainer army={Army::new(Signal::derive(move || id.clone()))}
-                                    side={if i == 0 {ltn::DrawerSide::Left}
-                                          else {ltn::DrawerSide::Right}} />
+                                    side={if i == 0 {thaw::DrawerPlacement::Left}
+                                          else {thaw::DrawerPlacement::Right}} />
                  }
              />
-        </ltn::Stack>
+        </thaw::Flex>
     }
 }
 
@@ -247,7 +244,7 @@ impl Default for DrawerControl {
 /// A component container for the army list and the drawer, so they
 /// can share a common context
 #[component]
-fn ArmyContainer(army: Army, side: ltn::DrawerSide) -> impl IntoView {
+fn ArmyContainer(army: Army, side: thaw::DrawerPlacement) -> impl IntoView {
     // the `shown` status can be changed by eg. selecting in the army
     // list, or using close button in the drawer itself
     let drawer_control = DrawerControl::default();
@@ -269,7 +266,7 @@ fn ArmyList(army: Army,
 ) -> impl IntoView {
     let app_game_system = expect_context::<RwSignal<Option<opr::GameSystem>>>();
     view! {
-        <ltn::Stack spacing=ltn::Size::Em(0.5) class="army_list" >
+        <thaw::Space class="army_list" >
         { move || {
             army.army_data.with(
                 |army_data| match army_data {
@@ -278,17 +275,16 @@ fn ArmyList(army: Army,
                         let message = message.clone();
                         let army_id = army.army_id.get();
                         view! {
-                            <ltn::Stack spacing=ltn::Size::Em(0.5)
-                                        orientation=ltn::StackOrientation::Horizontal >
-                                <ltn::Alert variant=ltn::AlertVariant::Danger>
-                                    <AlertContent slot>{message}</AlertContent>
-                                </ltn::Alert>
+                            <thaw::Space gap=thaw::SpaceGap::Small >
+                                <thaw::Alert variant=thaw::AlertVariant::Error>
+                                    {message}
+                                </thaw::Alert>
                                 // FIXME: hack to have the button on errors have the same
                                 // size as the one on titles
                                 <span style="font-size: var(--typography-h2-font-size);">
                                     <RemoveArmyButton army_id />
                                 </span>
-                            </ltn::Stack>
+                            </thaw::Space>
                         }.into_view()
                     },
                     Some(Ok(army_data)) => {
@@ -340,11 +336,9 @@ fn ArmyList(army: Army,
                                     }.into_view()
                                 } else {
                                     view! {
-                                        <ltn::Alert variant=ltn::AlertVariant::Danger>
-                                            <AlertContent slot>
-                                                {check_inconsistency.unwrap()}
-                                            </AlertContent>
-                                        </ltn::Alert>
+                                        <thaw::Alert variant=thaw::AlertVariant::Error>
+                                            {check_inconsistency.unwrap()}
+                                        </thaw::Alert>
                                     }.into_view()
                                 }
                             }}
@@ -353,7 +347,7 @@ fn ArmyList(army: Army,
                 }
             )
         }}
-        </ltn::Stack>
+        </thaw::Space>
     }
 }
 
@@ -363,9 +357,9 @@ fn UnitsList(unit_groups: Vec<Rc<opr::UnitGroup>>,
 ) -> impl IntoView {
     let (selected_row_num, set_selected_row_num) = create_signal(None::<usize>);
     view! {
-        <ltn::TableContainer>
-            <ltn::Table bordered=true hoverable=true>
-                <ltn::TableBody>
+        <table-wrapper>
+            <table bordered=true hoverable=true>
+                <tbody>
                     {move || {
                         unit_groups
                             .clone()
@@ -375,9 +369,7 @@ fn UnitsList(unit_groups: Vec<Rc<opr::UnitGroup>>,
                                 let group_name = (*group).formatted_name();
                                 //let opr::Unit{..} = *unit;
                                 view! {
-                                    // FIXME this ought to be a ltn::TableRow, which does
-                                    // not allow for dynamic classes or even for class
-                                    <leptonic-table-row
+                                    <tr
                                          class:selected=move || {
                                              matches!(selected_row_num.get(),
                                                       Some(index) if index == i)
@@ -386,15 +378,15 @@ fn UnitsList(unit_groups: Vec<Rc<opr::UnitGroup>>,
                                              select_unit.set(Some(group.clone()));
                                              set_selected_row_num.set(Some(i));
                                     }>
-                                        <ltn::TableCell> {group_name} </ltn::TableCell>
-                                    </leptonic-table-row>
+                                        <td> {group_name} </td>
+                                    </tr>
                                 }
                             })
                             .collect_view()
                     }}
-                </ltn::TableBody>
-            </ltn::Table>
-        </ltn::TableContainer>
+                </tbody>
+            </table>
+        </table-wrapper>
     }
 }
 
@@ -415,7 +407,7 @@ fn RemoveArmyButton(army_id: String) -> impl IntoView {
     view! {
         <a href=remove_army_url >
             <button class="rm_army">
-                <ltn::Icon icon=ltn::icondata::IoCloseCircleOutline />
+                <thaw::Icon icon=icondata::IoCloseCircleOutline />
             </button>
         </a>
     }
@@ -423,57 +415,56 @@ fn RemoveArmyButton(army_id: String) -> impl IntoView {
 
 #[component]
 fn DetailsDrawer(army: Army,
-                 side: ltn::DrawerSide) -> impl IntoView {
+                 side: thaw::DrawerPlacement) -> impl IntoView {
     let pos_class = match side {
-        ltn::DrawerSide::Left => "left",
-        ltn::DrawerSide::Right => "right",
+        thaw::DrawerPlacement::Left => "left",
+        thaw::DrawerPlacement::Right => "right",
+        _ => unreachable!(),
     };
 
     let shown = use_context::<DrawerControl>().unwrap().shown;
     view! {
-        <ltn::Drawer side shown class={format!("army_details {pos_class}")}>
+        <thaw::Drawer placement=side show=shown modal_type=thaw::DrawerModalType::NonModal
+                      class={format!("army_details {pos_class} color-scheme--light")}>
             <Show when=move || shown.get() >
                 <GroupDetails army=army.clone() side
                               group=army.unit_selection.get().unwrap() />
             </Show>
-        </ltn::Drawer>
+        </thaw::Drawer>
     }
 }
 
 #[component]
 fn GroupDetails(group: Rc<opr::UnitGroup>,
                 army: Army,
-                side: ltn::DrawerSide,
+                side: thaw::DrawerPlacement,
 ) -> impl IntoView
 {
     let opr::UnitGroup{full_cost, ..} = *group;
     let shown = use_context::<DrawerControl>().unwrap().shown;
     let group_name = group.formatted_name();
     let close_button = |glyph| view! {
-        <ltn::Button color=ltn::ButtonColor::Secondary
-                     on_click=move |_| shown.set(false)> {glyph} </ltn::Button>
+        <thaw::Button //color=ltn::ButtonColor::Secondary
+                      on_click=move |_| shown.set(false)> {glyph} </thaw::Button>
     };
     let (left_button, right_button) = match side {
-        ltn::DrawerSide::Left  => ( Some(close_button("<")), None ),
-        ltn::DrawerSide::Right => ( None, Some(close_button(">")) ),
+        thaw::DrawerPlacement::Left  => ( Some(close_button("<")), None ),
+        thaw::DrawerPlacement::Right => ( None, Some(close_button(">")) ),
+        _ => unreachable!(),
     };
 
     view! {
         <h3>
-            <ltn::Stack orientation=ltn::StackOrientation::Horizontal
-                        style="width: 100%; justify-content: space-between;"
-                        spacing=ltn::Size::Em(0.0)>
-                <ltn::Stack orientation=ltn::StackOrientation::Horizontal
-                            spacing=ltn::Size::Em(1.0)>
+            <thaw::Space justify=thaw::SpaceJustify::SpaceBetween >
+                <thaw::Space>
                     {left_button}
                     {group_name}
-                </ltn::Stack>
-                <ltn::Stack orientation=ltn::StackOrientation::Horizontal
-                            spacing=ltn::Size::Em(1.0)>
+                </thaw::Space>
+                <thaw::Space>
                     {format!("{full_cost} pts")}
                     {right_button}
-                </ltn::Stack>
-            </ltn::Stack>
+                </thaw::Space>
+            </thaw::Space>
         </h3>
 
         {
@@ -498,9 +489,7 @@ fn UnitDetails(unit: Rc<opr::Unit>,
 
     view! {
         <p>
-            <ltn::Stack orientation=ltn::StackOrientation::Horizontal
-                        style="width: 100%; justify-content: space-between;"
-                        spacing=ltn::Size::Em(0.0)>
+            <thaw::Space justify=thaw::SpaceJustify::SpaceBetween>
                 <span>
                     <span class="unit">
                         {(!single).then(|| format!("{unit_name}: "))}
@@ -510,7 +499,7 @@ fn UnitDetails(unit: Rc<opr::Unit>,
                     <SpecialRulesList special_rules={special_rules.clone()} />
                 </span>
                 {format!("{full_cost} pts")}
-            </ltn::Stack>
+            </thaw::Space>
         </p>
         <p><UnitUpgradesList loadout_list={loadout.clone()} /></p>
         <EquipmentList loadout_list={loadout.clone()} />
@@ -531,7 +520,8 @@ fn UnitUpgradesList(loadout_list: Vec<Rc<opr::UnitLoadout>>) -> impl IntoView {
                         let opr::UnitUpgrade{name, ref content, ..} = upgrade;
                         view! {
                             {move || if i > 0 { ", " } else { "" }}
-                            {Rc::clone(name)} " (" <SpecialRulesList special_rules={content.clone()} /> ")"
+                            {Rc::clone(name)} " (" <SpecialRulesList special_rules={content.clone()} />
+                                ")"
                         }
                     } else {
                         panic!();
@@ -545,9 +535,9 @@ fn UnitUpgradesList(loadout_list: Vec<Rc<opr::UnitLoadout>>) -> impl IntoView {
 #[component]
 fn EquipmentList(loadout_list: Vec<Rc<opr::UnitLoadout>>) -> impl IntoView {
     view! {
-        <ltn::TableContainer>
-            <ltn::Table bordered=true hoverable=true>
-                <ltn::TableBody>
+        <table-wrapper>
+            <table bordered=true hoverable=true>
+                <tbody>
                     {move || {
                         loadout_list
                             .clone()
@@ -560,9 +550,9 @@ fn EquipmentList(loadout_list: Vec<Rc<opr::UnitLoadout>>) -> impl IntoView {
                             })
                             .collect_view()
                     }}
-                </ltn::TableBody>
-            </ltn::Table>
-        </ltn::TableContainer>
+                </tbody>
+            </table>
+        </table-wrapper>
     }
 }
 
@@ -573,24 +563,24 @@ fn EquipmentItem(loadout: Rc<opr::UnitLoadout>) -> impl IntoView {
         let special_rules = equipment.special_rules.clone();
         let opr::Equipment{count, range, attacks, ..} = *equipment;
         view! {
-            <ltn::TableRow>
-                <ltn::TableCell>
+            <tr>
+                <td>
                     {if count != 1
                         {format!("{}x ", count)} else {"".to_string()}}
                     {name}
-                </ltn::TableCell>
-                <ltn::TableCell>
+                </td>
+                <td>
                     {if range != 0
                         {format!(r#"{}""#, range )}
                         else {"-".to_string()}}
-                </ltn::TableCell>
-                <ltn::TableCell>
+                </td>
+                <td>
                     {format!("A{}", attacks)}
-                </ltn::TableCell>
-                <ltn::TableCell>
+                </td>
+                <td>
                     <SpecialRulesList special_rules={special_rules.clone()} />
-                </ltn::TableCell>
-            </ltn::TableRow>
+                </td>
+            </tr>
         }
     } else {
         panic!("EquipmentItem must be used on Equipment only");
@@ -640,9 +630,9 @@ fn SpecialRulesDefList(group: Rc<opr::UnitGroup>,
                                             Rc::clone(&group), &common_rules_def.clone())}
                                     }.into_view(),
                                     Err(message) => view! {
-                                        <ltn::Alert variant=ltn::AlertVariant::Danger>
-                                            <AlertContent slot>{message}</AlertContent>
-                                        </ltn::Alert>
+                                        <thaw::Alert variant=thaw::AlertVariant::Error>
+                                            {message}
+                                        </thaw::Alert>
                                     }.into_view(),
                                 }}
                                 {rules_descriptions_from_list_for_group(
