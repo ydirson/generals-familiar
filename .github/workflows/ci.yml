@@ -18,10 +18,6 @@ jobs:
       #with:
       #  version: 'v0.18.4'
 
-    # workaround unidentified issue with missing dir
-    - name: Stylesheet creation workaround
-      run: mkdir -p style/leptonic && test -r ./style/leptonic/leptonic-themes.scss || trunk build --verbose --release --public-url "./" || true
-
     - name: Build
       run: trunk build --verbose --release --public-url "./"
     - name: Upload artifacts
