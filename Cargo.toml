@@ -22,10 +22,10 @@ thaw = { version = "0.4.0-beta3", features = ["csr"]}
 #leptos_meta = {path = "../leptos/meta"}
 #leptos_router = {path = "../leptos/router"}
 
-#leptos = {git = "https://github.com/ydirson/leptos", branch = "beta5"}
-#leptos_macro = {git = "https://github.com/ydirson/leptos", branch = "beta5"}
-#leptos_meta = {git = "https://github.com/ydirson/leptos", branch = "beta5"}
-#leptos_router = {git = "https://github.com/ydirson/leptos", branch = "beta5"}
+leptos = {git = "https://github.com/leptos-rs/leptos", branch = "main"}
+leptos_macro = {git = "https://github.com/leptos-rs/leptos", branch = "main"}
+leptos_meta = {git = "https://github.com/leptos-rs/leptos", branch = "main"}
+leptos_router = {git = "https://github.com/leptos-rs/leptos", branch = "main"}
 
 [patch.crates-io.thaw]
 #path = "../thaw/thaw"
