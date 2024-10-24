@@ -141,7 +141,8 @@ fn App() -> impl IntoView {
         })
     });
     view! {
-        <thaw::Layout class="app">
+        <thaw::Layout class="app"
+                      content_style="min-height: 100vh; display: flex; flex-direction: column">
             <thaw::LayoutHeader class="app-bar">
                 <thaw::Flex justify=thaw::FlexJustify::SpaceBetween align=thaw::FlexAlign::Center>
                     <h1>
@@ -154,7 +155,8 @@ fn App() -> impl IntoView {
                     <ThemeToggle/>
                 </thaw::Flex>
             </thaw::LayoutHeader>
-            <thaw::Flex class="app-contents" justify=thaw::FlexJustify::Center>
+            <thaw::Flex class="app-contents" justify=thaw::FlexJustify::Center
+                        style="flex: 1">
                 <Show when=move || { army_ids.with(Result::is_ok) }
                       fallback=move || view! {
                           // <SelectView alert_type={thaw::AlertVariant::Warning}
