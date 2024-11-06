@@ -67,15 +67,14 @@ leptonic-drawer.army_details {
     max-height: calc(100vh - 1px);
 
     h3 {
-        margin: 0;
-        margin-bottom: 0.2em;
+        margin: 0 0 0.2em 0;
         button div.name {
             padding: 0.2em 0.5em;
         }
     }
 
     span.unit {
-        font-weight: bold
+        font-weight: bold;
     }
 
     leptonic-table-container {
@@ -107,7 +106,7 @@ leptonic-drawer.army_details {
 }
 
 specialrules-def-list {
-    overflow-y: scroll
+    overflow-y: scroll;
 }
 
 leptonic-table-row.selected {
@@ -115,9 +114,9 @@ leptonic-table-row.selected {
 }
 
 special-rule {
-    text-decoration: underline dotted
+    text-decoration: underline dotted;
 }
 
 rule-name {
-    font-weight: bold
+    font-weight: bold;
 }
