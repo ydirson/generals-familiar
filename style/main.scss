@@ -36,6 +36,10 @@ body {
     padding: 0;
 }
 
+p {
+    margin: 0.1em 0 0.1em 0;
+}
+
 .app {
     min-height: 100vh;
 }
@@ -45,6 +49,7 @@ body {
     color: white;
     padding: 0 1em;
     h1 {
+        font-size: x-large;
         margin: 0;
     }
 }
@@ -90,6 +95,10 @@ table-wrapper {
 
     .army_list {
         h2 {
+            margin: 0.5em 0 0.2em 0;
+            display: flex;
+            justify-content: space-between;
+
             a {
                 &:link, &:visited {
                     color: var(--box-color);
@@ -123,9 +132,13 @@ table-wrapper {
 
         h3 {
             margin: 0 0 0.2em 0;
-            button div.name {
-                padding: 0.2em 0.5em;
+            button {
+                min-width: 0;
+                div.name {
+                    padding: 0.2em 0.5em;
+                }
             }
+            .thaw-space__item { align-self: center; }
         }
 
         span.unit {
@@ -141,9 +154,10 @@ table-wrapper {
             background-color: color-mix(in srgb,
                                         var(--table-background-color),
                                         rgb(100% 100%  100% / 20%));
+            line-height: 1.35;
             td {
                 text-align: center;
-                padding: 0.1em;
+                padding: 0;
             }
             // FIXME use more explicit qualifier than child number
             td:nth-child(2),
