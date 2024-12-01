@@ -13,7 +13,7 @@ leptos_macro = { version = "=0.7.0-rc0", features = ["csr"] }
 leptos_meta = "=0.7.0-rc0"
 leptos_router = "=0.7.0-rc0"
 serde = { version = "1.0.0" }
-thaw = { version = "0.4.0-beta4", features = ["csr"]}
+thaw = { version = "=0.4.0-beta4", features = ["csr"]}
 
 # those we don't use directly but have to be in sync
 leptos_config = "=0.7.0-rc0"
@@ -29,6 +29,8 @@ server_fn_macro = "=0.7.0-rc0"
 server_fn_macro_default = "=0.7.0-rc0"
 tachys = "=0.1.0-rc0"
 throw_error = "=0.2.0-rc0"
+
+thaw_macro = "=0.1.0-beta4"
 
 [patch.crates-io]
 #leptos = {path = "../leptos/leptos"}
