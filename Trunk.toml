@@ -3,8 +3,6 @@
 ignore = [
     # files not impacting the app build
     "README.md",
-    # The Leptonic build writes these files. Not ignoring them could lead to infinite rebuilds when using `trunk serve`.
-    "./style/leptonic"
 ]
 
 [[hooks]]

@@ -1,11 +1,11 @@
 use gloo_net::http::Request;
-use leptonic::prelude as ltn;
-use leptonic::prelude::AlertContent;
-use leptos::*;
+use leptos::prelude::*;
+use leptos::either::{Either, EitherOf3};
 use leptos_meta::{provide_meta_context, Title};
 use leptos_router as ltr;
-use leptos_router::Params; // derive(ltr::Params) won't work ?!
-use std::rc::Rc;
+use leptos_router::components as ltrc;
+use leptos_router::params::Params; // derive(ltr::Params) won't work ?!
+use std::sync::Arc;
 
 const APP_NAME: &str = "General's Familiar";
 
@@ -21,26 +21,25 @@ fn main() {
     #[cfg(feature = "dev")]
     console_error_panic_hook::set_once();
 
-    provide_meta_context();
     mount_to_body(|| view! { <AppBoilerplate/> })
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone)]
 struct Army {
     army_id: Signal<String>,
-    unit_selection: RwSignal<Option<Rc<opr::UnitGroup>>>,
-    army_data: Resource<String, Result<Rc<opr::Army>, String>>,
+    unit_selection: RwSignal<Option<Arc<opr::UnitGroup>>>,
+    army_data: AsyncDerived<Result<Arc<opr::Army>, String>, LocalStorage>,
 }
 
 impl Army {
     fn new(army_id: Signal<String>) -> Army
     {
-        let unit_selection = create_rw_signal(None::<Rc<opr::UnitGroup>>);
-        let army_data = create_resource(
-            move || army_id.get(),
-            |army_id_value| {
+        let unit_selection = RwSignal::new(None::<Arc<opr::UnitGroup>>);
+        let army_data = AsyncDerived::new_unsync(
+            move || {
+                let army_id_value = army_id.get();
                 let url = opr::get_army_url(&army_id_value);
-                async move { load_json_from_url::<Rc<opr::Army>>(&url).await }
+                async move { load_json_from_url::<Arc<opr::Army>>(&url).await }
             });
         Army{army_id, unit_selection, army_data}
     }
@@ -66,19 +65,27 @@ where
 /// se, and mandatory parents of the app
 #[component]
 fn AppBoilerplate() -> impl IntoView {
+    provide_meta_context();
+    let theme = RwSignal::new(thaw::Theme::light());
+    let theme_class = Memo::new(move |_| {
+        theme.with(|theme| format!("color-scheme--{}", theme.color.color_scheme))
+    });
+    // get app URL to workaround Router assuming by default path
+    // components are a route
+    let path: &'static str = document()
+        .location().expect("document should have a location")
+        .pathname().expect("document location should have a pathname")
+        .leak();
+    log!("location path: {path:?}");
     view! {
-        <ltn::Root default_theme=ltn::LeptonicTheme::default()>
-            <Title formatter=|text| format!("{APP_NAME} — {text}")/>
-            <ltn::Box style="min-height: 100vh;">
-                <ltr::Router fallback=|| view! {
-                    <ltn::Alert variant=ltn::AlertVariant::Danger>
-                        <AlertContent slot>"Bad URL (route not matched)"</AlertContent>
-                    </ltn::Alert>
-                }.into_view() >
-                    <App/>
-                </ltr::Router>
-            </ltn::Box>
-        </ltn::Root>
+        <Title formatter=|text| format!("{APP_NAME} — {text}")/>
+        <thaw::ConfigProvider theme class=theme_class>
+// <ltn::Box style="min-height: 100vh;">
+            <ltrc::Router>
+                <App/>
+            </ltrc::Router>
+// </ltn::Box>
+        </thaw::ConfigProvider>
     }
 }
 
@@ -87,26 +94,36 @@ struct UrlQuery {
     armies: Option<String>,
 }
 
+#[component]
+fn ThemeToggle() -> impl IntoView {
+    let theme = thaw::Theme::use_rw_theme();
+    let checked = RwSignal::new(false);
+    Effect::new(move |_| {
+        theme.set(if checked.get() {thaw::Theme::dark()} else {thaw::Theme::light()});
+    });
+
+    view! {
+        <thaw::Switch checked/>
+    }
+}
+
 /// the main application component
 #[component]
 fn App() -> impl IntoView {
-    let query = ltr::use_query::<UrlQuery>();
-    let game_system = create_rw_signal(None::<opr::GameSystem>);
+    let query = ltr::hooks::use_query::<UrlQuery>();
+    let game_system = RwSignal::new(None::<opr::GameSystem>);
     provide_context(game_system);
 
-    let common_rules: Resource<Option<opr::GameSystem>,
-                               Result<Rc<opr::CommonRules>, String>> =
-        create_resource(
-            move || game_system.get(),
-            |game_system| async move {
-                match game_system {
-                    Some(game_system) => {
-                        let url = opr::get_common_rules_url(game_system);
-                        load_json_from_url(&url).await
-                    },
-                    None => Err("no common-rules, game system not known yet".to_string()),
-                }
-            });
+    let common_rules = AsyncDerived::new_unsync(
+        move || async move {
+            match game_system.get() {
+                Some(game_system) => {
+                    let url = opr::get_common_rules_url(game_system);
+                    load_json_from_url::<Arc<opr::CommonRules>>(&url).await
+                },
+                None => Err("no common-rules, game system not known yet".to_string()),
+            }
+        });
     provide_context(common_rules);
 
     let army_ids = Signal::derive(move || {
@@ -125,47 +142,57 @@ fn App() -> impl IntoView {
         })
     });
     view! {
-        <ltn::AppBar>
-            <h1>
-                {APP_NAME}
-                {move || match game_system.get() {
-                    Some(game_system) => format!(" - {game_system}"),
-                    None => "".to_string(),
-                }}
-            </h1>
-            <ltn::ThemeToggle off=ltn::LeptonicTheme::Light on=ltn::LeptonicTheme::Dark/>
-        </ltn::AppBar>
-        <ltn::Box style="padding: 0 1em 1em 1em;">
-            <Show when=move || { army_ids.with(Result::is_ok) }
-                  fallback=move || view! {
-                      <SelectView alert_type={ltn::AlertVariant::Warn}
-                                  message=army_ids.get().err().unwrap() />
-                  } >
-                <Show when=move || { ! army_ids.get().unwrap().is_empty() }
-                      fallback=|| view! {
-                          <SelectView alert_type={ltn::AlertVariant::Info}
-                                      message="no army selected".to_string() />
+        <thaw::Layout class="app"
+                      content_style="min-height: 100vh; display: flex; flex-direction: column">
+            <thaw::LayoutHeader class="app-bar">
+                <thaw::Flex justify=thaw::FlexJustify::SpaceBetween align=thaw::FlexAlign::Center>
+                    <h1>
+                        {APP_NAME}
+                        {move || match game_system.get() {
+                            Some(game_system) => format!(" - {game_system}"),
+                            None => "".to_string(),
+                        }}
+                    </h1>
+                    <ThemeToggle/>
+                </thaw::Flex>
+            </thaw::LayoutHeader>
+            <thaw::Flex class="app-contents" justify=thaw::FlexJustify::Center
+                        style="flex: 1">
+                <Show when=move || { army_ids.with(Result::is_ok) }
+                      fallback=move || view! {
+                          <SelectView alert_type={thaw::MessageBarIntent::Warning}
+                                      message=army_ids.get().err().unwrap() />
                       } >
-                    <ArmiesView army_ids=Signal::derive(move || army_ids.get().unwrap().clone()) />
+                    <Show when=move || { ! army_ids.get().unwrap().is_empty() }
+                          fallback=|| view! {
+                              <SelectView alert_type={thaw::MessageBarIntent::Info}
+                                          message="no army selected".to_string() />
+                          } >
+                        <ArmiesView army_ids=Signal::derive(move || army_ids.get().unwrap().clone()) />
+                    </Show>
                 </Show>
-            </Show>
-        </ltn::Box>
+            </thaw::Flex>
+        </thaw::Layout>
     }
 }
 
 #[component]
-fn SelectView(message: String, alert_type: ltn::AlertVariant) -> impl IntoView {
+fn SelectView(message: String, alert_type: thaw::MessageBarIntent) -> impl IntoView {
     // reset global game_system so a different can be enabled by new armies
     let app_game_system = expect_context::<RwSignal<Option<opr::GameSystem>>>();
     app_game_system.set(None);
 
     view! {
         <Title text="select armies"/>
-        <ltn::Alert variant=alert_type>
-            <AlertContent slot>{message}</AlertContent>
-        </ltn::Alert>
+        <thaw::Flex vertical=true class="sample-matchups">
+            <thaw::MessageBar intent=alert_type>
+                <thaw::MessageBarBody>
+                    {message}
+                </thaw::MessageBarBody>
+            </thaw::MessageBar>
 
-        <SampleMatchups/>
+            <SampleMatchups/>
+        </thaw::Flex>
     }
 }
 
@@ -178,33 +205,33 @@ fn SampleMatchups() -> impl IntoView {
             "Remember to use smartphones in landscape mode."
         </p>
         <h3> "Sample matchups" </h3>
-        <ltn::TableContainer>
-            <ltn::Table bordered=true hoverable=true>
-                <ltn::TableBody>
-                    <ltn::TableRow>
-                        <ltn::TableCell>
+        <table-wrapper>
+            <table> // FIXME: bordered=true hoverable=true>
+                <tbody>
+                    <tr>
+                        <td>
                             <em>"Grimdark Future — "</em>
                             <a href="./?armies=Rrlct39EGuct,p2KIbSBOYpSB">
                             "Robots Legion vs. Prime Brothers" </a>
-                        </ltn::TableCell>
-                    </ltn::TableRow>
-                    <ltn::TableRow>
-                        <ltn::TableCell>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
                             <em>"Grimdark Future — "</em>
                             <a href="./?armies=Mlwpoh1AGLC2">
                             "Robots Legion (single list)" </a>
-                        </ltn::TableCell>
-                    </ltn::TableRow>
-                    <ltn::TableRow>
-                        <ltn::TableCell>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
                             <em>"Age of Fantasy: Skirmish — "</em>
                             <a href="./?armies=zhz5uajqHdt5,ZTgIvcYABynP">
                             "War Disciples vs. Eternal Wardens" </a>
-                        </ltn::TableCell>
-                    </ltn::TableRow>
-                </ltn::TableBody>
-            </ltn::Table>
-        </ltn::TableContainer>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </table-wrapper>
     }
 }
 
@@ -215,20 +242,18 @@ fn ArmiesView(army_ids: Signal<Vec<String>>) -> impl IntoView {
     provide_context(army_ids);
     view! {
         <Title text="view armies" />
-        <ltn::Stack orientation=ltn::StackOrientation::Horizontal
-                    spacing=ltn::Size::Em(1.0)
-                    class="army_view" >
+        <thaw::Flex class="army_view" >
             <For each=move || army_ids.with(|ids| ids.iter()
                                             .map(String::clone)
                                             .enumerate().collect::<Vec<(usize, String)>>())
                  key=|k: &(usize, String)| k.clone()
                  children=move |(i, id)| view! {
                      <ArmyContainer army={Army::new(Signal::derive(move || id.clone()))}
-                                    side={if i == 0 {ltn::DrawerSide::Left}
-                                          else {ltn::DrawerSide::Right}} />
+                                    side={if i == 0 {thaw::DrawerPosition::Left}
+                                          else {thaw::DrawerPosition::Right}} />
                  }
              />
-        </ltn::Stack>
+        </thaw::Flex>
     }
 }
 
@@ -239,7 +264,7 @@ struct DrawerControl {
 impl Default for DrawerControl {
     fn default() -> Self {
         DrawerControl {
-            shown: create_rw_signal(false),
+            shown: RwSignal::new(false),
         }
     }
 }
@@ -247,20 +272,20 @@ impl Default for DrawerControl {
 /// A component container for the army list and the drawer, so they
 /// can share a common context
 #[component]
-fn ArmyContainer(army: Army, side: ltn::DrawerSide) -> impl IntoView {
+fn ArmyContainer(army: Army, side: thaw::DrawerPosition) -> impl IntoView {
     // the `shown` status can be changed by eg. selecting in the army
     // list, or using close button in the drawer itself
     let drawer_control = DrawerControl::default();
     let shown = drawer_control.shown.clone();
-    create_effect(move |_| {
+    Effect::new(move |_| {
         shown.set(army.unit_selection.with(Option::is_some));
     });
 
     view! {
-        <Provider value=drawer_control >
+        <leptos::context::Provider value=drawer_control >
             <DetailsDrawer side army=army.clone() />
             <ArmyList army />
-        </Provider>
+        </leptos::context::Provider>
     }
 }
 
@@ -269,32 +294,33 @@ fn ArmyList(army: Army,
 ) -> impl IntoView {
     let app_game_system = expect_context::<RwSignal<Option<opr::GameSystem>>>();
     view! {
-        <ltn::Stack spacing=ltn::Size::Em(0.5) class="army_list" >
+        <thaw::Flex class="army_list" vertical={true} >
         { move || {
             army.army_data.with(
                 |army_data| match army_data {
-                    None => view! { <h2>"Loading..."</h2> }.into_view(),
+                    None => EitherOf3::A(view! { <h2>"Loading..."</h2> }),
                     Some(Err(message)) => {
                         let message = message.clone();
                         let army_id = army.army_id.get();
-                        view! {
-                            <ltn::Stack spacing=ltn::Size::Em(0.5)
-                                        orientation=ltn::StackOrientation::Horizontal >
-                                <ltn::Alert variant=ltn::AlertVariant::Danger>
-                                    <AlertContent slot>{message}</AlertContent>
-                                </ltn::Alert>
+                        EitherOf3::B(view! {
+                            <thaw::Flex gap=thaw::FlexGap::Small >
+                                <thaw::MessageBar intent=thaw::MessageBarIntent::Error>
+                                    <thaw::MessageBarBody>
+                                        {message}
+                                    </thaw::MessageBarBody>
+                                </thaw::MessageBar>
                                 // FIXME: hack to have the button on errors have the same
                                 // size as the one on titles
                                 <span style="font-size: var(--typography-h2-font-size);">
                                     <RemoveArmyButton army_id />
                                 </span>
-                            </ltn::Stack>
-                        }.into_view()
+                            </thaw::Flex>
+                        })
                     },
                     Some(Ok(army_data)) => {
                         let opr::Army{ref game_system, ref name, ref unit_groups, ..} = **army_data;
                         let game_system = game_system.clone();
-                        let name = Rc::clone(name);
+                        let name = Arc::clone(name);
                         let unit_groups = unit_groups.clone();
 
                         // since we are recreating an ArmyList, the Army must have changed
@@ -319,9 +345,9 @@ fn ArmyList(army: Army,
                                 }
                             }
                         };
-                        view! {
+                        EitherOf3::C(view! {
                             {move || {
-                                let name = Rc::clone(&name);
+                                let name = Arc::clone(&name);
                                 let army_id = army.army_id.get();
                                 let af_url = format!("{}?id={army_id}", opr::ARMYFORGE_SHARE_URL);
                                 view! {
@@ -334,38 +360,38 @@ fn ArmyList(army: Army,
                             {move || {
                                 let check_inconsistency = check_inconsistency();
                                 if check_inconsistency.is_none() {
-                                    view! {
+                                    Either::Left(view! {
                                         <UnitsList unit_groups={unit_groups.clone()}
                                                    select_unit=army.unit_selection />
-                                    }.into_view()
+                                    })
                                 } else {
-                                    view! {
-                                        <ltn::Alert variant=ltn::AlertVariant::Danger>
-                                            <AlertContent slot>
+                                    Either::Right(view! {
+                                        <thaw::MessageBar intent=thaw::MessageBarIntent::Error>
+                                            <thaw::MessageBarBody>
                                                 {check_inconsistency.unwrap()}
-                                            </AlertContent>
-                                        </ltn::Alert>
-                                    }.into_view()
+                                            </thaw::MessageBarBody>
+                                        </thaw::MessageBar>
+                                    })
                                 }
                             }}
-                        }.into_view()
+                        })
                     },
                 }
             )
         }}
-        </ltn::Stack>
+        </thaw::Flex>
     }
 }
 
 #[component]
-fn UnitsList(unit_groups: Vec<Rc<opr::UnitGroup>>,
-             select_unit: RwSignal<Option<Rc<opr::UnitGroup>>>, // FIXME only need WriteSignal here
+fn UnitsList(unit_groups: Vec<Arc<opr::UnitGroup>>,
+             select_unit: RwSignal<Option<Arc<opr::UnitGroup>>>, // FIXME only need WriteSignal here
 ) -> impl IntoView {
-    let (selected_row_num, set_selected_row_num) = create_signal(None::<usize>);
+    let (selected_row_num, set_selected_row_num) = signal(None::<usize>);
     view! {
-        <ltn::TableContainer>
-            <ltn::Table bordered=true hoverable=true>
-                <ltn::TableBody>
+        <table-wrapper>
+            <table> // FIXME bordered=true hoverable=true>
+                <tbody>
                     {move || {
                         unit_groups
                             .clone()
@@ -375,9 +401,7 @@ fn UnitsList(unit_groups: Vec<Rc<opr::UnitGroup>>,
                                 let group_name = (*group).formatted_name();
                                 //let opr::Unit{..} = *unit;
                                 view! {
-                                    // FIXME this ought to be a ltn::TableRow, which does
-                                    // not allow for dynamic classes or even for class
-                                    <leptonic-table-row
+                                    <tr
                                          class:selected=move || {
                                              matches!(selected_row_num.get(),
                                                       Some(index) if index == i)
@@ -386,15 +410,15 @@ fn UnitsList(unit_groups: Vec<Rc<opr::UnitGroup>>,
                                              select_unit.set(Some(group.clone()));
                                              set_selected_row_num.set(Some(i));
                                     }>
-                                        <ltn::TableCell> {group_name} </ltn::TableCell>
-                                    </leptonic-table-row>
+                                        <td> {group_name} </td>
+                                    </tr>
                                 }
                             })
                             .collect_view()
                     }}
-                </ltn::TableBody>
-            </ltn::Table>
-        </ltn::TableContainer>
+                </tbody>
+            </table>
+        </table-wrapper>
     }
 }
 
@@ -415,7 +439,7 @@ fn RemoveArmyButton(army_id: String) -> impl IntoView {
     view! {
         <a href=remove_army_url >
             <button class="rm_army">
-                <ltn::Icon icon=ltn::icondata::IoCloseCircleOutline />
+                <thaw::Icon icon=icondata::IoCloseCircleOutline />
             </button>
         </a>
     }
@@ -423,72 +447,74 @@ fn RemoveArmyButton(army_id: String) -> impl IntoView {
 
 #[component]
 fn DetailsDrawer(army: Army,
-                 side: ltn::DrawerSide) -> impl IntoView {
+                 side: thaw::DrawerPosition) -> impl IntoView {
     let pos_class = match side {
-        ltn::DrawerSide::Left => "left",
-        ltn::DrawerSide::Right => "right",
+        thaw::DrawerPosition::Left => "left",
+        thaw::DrawerPosition::Right => "right",
+        _ => unreachable!(),
     };
 
     let shown = use_context::<DrawerControl>().unwrap().shown;
     view! {
-        <ltn::Drawer side shown class={format!("army_details {pos_class}")}>
-            <Show when=move || shown.get() >
-                <GroupDetails army=army.clone() side
-                              group=army.unit_selection.get().unwrap() />
-            </Show>
-        </ltn::Drawer>
+        <thaw::OverlayDrawer position=side open=shown modal_type=thaw::DrawerModalType::NonModal
+                             class={format!("army_details {pos_class} color-scheme--light")}>
+            // FIXME use DrawerHeader?
+            <thaw::DrawerBody>
+                <Show when=move || shown.get() >
+                    <GroupDetails army=army.clone() side
+                                  group=army.unit_selection.get().unwrap() />
+                </Show>
+            </thaw::DrawerBody>
+        </thaw::OverlayDrawer>
     }
 }
 
 #[component]
-fn GroupDetails(group: Rc<opr::UnitGroup>,
+fn GroupDetails(group: Arc<opr::UnitGroup>,
                 army: Army,
-                side: ltn::DrawerSide,
+                side: thaw::DrawerPosition,
 ) -> impl IntoView
 {
     let opr::UnitGroup{full_cost, ..} = *group;
     let shown = use_context::<DrawerControl>().unwrap().shown;
     let group_name = group.formatted_name();
     let close_button = |glyph| view! {
-        <ltn::Button color=ltn::ButtonColor::Secondary
-                     on_click=move |_| shown.set(false)> {glyph} </ltn::Button>
+        <thaw::Button //color=ltn::ButtonColor::Secondary
+                      on_click=move |_| shown.set(false)> {glyph} </thaw::Button>
     };
     let (left_button, right_button) = match side {
-        ltn::DrawerSide::Left  => ( Some(close_button("<")), None ),
-        ltn::DrawerSide::Right => ( None, Some(close_button(">")) ),
+        thaw::DrawerPosition::Left  => ( Some(close_button("<")), None ),
+        thaw::DrawerPosition::Right => ( None, Some(close_button(">")) ),
+        _ => unreachable!(),
     };
 
     view! {
         <h3>
-            <ltn::Stack orientation=ltn::StackOrientation::Horizontal
-                        style="width: 100%; justify-content: space-between;"
-                        spacing=ltn::Size::Em(0.0)>
-                <ltn::Stack orientation=ltn::StackOrientation::Horizontal
-                            spacing=ltn::Size::Em(1.0)>
+            <thaw::Space justify=thaw::SpaceJustify::SpaceBetween >
+                <thaw::Space>
                     {left_button}
                     {group_name}
-                </ltn::Stack>
-                <ltn::Stack orientation=ltn::StackOrientation::Horizontal
-                            spacing=ltn::Size::Em(1.0)>
+                </thaw::Space>
+                <thaw::Space>
                     {format!("{full_cost} pts")}
                     {right_button}
-                </ltn::Stack>
-            </ltn::Stack>
+                </thaw::Space>
+            </thaw::Space>
         </h3>
 
         {
             let single = group.units.len() == 1;
             group.units.iter()
-                .map(|unit| view! {<UnitDetails unit=Rc::clone(unit) single />})
+                .map(|unit| view! {<UnitDetails unit=Arc::clone(unit) single />})
                 .collect_view()
         }
 
-        <SpecialRulesDefList group=Rc::clone(&group) army />
+        <SpecialRulesDefList group=Arc::clone(&group) army />
     }
 }
 
 #[component]
-fn UnitDetails(unit: Rc<opr::Unit>,
+fn UnitDetails(unit: Arc<opr::Unit>,
                single: bool,
 ) -> impl IntoView
 {
@@ -498,9 +524,7 @@ fn UnitDetails(unit: Rc<opr::Unit>,
 
     view! {
         <p>
-            <ltn::Stack orientation=ltn::StackOrientation::Horizontal
-                        style="width: 100%; justify-content: space-between;"
-                        spacing=ltn::Size::Em(0.0)>
+            <thaw::Space justify=thaw::SpaceJustify::SpaceBetween>
                 <span>
                     <span class="unit">
                         {(!single).then(|| format!("{unit_name}: "))}
@@ -510,7 +534,7 @@ fn UnitDetails(unit: Rc<opr::Unit>,
                     <SpecialRulesList special_rules={special_rules.clone()} />
                 </span>
                 {format!("{full_cost} pts")}
-            </ltn::Stack>
+            </thaw::Space>
         </p>
         <p><UnitUpgradesList loadout_list={loadout.clone()} /></p>
         <EquipmentList loadout_list={loadout.clone()} />
@@ -518,7 +542,7 @@ fn UnitDetails(unit: Rc<opr::Unit>,
 }
 
 #[component]
-fn UnitUpgradesList(loadout_list: Vec<Rc<opr::UnitLoadout>>) -> impl IntoView {
+fn UnitUpgradesList(loadout_list: Vec<Arc<opr::UnitLoadout>>) -> impl IntoView {
     view! {
         {move || {
             loadout_list
@@ -531,7 +555,8 @@ fn UnitUpgradesList(loadout_list: Vec<Rc<opr::UnitLoadout>>) -> impl IntoView {
                         let opr::UnitUpgrade{name, ref content, ..} = upgrade;
                         view! {
                             {move || if i > 0 { ", " } else { "" }}
-                            {Rc::clone(name)} " (" <SpecialRulesList special_rules={content.clone()} /> ")"
+                            {Arc::clone(name)}
+                            " (" <SpecialRulesList special_rules={content.clone()} /> ")"
                         }
                     } else {
                         panic!();
@@ -543,11 +568,11 @@ fn UnitUpgradesList(loadout_list: Vec<Rc<opr::UnitLoadout>>) -> impl IntoView {
 }
 
 #[component]
-fn EquipmentList(loadout_list: Vec<Rc<opr::UnitLoadout>>) -> impl IntoView {
+fn EquipmentList(loadout_list: Vec<Arc<opr::UnitLoadout>>) -> impl IntoView {
     view! {
-        <ltn::TableContainer>
-            <ltn::Table bordered=true hoverable=true>
-                <ltn::TableBody>
+        <table-wrapper>
+            <table> // FIXME bordered=true hoverable=true>
+                <tbody>
                     {move || {
                         loadout_list
                             .clone()
@@ -560,37 +585,37 @@ fn EquipmentList(loadout_list: Vec<Rc<opr::UnitLoadout>>) -> impl IntoView {
                             })
                             .collect_view()
                     }}
-                </ltn::TableBody>
-            </ltn::Table>
-        </ltn::TableContainer>
+                </tbody>
+            </table>
+        </table-wrapper>
     }
 }
 
 #[component]
-fn EquipmentItem(loadout: Rc<opr::UnitLoadout>) -> impl IntoView {
+fn EquipmentItem(loadout: Arc<opr::UnitLoadout>) -> impl IntoView {
     if let opr::UnitLoadout::Equipment(ref equipment) = *loadout {
-        let name = Rc::clone(&equipment.name);
+        let name = Arc::clone(&equipment.name);
         let special_rules = equipment.special_rules.clone();
         let opr::Equipment{count, range, attacks, ..} = *equipment;
         view! {
-            <ltn::TableRow>
-                <ltn::TableCell>
+            <tr>
+                <td>
                     {if count != 1
                         {format!("{}x ", count)} else {"".to_string()}}
                     {name}
-                </ltn::TableCell>
-                <ltn::TableCell>
+                </td>
+                <td>
                     {if range != 0
                         {format!(r#"{}""#, range )}
                         else {"-".to_string()}}
-                </ltn::TableCell>
-                <ltn::TableCell>
+                </td>
+                <td>
                     {format!("A{}", attacks)}
-                </ltn::TableCell>
-                <ltn::TableCell>
+                </td>
+                <td>
                     <SpecialRulesList special_rules={special_rules.clone()} />
-                </ltn::TableCell>
-            </ltn::TableRow>
+                </td>
+            </tr>
         }
     } else {
         panic!("EquipmentItem must be used on Equipment only");
@@ -598,7 +623,7 @@ fn EquipmentItem(loadout: Rc<opr::UnitLoadout>) -> impl IntoView {
 }
 
 #[component]
-fn SpecialRulesList(special_rules: Vec<Rc<opr::SpecialRule>>) -> impl IntoView {
+fn SpecialRulesList(special_rules: Vec<Arc<opr::SpecialRule>>) -> impl IntoView {
     special_rules.iter()
     // render each rule
         .enumerate()
@@ -611,7 +636,7 @@ fn SpecialRulesList(special_rules: Vec<Rc<opr::SpecialRule>>) -> impl IntoView {
             view! {
                 {separator}
                 <special-rule>
-                    {Rc::clone(&special_rule.name)}
+                    {Arc::clone(&special_rule.name)}
                 </special-rule>
                 {rating}
             }
@@ -620,12 +645,12 @@ fn SpecialRulesList(special_rules: Vec<Rc<opr::SpecialRule>>) -> impl IntoView {
 }
 
 #[component]
-fn SpecialRulesDefList(group: Rc<opr::UnitGroup>,
+fn SpecialRulesDefList(group: Arc<opr::UnitGroup>,
                        army: Army,) -> impl IntoView {
     view! {
         <specialrules-def-list>
             {move || {
-                let group = Rc::clone(&group);
+                let group = Arc::clone(&group);
                 army.army_data.with(
                     move |army_data| {
                         if let Some(Ok(army_data)) = army_data {
@@ -633,24 +658,26 @@ fn SpecialRulesDefList(group: Rc<opr::UnitGroup>,
                             let opr::Army{ref special_rules, ..} = **army_data;
                             let special_rules_def = special_rules;
 
-                            view!{
+                            Either::Left(view!{
                                 {match common_rules_def() {
-                                    Ok(common_rules_def) => view! {
+                                    Ok(common_rules_def) => Either::Left(view! {
                                         {rules_descriptions_from_list_for_group(
-                                            Rc::clone(&group), &common_rules_def.clone())}
-                                    }.into_view(),
-                                    Err(message) => view! {
-                                        <ltn::Alert variant=ltn::AlertVariant::Danger>
-                                            <AlertContent slot>{message}</AlertContent>
-                                        </ltn::Alert>
-                                    }.into_view(),
+                                            Arc::clone(&group), &common_rules_def.clone())}
+                                    }),
+                                    Err(message) => Either::Right(view! {
+                                        <thaw::MessageBar intent=thaw::MessageBarIntent::Error>
+                                            <thaw::MessageBarBody>
+                                                {message}
+                                            </thaw::MessageBarBody>
+                                        </thaw::MessageBar>
+                                    }),
                                 }}
                                 {rules_descriptions_from_list_for_group(
-                                    Rc::clone(&group), special_rules_def)}
-                            }.into_view()
+                                    Arc::clone(&group), special_rules_def)}
+                            })
                         } else {
                             // cannot happen - FIXME should pass opr::Army directly instead?
-                            view!{}.into_view()
+                            Either::Right(view!{})
                         }
                     }
                 )
@@ -661,9 +688,9 @@ fn SpecialRulesDefList(group: Rc<opr::UnitGroup>,
 
 /// extract common-rules definitions from the Context Resource, or an
 /// error string to display
-fn common_rules_def() -> Result<Vec<Rc<opr::SpecialRuleDef>>, String> {
+fn common_rules_def() -> Result<Vec<Arc<opr::SpecialRuleDef>>, String> {
     let common_rules_def = use_context::<
-            Resource<Option<opr::GameSystem>, Result<Rc<opr::CommonRules>, String>>
+            AsyncDerived<Result<Arc<opr::CommonRules>, String>, LocalStorage>
             >();
 
     if let Some(common_rules_def) = common_rules_def {
@@ -679,26 +706,26 @@ fn common_rules_def() -> Result<Vec<Rc<opr::SpecialRuleDef>>, String> {
     }
 }
 
-fn rules_descriptions_from_list_for_group(group: Rc<opr::UnitGroup>,
-                                          rules_def: &[Rc<opr::SpecialRuleDef>]
+fn rules_descriptions_from_list_for_group(group: Arc<opr::UnitGroup>,
+                                          rules_def: &[Arc<opr::SpecialRuleDef>]
 ) -> impl IntoView {
     rules_def
         .iter()
         .map(|rule_def| {
-            if group_uses_rule(Rc::clone(&group), rule_def) {
+            if group_uses_rule(Arc::clone(&group), rule_def) {
                 let opr::SpecialRuleDef{ref name, ref description} = **rule_def;
-                view!{
+                Either::Left(view!{
                     <p>
-                        <rule-name>{Rc::clone(name)}</rule-name> ": "
-                        {Rc::clone(description)}
+                        <rule-name>{Arc::clone(name)}</rule-name> ": "
+                        {Arc::clone(description)}
                     </p>
-                }.into_view()
-            } else {view!{}.into_view()}})
+                })
+            } else {Either::Right(view!{})}})
         .collect_view()
 }
 
-fn group_uses_rule(group: Rc<opr::UnitGroup>,
-                   rule_def: &Rc<opr::SpecialRuleDef>) -> bool {
+fn group_uses_rule(group: Arc<opr::UnitGroup>,
+                   rule_def: &Arc<opr::SpecialRuleDef>) -> bool {
     for unit in group.units.iter() {
         let opr::Unit{ref special_rules, ref loadout, ..} = **unit;
         if special_rules
