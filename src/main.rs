@@ -13,7 +13,7 @@ const APP_NAME: &str = "General's Familiar";
 #[allow(unused_macros)]
 macro_rules! log {
     ( $( $t:tt )* ) => {
-        web_sys::console::log_1(&format!( $( $t )* ).into());
+        web_sys::console::log_1(&format!( $( $t )* ).into())
     }
 }
 
