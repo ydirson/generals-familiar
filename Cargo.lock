@@ -1122,7 +1122,7 @@ checksum = "42f5e15c9953c5e4ccceeb2e7382a716482c34515315f7b03532b8b4e8393d2d"
 [[package]]
 name = "opr"
 version = "0.1.0"
-source = "git+https://github.com/ydirson/opr-rs?rev=854d192c8c85fe09b1b635e1c42e114363353cba#854d192c8c85fe09b1b635e1c42e114363353cba"
+source = "git+https://github.com/ydirson/opr-rs?rev=41a07089b16ef33576eb39e4ca894ff28ef18667#41a07089b16ef33576eb39e4ca894ff28ef18667"
 dependencies = [
  "cfg-if",
  "itertools 0.13.0",
@@ -1133,7 +1133,7 @@ dependencies = [
 [[package]]
 name = "opr-test-data"
 version = "0.0.1"
-source = "git+https://github.com/ydirson/opr-rs?rev=854d192c8c85fe09b1b635e1c42e114363353cba#854d192c8c85fe09b1b635e1c42e114363353cba"
+source = "git+https://github.com/ydirson/opr-rs?rev=41a07089b16ef33576eb39e4ca894ff28ef18667#41a07089b16ef33576eb39e4ca894ff28ef18667"
 dependencies = [
  "include_dir",
 ]
