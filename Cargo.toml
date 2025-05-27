@@ -8,29 +8,29 @@ rust-version = "1.72"
 console_error_panic_hook = { version = "0.1.0", optional = true }
 gloo-net = ">=0.5, <0.7"
 icondata = { version = "0.4.0", default-features = false, features = ["ionicons"] }
-leptos = { version = "=0.7.0-rc0", default-features = false, features = ["csr"] }
-leptos_macro = { version = "=0.7.0-rc0", features = ["csr"] }
-leptos_meta = "=0.7.0-rc0"
-leptos_router = "=0.7.0-rc0"
+leptos = { version = "0.7.0", default-features = false, features = ["csr"] }
+leptos_macro = { version = "0.7.0", features = ["csr"] }
+leptos_meta = "0.7.0"
+leptos_router = "0.7.0"
 serde = { version = "1.0.0" }
-thaw = { version = "=0.4.0-beta4", features = ["csr"]}
+thaw = { version = "0.4.0", features = ["csr"]}
 
-# those we don't use directly but have to be in sync
-leptos_config = "=0.7.0-rc0"
-leptos_dom = "=0.7.0-rc0"
-leptos_hot_reload = "=0.7.0-rc0"
-leptos_router_macro = "=0.7.0-rc0"
-leptos_server = "=0.7.0-rc0"
-next_tuple = "=0.1.0-rc0"
-reactive_graph = "=0.1.0-rc0"
-reactive_stores_macro = "=0.1.0-rc0"
-server_fn = "=0.7.0-rc0"
-server_fn_macro = "=0.7.0-rc0"
-server_fn_macro_default = "=0.7.0-rc0"
-tachys = "=0.1.0-rc0"
-throw_error = "=0.2.0-rc0"
+# those we don't use directly but have to be in sync when using a prerelease
+#leptos_config = "=0.7.0-rc2"
+#leptos_dom = "=0.7.0-rc2"
+#leptos_hot_reload = "=0.7.0-rc2"
+#leptos_router_macro = "=0.7.0-rc2"
+#leptos_server = "=0.7.0-rc2"
+#next_tuple = "=0.1.0-rc2"
+#reactive_graph = "=0.1.0-rc2"
+#reactive_stores_macro = "=0.1.0-rc2"
+#server_fn = "=0.7.0-rc2"
+#server_fn_macro = "=0.7.0-rc2"
+#server_fn_macro_default = "=0.7.0-rc2.0"
+#tachys = "=0.1.0-rc2"
+#throw_error = "=0.2.0-rc2"
 
-thaw_macro = "=0.1.0-beta4"
+thaw_macro = "0.1.0"
 
 [patch.crates-io]
 #leptos = {path = "../leptos/leptos"}
