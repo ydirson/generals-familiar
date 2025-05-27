@@ -52,6 +52,9 @@ browser to access it - if you choose to build it yourself, just run
     full URL provided by "share as link"
   * show spells when needed (requires fetching json army book)
   * (bug) on army removal, removal link for previous armies are not updated
+  * (bug) when deselecting all armies, the army type is kept (as
+    reflected in titlebar, and in reported mismatch loading a new
+    matchup)
 * QoL
   * special rules
     * in DetailsDrawer, highlight occurrences of a rule when clicking
