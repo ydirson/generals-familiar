@@ -1,25 +1,34 @@
-* {
-    font-family: Roboto, sans-serif;
-}
-
-@import "./leptonic/leptonic-themes";
-
-[data-theme="light"] {
-    --brand-color: #3267ad;
-    --typography-p-margin: 0.1em 0 0.1em 0 ;
-    --typography-h3-margin: 0.5em 0 0.5em 0 ;
-    --table-background-color-selected: color-mix(in srgb, white 70%, var(--brand-color));
-}
-
-[data-theme="dark"] {
-    --brand-color: #3267ad;
-    --typography-p-margin: 0.1em 0 0.1em 0 ;
-    --typography-h3-margin: 0.5em 0 0.5em 0 ;
-    --table-background-color-selected: color-mix(in srgb, black 70%, var(--brand-color));
-}
-
-html {
+.thaw-config-provider {
     font-size: 12px;
+}
+
+.color-scheme--light {
+    --brand-color: #3267ad;
+    --app-background-color: #efebe8;
+    --table-wrapper-box-shadow-color: #666666;
+    --table-background-color: white;
+    --table-background-color-selected: color-mix(in srgb, white 70%, var(--brand-color));
+    --table-border-color: #e0e0e0;
+    --drawer-background-color: #f9f7f6;
+
+    .thaw-switch__input:enabled:not(:checked) ~ .thaw-switch__indicator {
+        color: white;
+
+        // mimic dark theme, so only `color` changes
+        --colorCompoundBrandBackground: #479ef5;
+        background-color: var(--colorCompoundBrandBackground);
+        border-color: var(--colorTransparentStroke);
+    }
+}
+
+.color-scheme--dark {
+    --brand-color: #3267ad;
+    --app-background-color: #1e1c1c;
+    --table-wrapper-box-shadow-color: #101010;
+    --table-background-color: #202020;
+    --table-background-color-selected: color-mix(in srgb, black 70%, var(--brand-color));
+    --table-border-color: #4c4c4c;
+    --drawer-background-color: #323232;
 }
 
 body {
@@ -27,10 +36,58 @@ body {
     padding: 0;
 }
 
-leptonic-app-bar {
+p {
+    margin: 0.1em 0 0.1em 0;
+}
+
+.app {
+    min-height: 100vh;
+}
+
+.app-bar {
     background: var(--brand-color);
     color: white;
     padding: 0 1em;
+    h1 {
+        font-size: x-large;
+        margin: 0;
+    }
+}
+
+.app-contents {
+    background-color: var(--app-background-color);
+    height: fit-content;
+    padding: 0 1em 1em 1em;
+}
+
+.sample-matchups {
+    width: 100%;
+
+    h3 {
+        margin: 0.5em 0 0.5em 0;
+    }
+}
+
+table-wrapper {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    transition: height 0.5s ease;
+    border-radius: 0.5em;
+    // FIXME: shadow is cropped horizontally
+    box-shadow: -2px 3px 15px -6px var(--table-wrapper-box-shadow-color);
+
+    table {
+        background-color: var(--table-background-color);
+        width: 100%;
+        line-height: 2;
+
+        border-collapse: collapse;
+        td {
+            border-bottom: 0.05em solid var(--table-border-color);
+            padding: 0.2em 1em;
+        }
+    }
 }
 
 .army_view {
@@ -38,6 +95,10 @@ leptonic-app-bar {
 
     .army_list {
         h2 {
+            margin: 0.5em 0 0.2em 0;
+            display: flex;
+            justify-content: space-between;
+
             a {
                 &:link, &:visited {
                     color: var(--box-color);
@@ -55,7 +116,7 @@ leptonic-app-bar {
     }
 }
 
-leptonic-drawer.army_details {
+.army_details.thaw-overlay-drawer {
     padding: 0.2em;
     position: fixed;
     top: 0;
@@ -66,50 +127,63 @@ leptonic-drawer.army_details {
     width: 40%;
     max-height: calc(100vh - 1px);
 
-    h3 {
-        margin: 0 0 0.2em 0;
-        button div.name {
-            padding: 0.2em 0.5em;
+    .thaw-drawer-body {
+        padding: 0;
+
+        h3 {
+            margin: 0 0 0.2em 0;
+            button {
+                min-width: 0;
+                div.name {
+                    padding: 0.2em 0.5em;
+                }
+            }
+            .thaw-space__item { align-self: center; }
         }
-    }
 
-    span.unit {
-        font-weight: bold;
-    }
-
-    leptonic-table-container {
-        // FIXME: not ideal but how to do better?  Should be sufficient anyway
-        flex-shrink: 0;
-    }
-
-    leptonic-table {
-        background-color: color-mix(in srgb,
-                                    var(--table-background-color),
-                                    rgb(100% 100%  100% / 20%));
-        leptonic-table-cell {
-            text-align: center;
-            padding: 0.1em;
+        span.unit {
+            font-weight: bold;
         }
-        // FIXME use more explicit qualifier than child number
-        leptonic-table-cell:nth-child(2),
-        leptonic-table-cell:nth-child(3) {
-            width: 2em;
-        }
-    }
 
-    &.right {
-        right: 0;
-    }
-    &.left {
-        left: 0;
+        table-wrapper {
+            // FIXME: not ideal but how to do better?  Should be sufficient anyway
+            flex-shrink: 0;
+        }
+
+        table {
+            background-color: color-mix(in srgb,
+                                        var(--table-background-color),
+                                        rgb(100% 100%  100% / 20%));
+            line-height: 1.35;
+            td {
+                text-align: center;
+                padding: 0;
+            }
+            // FIXME use more explicit qualifier than child number
+            td:nth-child(2),
+            td:nth-child(3) {
+                width: 2em;
+            }
+        }
+
+        &.thaw-overlay-drawer--position-right {
+            right: 0;
+        }
+        &.thaw-overlay-drawer--position-left {
+            left: 0;
+        }
     }
 }
 
 specialrules-def-list {
     overflow-y: scroll;
+
+    p {
+        margin: 0.1em 0 0.1em 0;
+    }
 }
 
-leptonic-table-row.selected {
+tr.selected {
     background-color: var(--table-background-color-selected);
 }
 

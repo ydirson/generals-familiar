@@ -9,7 +9,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - uses: dtolnay/rust-toolchain@1.80
+    - uses: dtolnay/rust-toolchain@1.87
       with:
         targets: wasm32-unknown-unknown
 
@@ -17,10 +17,6 @@ jobs:
     - uses: jetli/trunk-action@v0.4.0
       #with:
       #  version: 'v0.18.4'
-
-    # workaround unidentified issue with missing dir
-    - name: Stylesheet creation workaround
-      run: mkdir -p style/leptonic && test -r ./style/leptonic/leptonic-themes.scss || trunk build --verbose --release --public-url "./" || true
 
     - name: Build
       run: trunk build --verbose --release --public-url "./"

@@ -52,6 +52,9 @@ browser to access it - if you choose to build it yourself, just run
     full URL provided by "share as link"
   * show spells when needed (requires fetching json army book)
   * (bug) on army removal, removal link for previous armies are not updated
+  * (bug) when deselecting all armies, the army type is kept (as
+    reflected in titlebar, and in reported mismatch loading a new
+    matchup)
 * QoL
   * special rules
     * in DetailsDrawer, highlight occurrences of a rule when clicking
@@ -137,7 +140,7 @@ to build a web application using a language more fun than Javascript.
 
 The UI is currently relying on the [Leptos
 framework](https://leptos.dev/) to support a component-based reactive
-approach, and the [Leptonic component library](https://leptonic.dev/).
+approach, and the [Thaw component library](https://crates.io/crates/thaw).
 I'm not really happy yet with the generated WASM size, so maybe
 technical choices will change at some point - at least this setup
 makes it really easy to prototype things.
