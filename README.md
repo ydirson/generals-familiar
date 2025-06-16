@@ -36,8 +36,8 @@ browser to access it - if you choose to build it yourself, just run
   Forge](https://army-forge.onepagerules.com/), allowing global view
   also on opponent army(ies) (optimized for 1-2 armies for now)
 * show both unit lists in a dense format suitable to fit completely on
-  screen for most armies; direct link to armies' Army Forge page for
-  convenience
+  screen for most armies; direct link to Army Forge armies' page and
+  army books' pages for convenience
 * regroup combined/joined units into a single display
 * display face to face the details of the selected unit from each army
 * specify armies to load using their ID (extracted from "share as
@@ -64,8 +64,8 @@ browser to access it - if you choose to build it yourself, just run
     * scroll to rule def on click on keyword
   * additional info
     * provide a menu with a few links (project's GitHub, AF, rules)
-    * provide army links to army book (book name in the link requires
-      fetching json army book)
+    * book name in links to army book (requires fetching json army
+      book)
     * extract meaningful army-level info for permanent display (aura
       available from units, (optionally) spells, ...)
     * see how we can determine which characteristic of displayed unit is

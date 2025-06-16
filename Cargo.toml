@@ -51,10 +51,10 @@ thaw_macro = "0.1.0"
 [build-dependencies.opr-test-data]
 git = "https://github.com/ydirson/opr-rs"
 optional = true
-rev = "f87c9f6f1da434b2e2ef755eea2a34e200b48370"
+rev = "108696a22d2d03bf1bee1841fa65f32b44651dce"
 [dependencies.opr]
 git = "https://github.com/ydirson/opr-rs"
-rev = "f87c9f6f1da434b2e2ef755eea2a34e200b48370"
+rev = "108696a22d2d03bf1bee1841fa65f32b44651dce"
 
 #[patch."https://github.com/ydirson/opr-rs"]
 #opr = {path = "../opr-rs/opr"}

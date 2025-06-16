@@ -470,9 +470,14 @@ fn ArmyDialog(
             {
                 let army = use_context::<Arc<opr::Army>>()
                     .expect("should find my Army");
-                let af_url = format!("{}?id={}", opr::ARMYFORGE_SHARE_URL, army.id);
+                let opr::Army{ref id, ref game_system, ref name, ref armybook_ids, ..} = *army;
+                let game_system = game_system.clone();
+                let name = Arc::clone(name);
+                let armybook_ids = armybook_ids.clone();
+
+                let af_url = format!("{}?id={}", opr::ARMYFORGE_SHARE_URL, id);
                 view! {
-                    <thaw::DialogTitle>{Arc::clone(&army.name)}</thaw::DialogTitle>
+                    <thaw::DialogTitle>{Arc::clone(&name)}</thaw::DialogTitle>
                     <thaw::DialogContent>
                         <thaw::Button
                             appearance=thaw::ButtonAppearance::Primary
@@ -482,6 +487,30 @@ fn ArmyDialog(
                         >
                             "Open in ArmyForge"
                         </thaw::Button>
+                        {
+                            armybook_ids.iter()
+                                .map(move |id| {
+                                    match &game_system {
+                                        Ok(game_system) => {
+                                            let id = Arc::clone(&id);
+                                            let url = opr::get_bookinfo_url(id.as_ref(),
+                                                                            *game_system);
+                                            Either::Left(view! {
+                                                <thaw::Button on_click=move |_|
+                                                    open_in_new_tab_and(url.as_str(),
+                                                                        || show_when.set(false))
+                                                    appearance=thaw::ButtonAppearance::Primary
+                                                 >
+                                                    {format!("book {}", Arc::clone(&id))}
+                                                </thaw::Button>
+                                            })
+                                        },
+                                        Err(e) => Either::Right(
+                                            format!("book {id} failed: {e}").into_view()),
+                                    }
+                                })
+                                .collect_view()
+                        }
                     </thaw::DialogContent>
                     <thaw::DialogActions>
                         <thaw::Button on_click=move |_| show_when.set(false)>
