@@ -7,7 +7,7 @@ rust-version = "1.72"
 [dependencies]
 console_error_panic_hook = { version = "0.1.0", optional = true }
 gloo-net = ">=0.5, <0.7"
-icondata = { version = "0.4.0", default-features = false, features = ["ionicons"] }
+icondata = { version = ">=0.4.0, <0.7", default-features = false, features = ["ionicons"] }
 leptos = { version = "0.7.0", default-features = false, features = ["csr"] }
 leptos_macro = { version = "0.7.0", features = ["csr"] }
 leptos_meta = "0.7.0"
@@ -51,10 +51,10 @@ thaw_macro = "0.1.0"
 [build-dependencies.opr-test-data]
 git = "https://github.com/ydirson/opr-rs"
 optional = true
-rev = "854d192c8c85fe09b1b635e1c42e114363353cba"
+rev = "41a07089b16ef33576eb39e4ca894ff28ef18667"
 [dependencies.opr]
 git = "https://github.com/ydirson/opr-rs"
-rev = "854d192c8c85fe09b1b635e1c42e114363353cba"
+rev = "41a07089b16ef33576eb39e4ca894ff28ef18667"
 
 #[patch."https://github.com/ydirson/opr-rs"]
 #opr = {path = "../opr-rs/opr"}
