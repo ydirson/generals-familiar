@@ -68,7 +68,7 @@ fn AppBoilerplate() -> impl IntoView {
     provide_meta_context();
     let theme = RwSignal::new(thaw::Theme::light());
     let theme_class = Memo::new(move |_| {
-        theme.with(|theme| format!("color-scheme--{}", theme.color.color_scheme))
+        theme.with(|theme| format!("color-scheme--{}", theme.color.color_scheme()))
     });
     // get app URL to workaround Router assuming by default path
     // components are a route
