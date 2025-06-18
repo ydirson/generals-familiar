@@ -14,6 +14,7 @@ leptos_meta = "0.7.0"
 leptos_router = "0.7.0"
 serde = { version = "1.0.0" }
 thaw = { version = "0.4.0", features = ["csr"]}
+thaw_macro = "0.1.0"
 
 # those we don't use directly but have to be in sync when using a prerelease
 #leptos_config = "=0.7.0-rc2"
@@ -29,8 +30,6 @@ thaw = { version = "0.4.0", features = ["csr"]}
 #server_fn_macro_default = "=0.7.0-rc2.0"
 #tachys = "=0.1.0-rc2"
 #throw_error = "=0.2.0-rc2"
-
-thaw_macro = "0.1.0"
 
 [patch.crates-io]
 #leptos = {path = "../leptos/leptos"}
