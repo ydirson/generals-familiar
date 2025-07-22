@@ -14,7 +14,7 @@ jobs:
         targets: wasm32-unknown-unknown
 
     # get prebuilt trunk instead of spending 5min+ of CI time
-    - uses: jetli/trunk-action@v0.4.0
+    - uses: jetli/trunk-action@v0.5.1
       #with:
       #  version: 'v0.18.4'
 
