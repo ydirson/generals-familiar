@@ -60,6 +60,8 @@ until adaptations are done.
   * let users select their own armies from a UI, let them paste the
     full URL provided by "share as link"
   * show spells when needed (requires fetching json army book)
+  * ensure important list-level info is displayed, and not hidden by
+    the drawer (horizontally-condensed?)
   * (bug) on army removal, removal link for previous armies are not updated
 * QoL
   * special rules
@@ -90,8 +92,6 @@ until adaptations are done.
       and help battle reports)
   * UI structuring
     * regroup identical units
-    * ensure important list-level info is displayed, and not hidden by
-      the drawer
   * data management
     * keep (in local storage) a list of recently-used armies
     * keep (in local storage) a list of preferred armies for easy selection
