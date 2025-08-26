@@ -1,11 +1,12 @@
 use gloo_net::http::Request;
-use itertools::Itertools; // sorted_by
+use itertools::Itertools; // sorted_by, join
 use leptos::prelude::*;
 use leptos::either::{Either, EitherOf3};
 use leptos_meta::{provide_meta_context, Title};
 use leptos_router as ltr;
 use leptos_router::components as ltrc;
 use leptos_router::params::Params; // derive(ltr::Params) won't work ?!
+use std::iter::once;
 use std::sync::Arc;
 
 const APP_NAME: &str = "General's Familiar";
@@ -246,6 +247,7 @@ fn SampleMatchups() -> impl IntoView {
 /// drawers for selections
 #[component]
 fn ArmiesView(army_ids: Signal<Vec<String>>) -> impl IntoView {
+    let dialog_shown = RwSignal::new(false);
     provide_context(army_ids);
     view! {
         <Title text="view armies" />
@@ -260,7 +262,55 @@ fn ArmiesView(army_ids: Signal<Vec<String>>) -> impl IntoView {
                                           else {thaw::DrawerPosition::Right}} />
                  }
              />
+            <thaw::Button appearance=thaw::ButtonAppearance::Primary
+                          class="new_army"
+                          on_click=move |_| dialog_shown.set(true) >
+                "+"
+            </thaw::Button>
         </thaw::Flex>
+        <NewArmyDialog show_when=dialog_shown />
+    }
+}
+
+#[component]
+fn NewArmyDialog(#[prop(into)] show_when: RwSignal<bool>) -> impl IntoView {
+    let new_id = RwSignal::new("".to_string());
+    view! {
+        <thaw::Dialog open=show_when ><thaw::DialogSurface><thaw::DialogBody>
+            <thaw::DialogTitle>"Load Army"</thaw::DialogTitle>
+            <thaw::DialogContent>
+                <thaw::Input placeholder="AF Share ID"
+                             // should_be_focused=|| true
+                             value=new_id
+                 />
+            </thaw::DialogContent>
+            <thaw::DialogActions>
+                <thaw::Button on_click=move |_| show_when.set(false)>
+                    "Cancel"
+                </thaw::Button>
+                {move || {
+                    let ids =
+                        use_context::<Signal<Vec<String>>>()
+                        .expect("should find army_ids in context")
+                        .get();
+                    let armies = ids.into_iter()
+                        .chain(once(new_id.get()))
+                        .join(",");
+                    let url = format!("./?armies={armies}");
+                    let navigate = ltr::hooks::use_navigate();
+                    view! {
+                        <thaw::Button appearance=thaw::ButtonAppearance::Primary
+                                      on_click=move |_| {
+                                          show_when.set(false);
+                                          navigate(url.as_str(), Default::default());
+                                          new_id.set("".to_string());
+                                      } >
+                            "Load"
+                        </thaw::Button>
+                    }
+                }}
+            </thaw::DialogActions>
+        </thaw::DialogBody></thaw::DialogSurface></thaw::Dialog>
     }
 }
 
@@ -528,8 +578,7 @@ fn GroupDetails(group: Arc<opr::UnitGroup>,
     let shown = use_context::<DrawerControl>().unwrap().shown;
     let group_name = group.formatted_name();
     let close_button = |glyph| view! {
-        <thaw::Button //color=ltn::ButtonColor::Secondary
-                      on_click=move |_| shown.set(false)> {glyph} </thaw::Button>
+        <thaw::Button on_click=move |_| shown.set(false)> {glyph} </thaw::Button>
     };
     let (left_button, right_button) = match side {
         thaw::DrawerPosition::Left  => ( Some(close_button("<")), None ),
