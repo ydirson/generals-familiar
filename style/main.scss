@@ -8,6 +8,7 @@
     --table-wrapper-box-shadow-color: #666666;
     --table-background-color: white;
     --table-background-color-selected: color-mix(in srgb, white 70%, var(--brand-color));
+    --table-background-color-armyrule: color-mix(in srgb, white 70%, #dddd88);
     --table-border-color: #e0e0e0;
     --drawer-background-color: #f9f7f6;
 
@@ -27,6 +28,7 @@
     --table-wrapper-box-shadow-color: #101010;
     --table-background-color: #202020;
     --table-background-color-selected: color-mix(in srgb, black 70%, var(--brand-color));
+    --table-background-color-armyrule: #dddd88;
     --table-border-color: #4c4c4c;
     --drawer-background-color: #323232;
 }
@@ -180,6 +182,10 @@ specialrules-def-list {
 
     p {
         margin: 0.1em 0 0.1em 0;
+
+        &.army {
+            background-color: var(--table-background-color-armyrule);
+        }
     }
 }
 

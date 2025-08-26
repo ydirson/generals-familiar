@@ -662,7 +662,8 @@ fn SpecialRulesDefList(group: Arc<opr::UnitGroup>,
                                 {match common_rules_def() {
                                     Ok(common_rules_def) => Either::Left(view! {
                                         {rules_descriptions_from_list_for_group(
-                                            Arc::clone(&group), &common_rules_def.clone())}
+                                            Arc::clone(&group), &common_rules_def.clone(),
+                                            RuleType::Common)}
                                     }),
                                     Err(message) => Either::Right(view! {
                                         <thaw::MessageBar intent=thaw::MessageBarIntent::Error>
@@ -673,7 +674,7 @@ fn SpecialRulesDefList(group: Arc<opr::UnitGroup>,
                                     }),
                                 }}
                                 {rules_descriptions_from_list_for_group(
-                                    Arc::clone(&group), special_rules_def)}
+                                    Arc::clone(&group), special_rules_def, RuleType::Army)}
                             })
                         } else {
                             // cannot happen - FIXME should pass opr::Army directly instead?
@@ -706,8 +707,14 @@ fn common_rules_def() -> Result<Vec<Arc<opr::SpecialRuleDef>>, String> {
     }
 }
 
+enum RuleType {
+    Common,
+    Army,
+}
+
 fn rules_descriptions_from_list_for_group(group: Arc<opr::UnitGroup>,
-                                          rules_def: &[Arc<opr::SpecialRuleDef>]
+                                          rules_def: &[Arc<opr::SpecialRuleDef>],
+                                          rule_type: RuleType,
 ) -> impl IntoView {
     rules_def
         .iter()
@@ -715,7 +722,8 @@ fn rules_descriptions_from_list_for_group(group: Arc<opr::UnitGroup>,
             if group_uses_rule(Arc::clone(&group), rule_def) {
                 let opr::SpecialRuleDef{ref name, ref description} = **rule_def;
                 Either::Left(view!{
-                    <p>
+                    <p class={match &rule_type {RuleType::Common => "common",
+                                                RuleType::Army => "army"}} >
                         <rule-name>{Arc::clone(name)}</rule-name> ": "
                         {Arc::clone(description)}
                     </p>
