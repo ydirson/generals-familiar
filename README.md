@@ -69,7 +69,6 @@ until adaptations are done.
       (eg. Shadow-Protocol, Rending in Melee, Tunneler, Frenzy); may
       need manual tagging to handle mentions of opponent rules
       (eg. Rending)
-    * color-coding for common- vs army-rules
     * easy way to highlight units with a given rule (eg. for Robot)
     * scroll to rule def on click on keyword
   * additional info
