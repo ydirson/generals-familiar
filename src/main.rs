@@ -1,4 +1,5 @@
 use gloo_net::http::Request;
+use itertools::Itertools; // sorted_by
 use leptos::prelude::*;
 use leptos::either::{Either, EitherOf3};
 use leptos_meta::{provide_meta_context, Title};
@@ -396,6 +397,7 @@ fn UnitsList(unit_groups: Vec<Arc<opr::UnitGroup>>,
                         unit_groups
                             .clone()
                             .into_iter()
+                            .sorted_by(|g1, g2| g1.display_cmp(&g2))
                             .enumerate()
                             .map(|(i, group)| {
                                 let group_name = (*group).formatted_name();
