@@ -48,8 +48,7 @@ browser to access it - if you choose to build it yourself, just run
 ### Plans and ideas for the future
 
 * essential
-  * let users select their own armies from a UI, let them paste the
-    full URL provided by "share as link"
+  * let users paste the full URL provided by "share as link"
   * show spells when needed (requires fetching json army book)
   * ensure important list-level info is displayed, and not hidden by
     the drawer (horizontally-condensed?)
