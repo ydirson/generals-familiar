@@ -999,9 +999,9 @@ dependencies = [
 
 [[package]]
 name = "leptos_macro"
-version = "0.8.7"
+version = "0.8.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0a758b2ac32dc9ec2739c92726363d555e601327d77467e8083c12a8781f206d"
+checksum = "a84c7e53895c786f1128e91c36a708435e301f487338d19f2f6b5b67bb39ece2"
 dependencies = [
  "attribute-derive",
  "cfg-if",
