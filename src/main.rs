@@ -607,9 +607,10 @@ fn EquipmentItem(loadout: Arc<opr::UnitLoadout>) -> impl IntoView {
                     {name}
                 </td>
                 <td>
-                    {if range != 0
-                        {format!(r#"{}""#, range )}
-                        else {"-".to_string()}}
+                    {match range {
+                        None | Some(0) => "-".to_string(),
+                        Some(range) => format!(r#"{}""#, range ),
+                    }}
                 </td>
                 <td>
                     {format!("A{}", attacks)}
