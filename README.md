@@ -69,7 +69,6 @@ until adaptations are done.
       (eg. Shadow-Protocol, Rending in Melee, Tunneler, Frenzy); may
       need manual tagging to handle mentions of opponent rules
       (eg. Rending)
-    * color-coding for common- vs army-rules
     * easy way to highlight units with a given rule (eg. for Robot)
     * scroll to rule def on click on keyword
   * additional info
@@ -90,8 +89,6 @@ until adaptations are done.
     * keep history of stat changes (to help check about forgotten stuff,
       and help battle reports)
   * UI structuring
-    * order units (replicating AF order currently requires fetching
-      json army book)
     * regroup identical units
     * ensure important list-level info is displayed, and not hidden by
       the drawer

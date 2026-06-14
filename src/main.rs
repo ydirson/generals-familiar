@@ -1,4 +1,5 @@
 use gloo_net::http::Request;
+use itertools::Itertools; // sorted_by
 use leptos::prelude::*;
 use leptos::either::{Either, EitherOf3};
 use leptos_meta::{provide_meta_context, Title};
@@ -396,6 +397,7 @@ fn UnitsList(unit_groups: Vec<Arc<opr::UnitGroup>>,
                         unit_groups
                             .clone()
                             .into_iter()
+                            .sorted_by(|g1, g2| g1.display_cmp(&g2))
                             .enumerate()
                             .map(|(i, group)| {
                                 let group_name = (*group).formatted_name();
@@ -605,9 +607,10 @@ fn EquipmentItem(loadout: Arc<opr::UnitLoadout>) -> impl IntoView {
                     {name}
                 </td>
                 <td>
-                    {if range != 0
-                        {format!(r#"{}""#, range )}
-                        else {"-".to_string()}}
+                    {match range {
+                        None | Some(0) => "-".to_string(),
+                        Some(range) => format!(r#"{}""#, range ),
+                    }}
                 </td>
                 <td>
                     {format!("A{}", attacks)}
@@ -662,7 +665,8 @@ fn SpecialRulesDefList(group: Arc<opr::UnitGroup>,
                                 {match common_rules_def() {
                                     Ok(common_rules_def) => Either::Left(view! {
                                         {rules_descriptions_from_list_for_group(
-                                            Arc::clone(&group), &common_rules_def.clone())}
+                                            Arc::clone(&group), &common_rules_def.clone(),
+                                            RuleType::Common)}
                                     }),
                                     Err(message) => Either::Right(view! {
                                         <thaw::MessageBar intent=thaw::MessageBarIntent::Error>
@@ -673,7 +677,7 @@ fn SpecialRulesDefList(group: Arc<opr::UnitGroup>,
                                     }),
                                 }}
                                 {rules_descriptions_from_list_for_group(
-                                    Arc::clone(&group), special_rules_def)}
+                                    Arc::clone(&group), special_rules_def, RuleType::Army)}
                             })
                         } else {
                             // cannot happen - FIXME should pass opr::Army directly instead?
@@ -706,8 +710,14 @@ fn common_rules_def() -> Result<Vec<Arc<opr::SpecialRuleDef>>, String> {
     }
 }
 
+enum RuleType {
+    Common,
+    Army,
+}
+
 fn rules_descriptions_from_list_for_group(group: Arc<opr::UnitGroup>,
-                                          rules_def: &[Arc<opr::SpecialRuleDef>]
+                                          rules_def: &[Arc<opr::SpecialRuleDef>],
+                                          rule_type: RuleType,
 ) -> impl IntoView {
     rules_def
         .iter()
@@ -715,7 +725,8 @@ fn rules_descriptions_from_list_for_group(group: Arc<opr::UnitGroup>,
             if group_uses_rule(Arc::clone(&group), rule_def) {
                 let opr::SpecialRuleDef{ref name, ref description} = **rule_def;
                 Either::Left(view!{
-                    <p>
+                    <p class={match &rule_type {RuleType::Common => "common",
+                                                RuleType::Army => "army"}} >
                         <rule-name>{Arc::clone(name)}</rule-name> ": "
                         {Arc::clone(description)}
                     </p>

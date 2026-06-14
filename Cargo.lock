@@ -163,9 +163,9 @@ checksum = "d71b6127be86fdcfddb610f7182ac57211d4b18a3e9c82eb2d17662f2227ad6a"
 
 [[package]]
 name = "camino"
-version = "1.1.11"
+version = "1.1.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5d07aa9a93b00c76f71bc35d598bed923f6d4f3a9ca5c24b7737ae1a292841c0"
+checksum = "dd0b03af37dad7a14518b7691d81acb0f8222604ad3d1b02f6b4bed5188c0cd5"
 
 [[package]]
 name = "cc"
@@ -546,6 +546,7 @@ dependencies = [
  "console_error_panic_hook",
  "gloo-net",
  "icondata",
+ "itertools",
  "leptos",
  "leptos_macro",
  "leptos_meta",
@@ -913,9 +914,9 @@ dependencies = [
 
 [[package]]
 name = "leptos"
-version = "0.8.6"
+version = "0.8.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "20adc17f0584e5f605a31444179bae17c399a2d160bf19eb3da701a1f6e7cb8e"
+checksum = "b7a8710b4908a0e7b693113b906e4cf1bc87123b685404d090cdcd3e220bcab4"
 dependencies = [
  "any_spawner",
  "cfg-if",
@@ -953,9 +954,9 @@ dependencies = [
 
 [[package]]
 name = "leptos_config"
-version = "0.8.5"
+version = "0.8.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b0fddaae8dbc1680aa59c40c8f8ebb780b9a841e503d3cc5143d346a40c6d8ab"
+checksum = "240b4cb96284256a44872563cf029f24d6fe14bc341dcf0f4164e077cb5a1471"
 dependencies = [
  "config",
  "regex",
@@ -1037,9 +1038,9 @@ dependencies = [
 
 [[package]]
 name = "leptos_router"
-version = "0.8.5"
+version = "0.8.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3991de30a9cce8082e8c0d729744c8f6ffd66a828629806bf1332cb624123c75"
+checksum = "f13e0e0a70f40e4717da84415f6f1002091146ef247246b6a447d76947ab2e30"
 dependencies = [
  "any_spawner",
  "either_of",
@@ -1209,7 +1210,7 @@ checksum = "42f5e15c9953c5e4ccceeb2e7382a716482c34515315f7b03532b8b4e8393d2d"
 [[package]]
 name = "opr"
 version = "0.1.0"
-source = "git+https://github.com/ydirson/opr-rs?rev=857e98a342db3f1119abe0656173610257270edd#857e98a342db3f1119abe0656173610257270edd"
+source = "git+https://github.com/ydirson/opr-rs?rev=96ead0bba809bee2dbd1f3ef9a69859db569293c#96ead0bba809bee2dbd1f3ef9a69859db569293c"
 dependencies = [
  "cfg-if",
  "itertools",
@@ -1220,7 +1221,7 @@ dependencies = [
 [[package]]
 name = "opr-test-data"
 version = "0.0.1"
-source = "git+https://github.com/ydirson/opr-rs?rev=857e98a342db3f1119abe0656173610257270edd#857e98a342db3f1119abe0656173610257270edd"
+source = "git+https://github.com/ydirson/opr-rs?rev=96ead0bba809bee2dbd1f3ef9a69859db569293c#96ead0bba809bee2dbd1f3ef9a69859db569293c"
 dependencies = [
  "include_dir",
 ]
