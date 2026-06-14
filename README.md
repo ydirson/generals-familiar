@@ -30,6 +30,15 @@ browser to access it - if you choose to build it yourself, just run
 
 ## Functionalities and Roadmap
 
+### Limitations
+
+Descriptions of armies and army books are fetched from OPR's Army
+Forge API, and the format of those descriptions sometimes changes as
+OPR rules evolve (this API is not officially supported for external
+use).  Therefore, this app sometimes needs to be adaptated to follow
+the changes, and OPR changes may be cause it to be broken at times,
+until adaptations are done.
+
 ### Currently available
 
 * download one or more army lists from [the One Page Rules Army
@@ -90,6 +99,8 @@ browser to access it - if you choose to build it yourself, just run
     * keep (in local storage) a list of recently-used armies
     * keep (in local storage) a list of preferred armies for easy selection
     * allow keeping army/book data in local storage for offline usage
+    * support for Beta releases to detect upcoming compatibility
+      breaks and limit the time when `master` is broken
   * UX
     * quick switch of selection (for small lists) by e.g. swiping the
       drawer up/down
