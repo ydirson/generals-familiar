@@ -11,12 +11,12 @@ jobs:
     - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # 6.0.3
       with:
         persist-credentials: false
-    - uses: dtolnay/rust-toolchain@1.88
+    - uses: dtolnay/rust-toolchain@98e1b82157cd469e843cb7f524c1313b4ad9492c # 1.88
       with:
         targets: wasm32-unknown-unknown
 
     # get prebuilt trunk instead of spending 5min+ of CI time
-    - uses: jetli/trunk-action@v0.4.0
+    - uses: jetli/trunk-action@68dbd78ba531c95d8ce3d262c9e63291926e9353 # 0.4.0
       #with:
       #  version: 'v0.18.4'
 
