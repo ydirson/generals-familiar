@@ -32,6 +32,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
 
       - name: Download master artifacts
         id: download-artifact-master
