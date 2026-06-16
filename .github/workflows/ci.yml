@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # 6.0.3
       with:
         persist-credentials: false
     - uses: dtolnay/rust-toolchain@1.88
@@ -23,7 +23,7 @@ jobs:
     - name: Build
       run: trunk build --verbose --release --public-url "./"
     - name: Upload artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # 7.0.1
       with:
         name: static-webapp
         path: ./dist
