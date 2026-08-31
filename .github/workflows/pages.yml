@@ -37,7 +37,7 @@ jobs:
 
       - name: Download master artifacts
         id: download-artifact-master
-        uses: dawidd6/action-download-artifact@b6e2e70617bc3265edd6dab6c906732b2f1ae151 # 21
+        uses: dawidd6/action-download-artifact@57aa996fc1713cc1579039614f4645a7f4841fd4 # 23
         with:
           workflow: ci.yml
           workflow_conclusion: success
@@ -48,7 +48,7 @@ jobs:
 
       - name: Download dev artifacts
         id: download-artifact-dev
-        uses: dawidd6/action-download-artifact@b6e2e70617bc3265edd6dab6c906732b2f1ae151 # 21
+        uses: dawidd6/action-download-artifact@57aa996fc1713cc1579039614f4645a7f4841fd4 # 23
         with:
           workflow: ci.yml
           workflow_conclusion: success
@@ -59,7 +59,7 @@ jobs:
 
       - name: Download experiments artifacts
         id: download-artifact-experiments
-        uses: dawidd6/action-download-artifact@b6e2e70617bc3265edd6dab6c906732b2f1ae151 # 21
+        uses: dawidd6/action-download-artifact@57aa996fc1713cc1579039614f4645a7f4841fd4 # 23
         with:
           workflow: ci.yml
           workflow_conclusion: success
